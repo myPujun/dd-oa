@@ -1,0 +1,113 @@
+@import './var.scss';
+
+.body_content{
+    padding: 0 .3rem;
+}
+.body_gery{
+    height: 100vh;
+    overflow: auto;
+    background-color: #f6f6f6;
+}
+
+input,textarea{
+    outline: none;
+    background: none;
+    border: none;
+}
+
+/*flex*/
+.flex{
+    display: flex;
+}
+.c_flex{
+    display: flex;
+    flex-direction: column;
+}
+.flex_j_c{
+    justify-content: center;
+}
+.flex_a_c{
+    align-items: center;
+}
+.flex_wrap{
+    flex-wrap: wrap;
+}
+.flex_s_a{
+    justify-content: space-around;
+}
+.flex_s_b{
+    justify-content: space-between;
+}
+
+/*表单样式*/
+.form_list{
+    padding: 0 .3rem;
+    margin-top: .3rem;
+    background-color: #FFF;
+    li{
+        height: .8rem;
+        border-bottom: 1px solid $border_bottom_color;
+        .title{
+            width: 1.5rem;
+            span{
+                font-size: $size_30;
+                color: $fontSizeColor;
+            }
+            .must::after{
+                content: '*';
+                color: #e23516;
+                margin-left: .05rem;
+                font-size: $size_28;
+            }
+        }
+        input{
+            flex: 1;
+            height: .8rem;
+            color: $fontSizeColor;
+            font-size: $size_30;
+        }
+        textarea{
+            height: 1rem;
+            flex: 1;
+            
+        }
+        .hint_1{
+            font-size: $size_30;
+            color: #8ab1d7;
+            font-weight: normal;
+        }
+        .hint_2{
+            color: #4988fd;
+        }
+        .icon_right{
+            width: $size_30;
+            height: $size_30;
+            background-position: center;
+            background-repeat: no-repeat;
+            // background-color: $gery_1;
+        }
+        .arrows_right{
+            background-image: url('assets/img/arrows_right.png');
+            background-size: .17rem .27rem;
+        }
+        .add{
+            background-image: url('assets/img/add.png');
+            background-size: cover;
+        }
+        .time{
+            background-image: url('assets/img/time.png');
+            background-size: .25rem .28rem;
+        }
+        .accessory{
+            background-image: url('assets/img/accessory.png');
+            background-size: .3rem;
+        }
+    }
+    li:last-child{
+        border-bottom: none;
+    }
+    .li_auto{
+        height: auto;
+        padding: .25rem 0;
+    }
+}
