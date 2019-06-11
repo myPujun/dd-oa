@@ -7,13 +7,13 @@
                     <div class="message flex">
                         <div class="icon"></div>
                         <h3 class="name">海南快思图商务会展有限公司</h3>
-                        <img class="compile" src="../assets/img/redact_2.png" alt="">
+                        <img class="compile" src="../../assets/img/redact_2.png" alt="">
                     </div>
                     <div class="code flex">
                         <span>普通用户</span>
                         <span>9146020008253534XM</span>
                         <span>启用</span>
-                        <img class="yes" src="../assets/img/audit_yes.png" alt="">
+                        <img class="yes" src="../../assets/img/audit_yes.png" alt="">
                     </div>
                     <p class="introduce">
                         会展服务，旅业服务，公关活动策划，酒店预订，代定餐，车，船， 机票，舞台搭建，展览展示，广告制作，地产推广，房地产营销， 设备
@@ -23,7 +23,7 @@
             <div class="client_massage">
                 <h2 class="name">柳椿飞</h2>
                 <p class="tel">18689******</p>
-                <img class="compile" src="../assets/img/redact_2.png" alt="">
+                <img class="compile" src="../../assets/img/redact_2.png" alt="">
             </div>
         </div>
         <div class="client_list">
@@ -31,7 +31,7 @@
             <ul class="list">
                 <li class="flex flex_a_c">
                     <div class="head">
-                        <img src="../assets/img/head.png" alt="">
+                        <img src="../../assets/img/head.png" alt="">
                     </div>
                     <div class="message">
                         <h2 class="name">洪光宇</h2>
@@ -39,7 +39,7 @@
                             18789898989
                         </p>
                     </div>
-                    <img class="compile" src="../assets/img/redact_3.png" alt="">
+                    <img class="compile" src="../../assets/img/redact_3.png" alt="">
                 </li>
             </ul>
         </div>
@@ -66,7 +66,7 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-@import '../assets/css/var.scss';
+@import '../../assets/css/var.scss';
     .details{
         background-color: #2f5a91;
         padding: .2rem;
@@ -76,7 +76,7 @@ export default {
                 min-width: .8rem;
                 height: .8rem;
                 margin-right: .2rem;
-                background-image: url('../assets/img/enterprise.png');
+                background-image: url('../../assets/img/enterprise.png');
                 background-repeat: no-repeat;
                 background-position: center;
                 background-size: .7rem .8rem;
@@ -140,7 +140,7 @@ export default {
                 padding-left: .6rem;
                 line-height: .4rem;
                 margin-top: .2rem;
-                background-image: url('../assets/img/tel.png');
+                background-image: url('../../assets/img/tel.png');
                 background-position: 0;
                 background-repeat: no-repeat;
                 background-size: .23rem .38rem;

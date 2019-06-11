@@ -40,6 +40,7 @@ input,textarea{
 }
 
 /*表单样式*/
+
 .form_list{
     padding: 0 .3rem;
     margin-top: .3rem;
@@ -109,5 +110,10 @@ input,textarea{
     .li_auto{
         height: auto;
         padding: .25rem 0;
+    }
+}
+.form_list_noborder{
+    li{
+        border-bottom: none;
     }
 }

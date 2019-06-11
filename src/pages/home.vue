@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import * as dd from 'dingtalk-jsapi'
+import axios from 'axios'
 import menu from '../assets/js/indexMenu'
 export default {
     data() {
@@ -50,6 +50,16 @@ export default {
     components: {},
     computed: {},
     mounted() {
+        // let param = new URLSearchParams()
+        // param.append('oauth_userid','pujun')
+        let param = {
+            oauth_userid:'pujun'
+        }
+        axios.post('/api/dingtalk_login.ashx?action=dingtalk_userid_validate',param,{
+            'Content-Type':'application/x-www-form-urlencoded'
+        }).then(res => {
+            console.log(res)
+        })
         //获取菜单列表
         this.navList = menu
         setInterval(() => {

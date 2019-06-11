@@ -5,7 +5,7 @@ let list = [
         list:[
             {
                 imgUrl:'',
-                link:'client',
+                link:'customerManage',
                 name:'客户管理'
             },
             {

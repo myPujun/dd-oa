@@ -1,4 +1,4 @@
-<!-- 管理客户 -->
+<!-- 客户管理首页 -->
 <template>
     <div>
         <ul class="tab_list flex flex_s_a">
@@ -13,7 +13,7 @@
                 <li>
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <img class="icon" src="../assets/img/audit.png" alt="">
+                            <img class="icon" src="../../assets/img/audit.png" alt="">
                             <h2 class="name">海南快思图商务会展有限公司</h2>
                             <input type="button" value="禁用">
                         </section>
@@ -33,7 +33,7 @@
                 <li>
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <img class="icon" src="../assets/img/audit_no.png" alt="">
+                            <img class="icon" src="../../assets/img/audit_no.png" alt="">
                             <h2 class="name">海南快思图商务会展有限公司</h2>
                             <input class="blue" type="button" value="启用">
                         </section>
@@ -53,7 +53,7 @@
                 <li>
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <img class="icon" src="../assets/img/audit_yes.png" alt="">
+                            <img class="icon" src="../../assets/img/audit_yes.png" alt="">
                             <h2 class="name">海南快思图商务会展有限公司</h2>
                             <input class="blue" type="button" value="启用">
                         </section>
@@ -86,8 +86,29 @@ export default {
     },
     components: {},
     computed: {},
+    created(){
+        let _this = this
+        console.log(_this.$dd)
+        _this.$dd.ready(function() {
+            _this.$dd.biz.navigation.setTitle({
+                title : '客户管理',//控制标题文本，空字符串表示显示默认文本
+            });
+            _this.$dd.biz.navigation.setRight({
+                show: true,//控制按钮显示， true 显示， false 隐藏， 默认true
+                control: true,//是否控制点击事件，true 控制，false 不控制， 默认false
+                text: '添加客户',//控制显示文本，空字符串表示显示默认文本
+                onSuccess : function(result) {
+                    //如果control为true，则onSuccess将在发生按钮点击事件被回调
+                    /*
+                    {}
+                    */
+                },
+                onFail : function(err) {}
+            })
+        })
+    },
     mounted() {
-
+        
     },
     methods: {
         changeTab(index){
@@ -98,7 +119,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../assets/css/var.scss';
+@import '../../assets/css/var.scss';
     .tab_list{
         border-bottom: 1px solid $border_bottom_color;
         li{
@@ -122,7 +143,7 @@ export default {
             background-color: #ededed;
             border-radius: 4px;
             font-size: $size_28;
-            background-image: url('../assets/img/search.png');
+            background-image: url('../../assets/img/search.png');
             background-repeat: no-repeat;
             background-size: .3rem;
             background-position:.1rem;
@@ -175,10 +196,10 @@ export default {
                         background-size: cover;
                     }
                     span:nth-child(1){
-                        background-image: url('../assets/img/redact_1.png');
+                        background-image: url('../../assets/img/redact_1.png');
                     }
                     span:nth-child(2){
-                        background-image: url('../assets/img/delete.png');
+                        background-image: url('../../assets/img/delete.png');
                         background-size: .25rem .3rem;
                     }
                 }
@@ -193,6 +214,7 @@ export default {
                     background-color: $blue_1;
                 }
                 .message_list{
+                    display: flex;
                     span{
                         height: .36rem;
                         font-size: $size_20;
@@ -200,6 +222,7 @@ export default {
                         border-radius: 2px;
                         text-align: center;
                         line-height: .36rem;
+                        margin-right: .2rem;
                     }
                     span:nth-child(1){
                         background-color: $blue_1;
@@ -220,3 +243,5 @@ export default {
         }
     }
 </style>
+
+
