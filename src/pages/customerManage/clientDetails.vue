@@ -56,12 +56,22 @@ export default {
     },
     components: {},
     computed: {},
+    created(){
+        this.ddSet.setTitleRight({title:'客户详情',text:'添加联系人'}).then(res => {
+            if(res){
+                this.$router.push({
+                    path:'/addLinkman'
+                })
+            }
+        })
+    },
     mounted() {
-
+        
     },
     methods: {
 
     },
+    
 }
 </script>
 

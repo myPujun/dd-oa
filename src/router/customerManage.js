@@ -6,6 +6,8 @@ import customerManage from '../pages/customerManage/index'
 import addClient from '../pages/customerManage/addClient'
 //客户详情
 import clientDetails from '../pages/customerManage/clientDetails'
+//添加联系人
+import addLinkman from '@/pages/customerManage/addLinkman' 
 
 const routes = [
     {
@@ -19,6 +21,10 @@ const routes = [
     {
         path:'/clientDetails',
         component:clientDetails,
+    },
+    {
+        path:'/addLinkman',
+        component:addLinkman,
     },
 ]
 

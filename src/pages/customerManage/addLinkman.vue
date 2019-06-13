@@ -28,6 +28,13 @@ export default {
     },
     components: {},
     computed: {},
+    created(){
+        this.ddSet.setTitleRight({title:'添加联系人信息',text:'保存'}).then(res => {
+            if(res){
+                
+            }
+        })
+    },
     mounted() {
 
     },

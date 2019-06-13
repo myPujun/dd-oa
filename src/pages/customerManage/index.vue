@@ -14,7 +14,7 @@
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <img class="icon" src="../../assets/img/audit.png" alt="">
-                            <h2 class="name">海南快思图商务会展有限公司</h2>
+                            <router-link tag="h2" class="name" to="/clientDetails">海南快思图商务会展有限公司</router-link>
                             <input type="button" value="禁用">
                         </section>
                         <section class="operation_icon flex">
@@ -87,24 +87,12 @@ export default {
     components: {},
     computed: {},
     created(){
-        let _this = this
-        console.log(_this.$dd)
-        _this.$dd.ready(function() {
-            _this.$dd.biz.navigation.setTitle({
-                title : '客户管理',//控制标题文本，空字符串表示显示默认文本
-            });
-            _this.$dd.biz.navigation.setRight({
-                show: true,//控制按钮显示， true 显示， false 隐藏， 默认true
-                control: true,//是否控制点击事件，true 控制，false 不控制， 默认false
-                text: '添加客户',//控制显示文本，空字符串表示显示默认文本
-                onSuccess : function(result) {
-                    //如果control为true，则onSuccess将在发生按钮点击事件被回调
-                    /*
-                    {}
-                    */
-                },
-                onFail : function(err) {}
-            })
+        this.ddSet.setTitleRight({title:'客户管理',text:'添加客户'}).then(res => {
+            if(res){
+                this.$router.push({
+                    path:'/addClient'
+                })
+            }
         })
     },
     mounted() {

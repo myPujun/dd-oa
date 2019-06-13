@@ -3,12 +3,12 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import * as dd from 'dingtalk-jsapi'
+import ddSet from './assets/js/ddSet'
 
 //控制字体
 import './assets/js/fontSize'
-//钉钉注入Vue原型
-Vue.prototype.$dd = dd
+//钉钉方法调用
+Vue.prototype.ddSet = ddSet
 
 Vue.config.productionTip = false
 

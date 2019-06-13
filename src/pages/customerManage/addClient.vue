@@ -31,13 +31,13 @@
                 <input type="text" placeholder="请输入联系人">
                 <div class="icon_right arrows_right"></div>
             </li>
-            <li class="li_auto flex">
-                <label class="title"><span>备注</span></label>
-                <textarea placeholder="请输入备注"></textarea>
-            </li>
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>启用</span></label>
                 <div class="icon_right"></div>
+            </li>
+            <li class="li_auto flex">
+                <label class="title"><span>备注</span></label>
+                <textarea placeholder="请输入备注"></textarea>
             </li>
         </ul>
     </div>
@@ -53,12 +53,22 @@ export default {
     },
     components: {},
     computed: {},
+    created(){
+        this.ddSet.setTitleRight({title:'添加信息客户',text:'保存'}).then(res => {
+            if(res){
+                
+            }
+        })
+    },
     mounted() {
 
     },
     methods: {
 
     },
+    beforeDestroy(){
+        
+    }
 }
 </script>
 

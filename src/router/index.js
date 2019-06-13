@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import home from '@/pages/home' //首页
-import addLinkman from '@/pages/addLinkman' //添加联系人
-import addOrders from '@/pages/addOrders' //新增订单
-
+ 
+//客户管理
 import customerManage from './customerManage'
+//新增订单
+import addOrders from './addOrders'
 
 let routes = [
     {
@@ -15,6 +16,7 @@ let routes = [
 
 routes = routes.concat(
     customerManage,
+    addOrders,
     [{
       path: '*',
       redirect: '/'
