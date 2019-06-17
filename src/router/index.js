@@ -6,6 +6,8 @@ import home from '@/pages/home' //首页
 import customerManage from './customerManage'
 //新增订单
 import addOrders from './addOrders'
+//订单查询
+import shoppingCart from './shoppingCart'
 
 let routes = [
     {
@@ -17,6 +19,7 @@ let routes = [
 routes = routes.concat(
     customerManage,
     addOrders,
+    shoppingCart,
     [{
       path: '*',
       redirect: '/'
