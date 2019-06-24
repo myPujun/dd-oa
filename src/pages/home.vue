@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import axios from 'axios'
 import menu from '../assets/js/indexMenu'
+import {mapState,mapActions,mapMutations} from 'vuex'
 export default {
     data() {
         return {
@@ -52,14 +52,10 @@ export default {
     mounted() {
         // let param = new URLSearchParams()
         // param.append('oauth_userid','pujun')
-        let param = {
-            oauth_userid:'pujun'
-        }
-        axios.post('/api/dingtalk_login.ashx?action=dingtalk_userid_validate',param,{
-            'Content-Type':'application/x-www-form-urlencoded'
-        }).then(res => {
+        this.getUser({oauth_userid:'pujun'}).then(res => {
             console.log(res)
         })
+
         //获取菜单列表
         this.navList = menu
         setInterval(() => {
@@ -71,7 +67,9 @@ export default {
         }, 5000);
     },
     methods: {
-
+        ...mapActions([
+            'getUser'
+        ])
     },
 }
 </script>

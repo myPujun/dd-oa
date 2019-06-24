@@ -117,6 +117,21 @@ input,textarea{
         border-bottom: none;
     }
 }
+.form_btn{
+    text-align: center;
+    margin-top: 10%;
+    button{
+        border: none;
+        background: none;
+        outline: none;
+        width: 80%;
+        height: .8rem;
+        color: #FFF;
+        background-color: #3395fa;
+        font-size: .36rem;
+        border-radius: 4px;
+    }
+}
 /*上次图片*/
 .upImgBtn{
     padding: .3rem;

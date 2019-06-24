@@ -8,12 +8,13 @@
         <div class="customer_list">
             <h2 class="amount">共2人</h2>
             <ul class="list">
-                <li>
+                <router-link to="/nonBusinessDetails">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <img class="icon" src="../../assets/img/audit.png" alt="">
-                            <router-link tag="h2" class="name" to="/clientDetails">海南快思图商务会展有限公司</router-link>
-                            <input type="button" value="禁用">
+                            <img class="icon" src="../../assets/img/audit_yes.png" alt="">
+                            
+                            <router-link tag="h2" class="name" to="/clientDetails">业务活动执行备用金借款</router-link>
+                            <input type="button" value="未支付">
                         </section>
                         <section class="operation_icon flex">
                             <span></span>
@@ -22,38 +23,17 @@
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
-                            <span>9146020008253534XM</span>
-                            <span>柳春飞</span>
-                            <span>0898-88338175</span>
+                            <span>No.20190415002</span>
+                            <span>员工往来</span>
                         </div>
                     </div>
-                </li>
-                <li>
-                    <div class="company flex flex_a_c flex_s_b">
-                        <section class="flex flex_a_c">
-                            <img class="icon" src="../../assets/img/audit_no.png" alt="">
-                            <h2 class="name">海南快思图商务会展有限公司</h2>
-                            <input class="blue" type="button" value="启用">
-                        </section>
-                        <section class="operation_icon flex">
-                            <span></span>
-                            <span></span>
-                        </section>
-                    </div>
-                    <div class="message flex flex_a_c flex_s_b">
-                        <div class="message_list flex">
-                            <span>9146020008253534XM</span>
-                            <span>柳春飞</span>
-                            <span>0898-88338175</span>
-                        </div>
-                    </div>
-                </li>
+                </router-link>
                 <li>
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <img class="icon" src="../../assets/img/audit_yes.png" alt="">
-                            <h2 class="name">海南快思图商务会展有限公司</h2>
-                            <input class="blue" type="button" value="启用">
+                            <h2 class="name">业务活动执行备用金借款</h2>
+                            <input class="blue" type="button" value="已支付">
                         </section>
                         <section class="operation_icon flex">
                             <span></span>
@@ -62,9 +42,27 @@
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
-                            <span>9146020008253534XM</span>
-                            <span>柳春飞</span>
-                            <span>0898-88338175</span>
+                            <span>No.20190415002</span>
+                            <span>员工往来</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="company flex flex_a_c flex_s_b">
+                        <section class="flex flex_a_c">
+                            <img class="icon" src="../../assets/img/audit.png" alt="">
+                            <h2 class="name">员工餐费</h2>
+                            <input type="button" value="未支付">
+                        </section>
+                        <section class="operation_icon flex">
+                            <span></span>
+                            <span></span>
+                        </section>
+                    </div>
+                    <div class="message flex flex_a_c flex_s_b">
+                        <div class="message_list flex">
+                            <span>No.20190415003</span>
+                            <span>工薪支付</span>
                         </div>
                     </div>
                 </li>
@@ -79,7 +77,7 @@ export default {
     name:"",
     data() {
        return {
-           topTabList:['普通客户','内部客户','管理用客户'],
+           topTabList:['待审核','已审核','已支付'],
            tabIndex:0,
        };
     },

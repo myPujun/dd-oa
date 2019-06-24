@@ -8,6 +8,14 @@ import customerManage from './customerManage'
 import addOrders from './addOrders'
 //订单查询
 import shoppingCart from './shoppingCart'
+//业务审核
+import businessReview from './businessReview'
+//特大业务
+import bigbusiness from './bigbusiness'
+//非业务支付申请
+import nonBusinessApply from './nonBusinessApply'
+//业务支付审核列表
+import notAudit from './notAudit'
 
 let routes = [
     {
@@ -20,6 +28,10 @@ routes = routes.concat(
     customerManage,
     addOrders,
     shoppingCart,
+    businessReview,
+    bigbusiness,
+    nonBusinessApply,
+    notAudit,
     [{
       path: '*',
       redirect: '/'
