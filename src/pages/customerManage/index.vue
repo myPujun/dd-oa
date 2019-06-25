@@ -3,68 +3,29 @@
     <div>
         <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
         <div class="search_box flex flex_a_c flex_j_c">
-           <input type="text" placeholder="搜索联系人姓名或公司名称">
+           <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索联系人姓名或公司名称">
         </div>
         <div class="customer_list">
-            <h2 class="amount">共2人</h2>
+            <h2 class="amount">共{{list.length}}人</h2>
             <ul class="list">
-                <li>
+                <li v-for="(item,index) in list" :key="index">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <img class="icon" src="../../assets/img/audit.png" alt="">
-                            <router-link tag="h2" class="name" to="/clientDetails">海南快思图商务会展有限公司</router-link>
-                            <input type="button" value="禁用">
+                            <img class="icon" :src="isIocn[item.c_flag]" alt="">
+                            <h2 class="name">{{item.c_name}}</h2>
+                            <input type="button" :class="{blue:!item.c_isUse}" :value="item.c_isUse?'禁用': '启用'">
                         </section>
                         <section class="operation_icon flex">
+                            <router-link tag="span" :to="{path:'/clientDetails',query:{id:item.c_id}}"></router-link>
                             <span></span>
                             <span></span>
                         </section>
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
-                            <span>9146020008253534XM</span>
-                            <span>柳春飞</span>
-                            <span>0898-88338175</span>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="company flex flex_a_c flex_s_b">
-                        <section class="flex flex_a_c">
-                            <img class="icon" src="../../assets/img/audit_no.png" alt="">
-                            <h2 class="name">海南快思图商务会展有限公司</h2>
-                            <input class="blue" type="button" value="启用">
-                        </section>
-                        <section class="operation_icon flex">
-                            <span></span>
-                            <span></span>
-                        </section>
-                    </div>
-                    <div class="message flex flex_a_c flex_s_b">
-                        <div class="message_list flex">
-                            <span>9146020008253534XM</span>
-                            <span>柳春飞</span>
-                            <span>0898-88338175</span>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="company flex flex_a_c flex_s_b">
-                        <section class="flex flex_a_c">
-                            <img class="icon" src="../../assets/img/audit_yes.png" alt="">
-                            <h2 class="name">海南快思图商务会展有限公司</h2>
-                            <input class="blue" type="button" value="启用">
-                        </section>
-                        <section class="operation_icon flex">
-                            <span></span>
-                            <span></span>
-                        </section>
-                    </div>
-                    <div class="message flex flex_a_c flex_s_b">
-                        <div class="message_list flex">
-                            <span>9146020008253534XM</span>
-                            <span>柳春飞</span>
-                            <span>0898-88338175</span>
+                            <span v-show="item.c_num">{{item.c_num}}</span>
+                            <span>{{item.co_name}}</span>
+                            <span>{{item.co_number}}</span>
                         </div>
                     </div>
                 </li>
@@ -75,12 +36,20 @@
 
 <script>
 import tabList from '../../components/tab.vue'
+import {mapActions} from 'vuex'
+
+import audit from '../../assets/img/audit.png'
+import audit_no from '../../assets/img/audit_no.png'
+import audit_yes from '../../assets/img/audit_yes.png'
 export default {
     name:"",
     data() {
        return {
-           topTabList:['普通客户','内部客户','管理用客户'],
+           topTabList:['普通客户','管理用客户','内部客户'],
            tabIndex:0,
+           list:[],
+           isIocn:[audit,audit_no,audit_yes],
+           searchText:''
        };
     },
     components: {
@@ -97,11 +66,30 @@ export default {
         })
     },
     mounted() {
-        
+        this.customerList()
     },
     methods: {
+        ...mapActions([
+            'getCustomerList'
+        ]),
+        customerList({type = 1} = {}){
+            let params = {
+                pageIndex:1,
+                pageSize:999,
+                keywords:this.searchText,
+                type,
+                managerid:14
+            }
+            this.getCustomerList(params).then(res => {
+                this.list = res.data.list
+            })
+        },
+        changeSearch(){
+            this.customerList({type:this.tabIndex+1})
+        },
         changeTab(index){
             this.tabIndex = index
+            this.customerList({type:index+1})
         }
     },
 }

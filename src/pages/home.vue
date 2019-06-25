@@ -48,12 +48,16 @@ export default {
         };
     },
     components: {},
-    computed: {},
+    computed: {
+        ...mapMutations([
+            'setUser'
+        ])
+    },
     mounted() {
         // let param = new URLSearchParams()
         // param.append('oauth_userid','pujun')
         this.getUser({oauth_userid:'pujun'}).then(res => {
-            console.log(res)
+            this.$store.commit('setUser',res)
         })
 
         //获取菜单列表

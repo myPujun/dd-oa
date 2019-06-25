@@ -1,7 +1,13 @@
 const baseUrl = '/api'
 const api = {
-    get getUser(){  //验证是否已绑定钉钉userid用户
+    get user(){  //验证是否已绑定钉钉userid用户
         return baseUrl+'/dingtalk_login.ashx?action=dingtalk_userid_validate'
+    },
+    get customerLlist(){    //查看客户分页列表
+        return baseUrl+'/dingtalk_ajax.ashx?action=customer_list'
+    },
+    get customerDetails(){
+        return baseUrl+'/dingtalk_ajax.ashx?action=customer_show'
     }
 }
 export {

@@ -6,37 +6,35 @@
                 <div class="company">
                     <div class="message flex">
                         <div class="icon"></div>
-                        <h3 class="name">海南快思图商务会展有限公司</h3>
+                        <h3 class="name">{{datails.c_name}}</h3>
                         <img class="compile" src="../../assets/img/redact_2.png" alt="">
                     </div>
                     <div class="code flex">
-                        <span>普通用户</span>
-                        <span>9146020008253534XM</span>
-                        <span>启用</span>
-                        <img class="yes" src="../../assets/img/audit_yes.png" alt="">
+                        <span>{{clientType[datails.c_type-1]}}</span>
+                        <span v-show="datails.c_num">{{datails.c_num}}</span>
+                        <span>{{datails.c_isUse ? '禁用' : '启用'}}</span>
+                        <img class="yes" :src="isIocn[datails.c_flag]" alt="">
                     </div>
-                    <p class="introduce">
-                        会展服务，旅业服务，公关活动策划，酒店预订，代定餐，车，船， 机票，舞台搭建，展览展示，广告制作，地产推广，房地产营销， 设备
-                    </p>
+                    <p class="introduce">{{datails.c_remarks}}</p>
                 </div>
             </div>
             <div class="client_massage">
-                <h2 class="name">柳椿飞</h2>
-                <p class="tel">18689******</p>
+                <h2 class="name">{{datails.contacts_list[0].co_name}}</h2>
+                <p class="tel">{{datails.contacts_list[0].co_number}}</p>
                 <img class="compile" src="../../assets/img/redact_2.png" alt="">
             </div>
         </div>
-        <div class="client_list">
-            <h2 class="amount">共2人</h2>
+        <div class="client_list" v-if="datails.contacts_list.length-1 !== 0">
+            <h2 class="amount">共{{datails.contacts_list.length-1}}人</h2>
             <ul class="list">
-                <li class="flex flex_a_c">
+                <li class="flex flex_a_c" v-if="!item.co_flag" v-for="(item,index) in datails.contacts_list" :key="index">
                     <div class="head">
                         <img src="../../assets/img/head.png" alt="">
                     </div>
                     <div class="message">
-                        <h2 class="name">洪光宇</h2>
+                        <h2 class="name">{{item.co_name}}</h2>
                         <p class="tel">
-                            18789898989
+                            {{item.co_number}}
                         </p>
                     </div>
                     <img class="compile" src="../../assets/img/redact_3.png" alt="">
@@ -47,11 +45,19 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
+import audit from '../../assets/img/audit.png'
+import audit_no from '../../assets/img/audit_no.png'
+import audit_yes from '../../assets/img/audit_yes.png'
 export default {
     name:"",
     data() {
        return {
-
+           clientId:null,
+           isIocn:[audit,audit_no,audit_yes],
+           datails:{},
+           clientType:['普通客户','管理用客户','内部客户']
        };
     },
     components: {},
@@ -65,11 +71,20 @@ export default {
             }
         })
     },
+    created(){
+        let {id} = this.$route.query
+        this.clientId = id
+        this.getCustomerDetails({c_id:id}).then(res => {
+            this.datails = res.data
+        })
+    },
     mounted() {
         
     },
     methods: {
-
+        ...mapActions([
+            'getCustomerDetails'
+        ])
     },
     
 }
@@ -93,6 +108,7 @@ export default {
             }
             .company{
                 position: relative;
+                width: 100%;
                 .compile{
                     position: absolute;
                     right: .2rem;

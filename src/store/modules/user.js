@@ -4,11 +4,13 @@ const state = {
     userInfo:{}
 }
 const mutations = {
-    
+    setUser: (state,res) =>{
+        state.userInfo = res
+    }
 }
 const actions = {
     getUser({commit},params){
-        return ajax.post(api.getUser,params)
+        return ajax.post(api.user,params)
     }
 }
 
