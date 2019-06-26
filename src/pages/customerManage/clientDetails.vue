@@ -1,6 +1,6 @@
 <!-- 客户详情 -->
 <template>
-    <div class="body_gery">
+    <div class="body_gery" v-if="datails">
         <div class="details">
             <div class="company_message flex">
                 <div class="company">

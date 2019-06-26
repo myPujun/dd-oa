@@ -18,7 +18,6 @@
                         <section class="operation_icon flex">
                             <router-link tag="span" :to="{path:'/clientDetails',query:{id:item.c_id}}"></router-link>
                             <span></span>
-                            <span></span>
                         </section>
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
@@ -66,6 +65,7 @@ export default {
         })
     },
     mounted() {
+        
         this.customerList()
     },
     methods: {

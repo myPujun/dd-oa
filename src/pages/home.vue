@@ -31,6 +31,7 @@
 
 <script>
 import menu from '../assets/js/indexMenu'
+import axios from 'axios'
 import {mapState,mapActions,mapMutations} from 'vuex'
 export default {
     data() {
