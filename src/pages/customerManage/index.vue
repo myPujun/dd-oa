@@ -30,6 +30,7 @@
                 </li>
             </ul>
         </div>
+        <top-nav title="客户管理" text='添加客户' @rightClick="addClient"></top-nav>
     </div>
 </template>
 
@@ -40,6 +41,7 @@ import {mapActions} from 'vuex'
 import audit from '../../assets/img/audit.png'
 import audit_no from '../../assets/img/audit_no.png'
 import audit_yes from '../../assets/img/audit_yes.png'
+
 export default {
     name:"",
     data() {
@@ -56,7 +58,7 @@ export default {
     },
     computed: {},
     created(){
-        this.ddSet.setTitleRight({title:'客户管理',text:'添加客户'}).then(res => {
+        this.ddSet.setTitleRight({title:'',text:''}).then(res => {
             if(res){
                 this.$router.push({
                     path:'/addClient'
@@ -72,6 +74,9 @@ export default {
         ...mapActions([
             'getCustomerList'
         ]),
+        addClient(){
+            this.$router.push({path:'/addClient'})
+        },
         customerList({type = 1} = {}){
             let params = {
                 pageIndex:1,

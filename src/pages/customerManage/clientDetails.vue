@@ -41,6 +41,7 @@
                 </li>
             </ul>
         </div>
+        <top-nav title="客户详情" text="添加联系人" @rightClick="addLinkman"></top-nav>
     </div>
 </template>
 
@@ -63,13 +64,7 @@ export default {
     components: {},
     computed: {},
     created(){
-        this.ddSet.setTitleRight({title:'客户详情',text:'添加联系人'}).then(res => {
-            if(res){
-                this.$router.push({
-                    path:'/addLinkman'
-                })
-            }
-        })
+        
     },
     created(){
         let {id} = this.$route.query
@@ -84,7 +79,10 @@ export default {
     methods: {
         ...mapActions([
             'getCustomerDetails'
-        ])
+        ]),
+        addLinkman(){
+            this.$router.push({path:'/addLinkman',flag:this.datails.contacts_list[0].co_flag})
+        }
     },
     
 }
