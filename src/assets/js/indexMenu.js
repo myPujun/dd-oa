@@ -5,6 +5,11 @@ let list = [
         list:[
             {
                 imgUrl:'',
+                link:'test',
+                name:'测试管理'
+            },
+            {
+                imgUrl:'',
                 link:'customerManage',
                 name:'客户管理'
             },

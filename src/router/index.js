@@ -2,6 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import home from '@/pages/home' //首页
  
+//测试管理
+import test from './test'
+
 //客户管理
 import customerManage from './customerManage'
 //新增订单
@@ -25,6 +28,7 @@ let routes = [
 ]
 
 routes = routes.concat(
+    test,
     customerManage,
     addOrders,
     shoppingCart,

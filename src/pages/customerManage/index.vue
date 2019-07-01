@@ -13,7 +13,7 @@
                         <section class="flex flex_a_c">
                             <img class="icon" :src="isIocn[item.c_flag]" alt="">
                             <h2 class="name">{{item.c_name}}</h2>
-                            <input type="button" :class="{blue:!item.c_isUse}" :value="item.c_isUse?'禁用': '启用'">
+                            <input type="button" :class="{blue:!item.c_isUse}" :value="item.c_isUse?'启用': '禁用'">
                         </section>
                         <section class="operation_icon flex">
                             <router-link tag="span" :to="{path:'/clientDetails',query:{id:item.c_id}}"></router-link>
