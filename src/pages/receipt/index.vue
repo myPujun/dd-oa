@@ -9,7 +9,7 @@
             <h2 class="amount">共{{list.length}}条</h2>
             <ul class="list">
                 <li v-for="(item,index) in list" :key="index">
-                    111
+                    222
                     <!-- <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <img class="icon" :src="isIocn[item.c_flag]" alt="">
