@@ -35,7 +35,11 @@ const api = {
     },
     get employeebyarea(){   //根据活动归属地ID获取组织架构及人员
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_employeebyarea'
+    },
+    get receiptlist(){   //收款通知列表
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=receipt_list'
     }
+
 }
 export {
     api

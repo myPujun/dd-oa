@@ -65,7 +65,7 @@ let list = [
         list:[
             {
                 imgUrl:require('../img/nav_list/icon_notice_1.png'),
-                link:'',
+                link:'receipt',
                 name:'已收款'
             },
             {

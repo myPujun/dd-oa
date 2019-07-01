@@ -6,10 +6,11 @@
            <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索联系人姓名或公司名称">
         </div>
         <div class="customer_list">
-            <h2 class="amount">共{{list.length}}人</h2>
+            <h2 class="amount">共{{list.length}}条</h2>
             <ul class="list">
                 <li v-for="(item,index) in list" :key="index">
-                    <div class="company flex flex_a_c flex_s_b">
+                    111
+                    <!-- <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <img class="icon" :src="isIocn[item.c_flag]" alt="">
                             <h2 class="name">{{item.c_name}}</h2>
@@ -26,11 +27,11 @@
                             <span>{{item.co_name}}</span>
                             <span>{{item.co_number}}</span>
                         </div>
-                    </div>
+                    </div> -->
                 </li>
             </ul>
         </div>
-        <top-nav title="客户管理" text='添加客户' @rightClick="addClient"></top-nav>
+        <top-nav title="收款通知"></top-nav>
     </div>
 </template>
 
@@ -38,18 +39,13 @@
 import tabList from '../../components/tab.vue'
 import {mapActions} from 'vuex'
 
-import audit from '../../assets/img/audit.png'
-import audit_no from '../../assets/img/audit_no.png'
-import audit_yes from '../../assets/img/audit_yes.png'
-
 export default {
     name:"",
     data() {
        return {
-           topTabList:['普通客户','管理用客户','内部客户'],
+           topTabList:['未到账','已到账'],
            tabIndex:0,
            list:[],
-           isIocn:[audit,audit_no,audit_yes],
            searchText:''
        };
     },
@@ -57,44 +53,32 @@ export default {
         tabList,
     },
     computed: {},
-    created(){
-        this.ddSet.setTitleRight({title:'',text:''}).then(res => {
-            if(res){
-                this.$router.push({
-                    path:'/addClient'
-                })
-            }
-        })
-    },
-    mounted() {
-        
-        this.customerList()
+    created(){},
+    mounted() {        
+        this.receiptList()
     },
     methods: {
         ...mapActions([
-            'getCustomerList'
+            'getReceiptList'
         ]),
-        addClient(){
-            this.$router.push({path:'/addClient'})
-        },
-        customerList({type = 1} = {}){
+        receiptList({rp_isConfirm = 0} = {}){
             let params = {
                 pageIndex:1,
                 pageSize:999,
                 keywords:this.searchText,
-                type,
+                rp_isConfirm,
                 managerid:14
             }
-            this.getCustomerList(params).then(res => {
+            this.getReceiptList(params).then(res => {
                 this.list = res.data.list
             })
         },
         changeSearch(){
-            this.customerList({type:this.tabIndex+1})
+            this.receiptList({rp_isConfirm:this.tabIndex+1})
         },
         changeTab(index){
             this.tabIndex = index
-            this.customerList({type:index+1})
+            this.receiptList({rp_isConfirm:index+1})
         }
     },
 }
