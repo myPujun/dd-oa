@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 import user from './modules/user'
 import customerManage from './modules/customerManage'
+import test from './modules/test'
 import addOrders from './modules/addOrders'
 import receipt from './modules/receipt'
 
@@ -12,7 +13,8 @@ export default new Vuex.Store({
     modules:{
         user,
         customerManage,
-        addOrders,
-        receipt
+        receipt,
+        test,
+        addOrders
     }
 })

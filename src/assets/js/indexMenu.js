@@ -4,6 +4,11 @@ let list = [
         title:'业务管理',
         list:[
             {
+                imgUrl:'',
+                link:'test',
+                name:'测试管理'
+            },
+            {
                 imgUrl:require('../img/nav_list/icon_client.png'),
                 link:'customerManage',
                 name:'客户管理'
