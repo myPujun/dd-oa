@@ -2,6 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import home from '@/pages/home' //首页
  
+//测试管理
+import test from './test'
+
 //客户管理
 import customerManage from './customerManage'
 //新增订单
@@ -16,6 +19,8 @@ import bigbusiness from './bigbusiness'
 import nonBusinessApply from './nonBusinessApply'
 //业务支付审核列表
 import notAudit from './notAudit'
+//已收款
+import receipt from './receipt'
 
 let routes = [
     {
@@ -25,6 +30,7 @@ let routes = [
 ]
 
 routes = routes.concat(
+    test,
     customerManage,
     addOrders,
     shoppingCart,
@@ -32,6 +38,7 @@ routes = routes.concat(
     bigbusiness,
     nonBusinessApply,
     notAudit,
+    receipt,
     [{
       path: '*',
       redirect: '/'

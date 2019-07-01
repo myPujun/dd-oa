@@ -70,8 +70,8 @@ const api = {
     get customerList(){    //查看客户分页列表
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_list'
     },
-    get customerDetails(){  //客户详情
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_show'
+    get customerDetails(){  //查看客户详细信息
+        return baseUrl+'/dingtalk_ajax.ashx?action=customer_show'
     },
     get customerAdd(){  //新增客户详情
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_add'

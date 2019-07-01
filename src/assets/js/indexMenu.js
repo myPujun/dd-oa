@@ -4,6 +4,11 @@ let list = [
         title:'业务管理',
         list:[
             {
+                imgUrl:'',
+                link:'test',
+                name:'测试管理'
+            },
+            {
                 imgUrl:require('../img/nav_list/icon_client.png'),
                 link:'customerManage',
                 name:'客户管理'
@@ -65,7 +70,7 @@ let list = [
         list:[
             {
                 imgUrl:require('../img/nav_list/icon_notice_1.png'),
-                link:'',
+                link:'receipt',
                 name:'已收款'
             },
             {
