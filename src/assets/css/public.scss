@@ -100,8 +100,15 @@ input,textarea{
             background-size: .25rem .28rem;
         }
         .accessory{
+            position: relative;
             background-image: url('assets/img/accessory.png');
             background-size: .3rem;
+            input{
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+            }
         }
     }
     li:last-child{

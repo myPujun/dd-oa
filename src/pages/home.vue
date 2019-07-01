@@ -20,7 +20,9 @@
                 <ul class="list flex flex_wrap">
                     <router-link v-for="(item,index) in nav.list" :key="index" tag="li" :to="'/'+item.link" 
                     class="c_flex flex_a_c flex_j_c">
-                        <div class="icon"></div>
+                        <div class="icon">
+                            <img :src="item.imgUrl" alt="">
+                        </div>
                         <p class="name">{{item.name}}</p>
                     </router-link>
                 </ul>
@@ -31,6 +33,7 @@
 
 <script>
 import menu from '../assets/js/indexMenu'
+import axios from 'axios'
 import {mapState,mapActions,mapMutations} from 'vuex'
 export default {
     data() {
@@ -92,7 +95,10 @@ export default {
             .icon{
                 width: 1rem;
                 height: 1rem;
-                background-color: #f1f1f1;
+                img{
+                    width: 100%;
+                    height: 100%;
+                }
             }
             .name{
                 font-size: .24rem;

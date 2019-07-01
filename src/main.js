@@ -5,7 +5,11 @@ import App from './App'
 import router from './router'
 import ddSet from './assets/js/ddSet'
 import store from "./store";
+import VConsole from 'vconsole'
+import TopNav from './components/nav.vue'
 
+new VConsole()
+Vue.component('top-nav',TopNav)
 //控制字体
 import './assets/js/fontSize'
 //钉钉方法调用

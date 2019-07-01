@@ -9,32 +9,32 @@ let list = [
                 name:'测试管理'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_client.png'),
                 link:'customerManage',
                 name:'客户管理'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_addOrder.png'),
                 link:'addOrders',
                 name:'新增订单'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_orderQuery.png'),
                 link:'shoppingCart',
                 name:'订单查询'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_Approva.png'),
                 link:'businessReview',
                 name:'业务审批'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_business.png'),
                 link:'bigbusiness',
                 name:'特大业务查询'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_NonOperative.png'),
                 link:'',
                 name:'非业务支付申请'
             },
@@ -44,22 +44,22 @@ let list = [
         title:'财务管理',
         list:[
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_finance_1.png'),
                 link:'',
                 name:'业务支付审核'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_finance_2.png'),
                 link:'',
                 name:'非业务支付审核'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_finance_3.png'),
                 link:'',
                 name:'发票审核'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_finance_4.png'),
                 link:'',
                 name:'预付款审批'
             },
@@ -69,17 +69,17 @@ let list = [
         title:'通知管理',
         list:[
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_notice_1.png'),
                 link:'',
                 name:'已收款'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_notice_2.png'),
                 link:'',
                 name:'已付款'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_notice_3.png'),
                 link:'',
                 name:'已开票'
             },
@@ -89,17 +89,17 @@ let list = [
         title:'个人业务结算',
         list:[
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_balance_1.png'),
                 link:'',
                 name:'未付款订单'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_balance_2.png'),
                 link:'',
                 name:'多付款订单'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_balance_3.png'),
                 link:'',
                 name:'审核未通过订单'
             },
@@ -109,17 +109,17 @@ let list = [
         title:'业务统计分析',
         list:[
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_statistics.png'),
                 link:'',
                 name:'月份统计'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_statistics.png'),
                 link:'',
                 name:'季度统计'
             },
             {
-                imgUrl:'',
+                imgUrl:require('../img/nav_list/icon_statistics.png'),
                 link:'',
                 name:'年份统计'
             },
