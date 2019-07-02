@@ -66,8 +66,8 @@ export default {
                 pageIndex:1,
                 pageSize:999,
                 keywords:this.searchText,
-                rp_isConfirm,
-                managerid:14
+                rp_isconfirm,
+                managerid:1
             }
             this.getReceiptList(params).then(res => {
                 this.list = res.data.list
