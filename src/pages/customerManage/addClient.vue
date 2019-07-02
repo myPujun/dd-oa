@@ -38,7 +38,7 @@
                 <textarea v-model="addData.c_remarks" placeholder="请输入备注"></textarea>
             </li>
         </ul>
-        <top-nav :title='"添加信息客户"' :text='"保存"' @rightClick="submit"></top-nav>
+        <top-nav :title='type == "add" ? "添加客户信息":"编辑客户信息"' :text='"保存"' @rightClick="submit"></top-nav>
     </div>
 </template>
 
@@ -93,18 +93,18 @@ export default {
             ],
             flagName:"",
             then:0,
+            type:'',
         };
     },
     components: {},
     computed: {},
     created(){
-        let params = {
-            c_name:'11',
-            c_type:'1'
+        let {type,datails} = this.$route.query
+        this.type = type
+        this.addData = datails
+        if(type == 'EDIT'){
+            this.typeName = this.typeList[parseInt(datails.c_type)-1].key
         }
-        this.getAddClient(params).then(res => {
-            
-        })
     },
     mounted() {
 
@@ -130,14 +130,19 @@ export default {
                 this.ddSet.setToast({text:'主要联系号码不能为空'})
                 return
             }
-            this.getAddClient(this.addData).then(res => {
-                if(res.data.status){
-                    this.ddSet.setToast({text:'新增客户成功'})
-                    this.$router.go(-1)
-                }else{
-                    this.ddSet.setToast({text:res.data.msg})
-                }
-            })
+            if(this.type == 'add'){
+                this.getAddClient(this.addData).then(res => {
+                    if(res.data.status){
+                        this.ddSet.setToast({text:'新增客户成功'})
+                        this.$router.go(-1)
+                    }else{
+                        this.ddSet.setToast({text:res.data.msg})
+                    }
+                })
+            }else{
+
+            }
+            
         },
         chosen(item){
             let selectedKey,source
