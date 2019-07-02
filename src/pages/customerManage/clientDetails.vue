@@ -7,7 +7,7 @@
                     <div class="message flex">
                         <div class="icon"></div>
                         <h3 class="name">{{datails.c_name}}</h3>
-                        <img class="compile" src="../../assets/img/redact_2.png" alt="">
+                        <img class="compile" src="../../assets/img/redact_2.png" alt="" @click="edit">
                     </div>
                     <div class="code flex">
                         <span>{{clientType[datails.c_type-1]}}</span>
@@ -80,8 +80,11 @@ export default {
         ...mapActions([
             'getCustomerDetails'
         ]),
+        edit(){ //编辑客户
+            this.$router.push({path:'/addClient',query:{datails:this.datails,type:'EDIT'}})
+        },
         addLinkman(){
-            this.$router.push({path:'/addLinkman',flag:this.datails.contacts_list[0].co_flag})
+            this.$router.push({path:'/addLinkman',query:{datails:this.datails,type:'add'}})
         }
     },
     
