@@ -3,7 +3,7 @@
     <div>
         <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
         <div class="search_box flex flex_a_c flex_j_c">
-           <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索联系人姓名或公司名称">
+           <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索客户名称">
         </div>
         <div class="customer_list">
             <h2 class="amount">共{{list.length}}条</h2>
@@ -12,20 +12,21 @@
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <!-- <img class="icon" alt=""> -->
-                            <h2 class="name">客户名称</h2>
-                            <input type="button" value="已收款" class="blueq">
+                            <h2 class="name">{{item.c_name}}</h2>
+                            <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
+                            <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span>
                         </section>
                         <section class="operation_icon flex">
-                            <router-link tag="span" ></router-link>
+                            <router-link tag="span" :to="{path:'/receiptDetails',query:{id:item.rp_id}}"></router-link>
                             <span></span>
                         </section>
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
-                            <span>2019-06-23</span>
-                            <span>500</span>
-                            <span>2019-06-24</span>
-                            <span>工商银行</span>
+                            <span>{{item.rp_foredate | formatDate}}</span>
+                            <span>{{item.rp_money}}</span>
+                            <span v-show="item.pm_name">{{item.pm_name}}</span>
+                            <span v-show="item.rp_date">{{item.rp_date | formatDate}}</span>
                         </div>
                     </div>
                 </li>
@@ -38,16 +39,23 @@
 <script>
 import tabList from '../../components/tab.vue'
 import {mapActions} from 'vuex'
+import {formatDate} from '../../assets/js/date.js'
 
 export default {
     name:"",
     data() {
        return {
-           topTabList:['未到账','已到账'],
+           topTabList:['未收款','已收款'],
            tabIndex:0,
            list:[],
            searchText:''
        };
+    },
+    filters:{
+        formatDate(time){
+            let date = new Date(time)
+            return formatDate(date,'yyyy-MM-dd')
+        }
     },
     components: {
         tabList,
@@ -74,11 +82,12 @@ export default {
             })
         },
         changeSearch(){
-            this.receiptList({rp_isconfirm:this.tabIndex+1})
+            this.receiptList({rp_isconfirm:this.tabIndex})
         },
         changeTab(index){
+            console.log(index)
             this.tabIndex = index
-            this.receiptList({rp_isconfirm:index+1})
+            this.receiptList({rp_isconfirm:index})
         }
     },
 }
@@ -138,6 +147,11 @@ export default {
                 .name{
                     color: $blue_1;
                     font-size: $size_24;
+                }
+                .isExpect{
+                    font-size: $size_20;
+                    margin-left: .1rem;
+                    color:green;
                 }
                 input{
                     width: .86rem;
