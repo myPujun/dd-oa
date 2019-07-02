@@ -9,25 +9,25 @@
             <h2 class="amount">共{{list.length}}条</h2>
             <ul class="list">
                 <li v-for="(item,index) in list" :key="index">
-                    222
-                    <!-- <div class="company flex flex_a_c flex_s_b">
+                    <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <img class="icon" :src="isIocn[item.c_flag]" alt="">
-                            <h2 class="name">{{item.c_name}}</h2>
-                            <input type="button" :class="{blue:item.c_isUse}" :value="item.c_isUse?'启用': '禁用'">
+                            <!-- <img class="icon" alt=""> -->
+                            <h2 class="name">客户名称</h2>
+                            <input type="button" value="已收款" class="blueq">
                         </section>
                         <section class="operation_icon flex">
-                            <router-link tag="span" :to="{path:'/clientDetails',query:{id:item.c_id}}"></router-link>
+                            <router-link tag="span" ></router-link>
                             <span></span>
                         </section>
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
-                            <span v-show="item.c_num">{{item.c_num}}</span>
-                            <span>{{item.co_name}}</span>
-                            <span>{{item.co_number}}</span>
+                            <span>2019-06-23</span>
+                            <span>500</span>
+                            <span>2019-06-24</span>
+                            <span>工商银行</span>
                         </div>
-                    </div> -->
+                    </div>
                 </li>
             </ul>
         </div>
@@ -61,7 +61,7 @@ export default {
         ...mapActions([
             'getReceiptList'
         ]),
-        receiptList({rp_isConfirm = 0} = {}){
+        receiptList({rp_isconfirm = 0} = {}){
             let params = {
                 pageIndex:1,
                 pageSize:999,
@@ -74,11 +74,11 @@ export default {
             })
         },
         changeSearch(){
-            this.receiptList({rp_isConfirm:this.tabIndex+1})
+            this.receiptList({rp_isconfirm:this.tabIndex+1})
         },
         changeTab(index){
             this.tabIndex = index
-            this.receiptList({rp_isConfirm:index+1})
+            this.receiptList({rp_isconfirm:index+1})
         }
     },
 }
