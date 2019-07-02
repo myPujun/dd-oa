@@ -1,4 +1,4 @@
-<!-- 收款通知列表首页 -->
+<!-- 客户管理首页 -->
 <template>
     <div>
         <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
