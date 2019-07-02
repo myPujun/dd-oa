@@ -11,6 +11,12 @@ const actions = {
     getAddClient({commit},params){  //新增客户
         return ajax.post(api.addClient,params)
     },
+    getEditClient({commit},params){
+        return ajax.post(api.editClient,params)
+    },
+    getAddLinkman({commit},params){ //添加联系人
+        return ajax.post(api.addLinkman,params)
+    }
 }
 
 export default {

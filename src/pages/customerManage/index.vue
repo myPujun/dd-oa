@@ -58,13 +58,7 @@ export default {
     },
     computed: {},
     created(){
-        this.ddSet.setTitleRight({title:'',text:''}).then(res => {
-            if(res){
-                this.$router.push({
-                    path:'/addClient'
-                })
-            }
-        })
+        
     },
     mounted() {
         
@@ -75,7 +69,7 @@ export default {
             'getCustomerList'
         ]),
         addClient(){
-            this.$router.push({path:'/addClient'})
+            this.$router.push({path:'/addClient',query:{type:'add'}})
         },
         customerList({type = 1} = {}){
             let params = {
