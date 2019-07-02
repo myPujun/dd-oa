@@ -29,7 +29,7 @@ const api = {
     },
     ///钉钉授权绑定 end--------------------------------------------------------
 
-    
+
     ///数据初始化 start--------------------------------------------------------
     get contractPrices(){   //合同造价数据绑定
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_contractprice'
@@ -90,7 +90,7 @@ const api = {
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_list'
     },
     get customerDetails(){  //查看客户详细信息
-        return baseUrl+'/dingtalk_ajax.ashx?action=customer_show'
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_show'
     },
     get customerAdd(){  //新增客户详情
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_add'
