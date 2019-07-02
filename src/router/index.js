@@ -19,8 +19,10 @@ import bigbusiness from './bigbusiness'
 import nonBusinessApply from './nonBusinessApply'
 //业务支付审核列表
 import notAudit from './notAudit'
-//已收款
+//收款通知
 import receipt from './receipt'
+//付款通知
+import pay from './pay'
 
 let routes = [
     {
@@ -39,6 +41,7 @@ routes = routes.concat(
     nonBusinessApply,
     notAudit,
     receipt,
+    pay,
     [{
       path: '*',
       redirect: '/'
