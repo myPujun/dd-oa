@@ -1,36 +1,31 @@
-<!-- 客户管理首页 -->
+<!-- 发票通知管理首页 -->
 <template>
     <div>
         <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
         <div class="search_box flex flex_a_c flex_j_c">
-           <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索联系人姓名或公司名称">
+           <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索凭证号或收款对象">
         </div>
         <div class="customer_list">
-            <h2 class="amount">共{{list.length}}人</h2>
+            <h2 class="amount">共{{list.length}}条</h2>
             <ul class="list">
-                <li v-for="(item,index) in list" :key="index">
+                <li v-for="(item,index) in list" :key="index">                    
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <img class="icon" :src="isIocn[item.c_flag]" alt="">
-                            <h2 class="name">{{item.c_name}}</h2>
-                            <input type="button" :class="{blue:item.c_isUse}" :value="item.c_isUse?'启用': '禁用'">
-                        </section>
-                        <section class="operation_icon flex">
-                            <router-link tag="span" :to="{path:'/clientDetails',query:{id:item.c_id}}"></router-link>
-                            <span></span>
+                            <!-- <img class="icon" :src="isIocn[item.c_flag]" alt=""> -->
+                            <router-link tag="span" :to="{path:'/billDetails',query:{id:item.inv_id}}"><h2 class="name">{{item.c_name}}</h2></router-link>
+                            <input type="button" :class="{blue:item.inv_isConfirm}" :value="item.inv_isConfirm==false ? '未开票' : '已开票'">
                         </section>
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
-                            <span v-show="item.c_num">{{item.c_num}}</span>
-                            <span>{{item.co_name}}</span>
-                            <span>{{item.co_number}}</span>
+                            <span v-show="item.inv_oid">订单号：{{item.inv_oid}}</span>
+                            <span>开票金额：{{item.inv_money}}</span>
                         </div>
                     </div>
                 </li>
             </ul>
         </div>
-        <top-nav title="客户管理" text='添加客户' @rightClick="addClient"></top-nav>
+        <top-nav title="发票通知"></top-nav>
     </div>
 </template>
 
@@ -38,18 +33,13 @@
 import tabList from '../../components/tab.vue'
 import {mapActions} from 'vuex'
 
-import audit from '../../assets/img/audit.png'
-import audit_no from '../../assets/img/audit_no.png'
-import audit_yes from '../../assets/img/audit_yes.png'
-
 export default {
     name:"",
     data() {
        return {
-           topTabList:['普通客户','管理用客户','内部客户'],
+           topTabList:['未开票','已开票'],
            tabIndex:0,
            list:[],
-           isIocn:[audit,audit_no,audit_yes],
            searchText:''
        };
     },
@@ -57,44 +47,32 @@ export default {
         tabList,
     },
     computed: {},
-    created(){
-        this.ddSet.setTitleRight({title:'',text:''}).then(res => {
-            if(res){
-                this.$router.push({
-                    path:'/addClient'
-                })
-            }
-        })
-    },
-    mounted() {
-        
-        this.customerList()
+    created(){},
+    mounted() {        
+        this.BillList()
     },
     methods: {
         ...mapActions([
-            'getCustomerList'
+            'getBillList'
         ]),
-        addClient(){
-            this.$router.push({path:'/addClient'})
-        },
-        customerList({type = 1} = {}){
+        BillList({inv_isConfirm = 0} = {}){
             let params = {
                 pageIndex:1,
                 pageSize:999,
                 keywords:this.searchText,
-                type,
-                managerid:14
+                inv_isConfirm,
+                managerid:1
             }
-            this.getCustomerList(params).then(res => {
+            this.getBillList(params).then(res => {
                 this.list = res.data.list
             })
         },
         changeSearch(){
-            this.customerList({type:this.tabIndex+1})
+            this.BillList({inv_isConfirm:this.tabIndex})
         },
         changeTab(index){
             this.tabIndex = index
-            this.customerList({type:index+1})
+            this.BillList({inv_isConfirm:index})
         }
     },
 }

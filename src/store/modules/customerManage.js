@@ -3,7 +3,7 @@ import ajax from '../ajax'
 
 const actions = {
     getCustomerList({commit},params){   //客户列表
-        return ajax.post(api.customerLlist,params)
+        return ajax.post(api.customerList,params)
     },
     getCustomerDetails({commit},params){    //客户详情
         return ajax.post(api.customerDetails,params)

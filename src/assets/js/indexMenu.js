@@ -80,7 +80,7 @@ let list = [
             },
             {
                 imgUrl:require('../img/nav_list/icon_notice_3.png'),
-                link:'',
+                link:'billManage',
                 name:'已开票'
             },
         ]

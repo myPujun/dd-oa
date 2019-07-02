@@ -6,6 +6,7 @@ import customerManage from './modules/customerManage'
 import test from './modules/test'
 import addOrders from './modules/addOrders'
 import receipt from './modules/receipt'
+import billManage from './modules/billManage'
 
 Vue.use(Vuex)
 
@@ -15,6 +16,7 @@ export default new Vuex.Store({
         customerManage,
         receipt,
         test,
-        addOrders
+        addOrders,
+        billManage
     }
 })

@@ -9,9 +9,14 @@ export default {
 mounted: function () {
         // GET /someUrl
         let params = {
-            managerid:'14'
+            // pageSize:'999',
+            // pageIndex:'1',
+            // keywords:'',
+            // inv_isConfirm:'0',
+            // managerid:'1'
+            c_id:'15'
         }
-        axios.post('http://localhost/mettingsys/tools/dingtalk_ajax.ashx?action=init_paymethod',params).then(response => {
+        axios.post('http://localhost/mettingsys/tools/dingtalk_ajax.ashx?action=customer_show',params).then(response => {
              console.log(response.data);
             // get body data
             // this.someData = response.body;
