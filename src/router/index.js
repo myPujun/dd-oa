@@ -19,15 +19,10 @@ import bigbusiness from './bigbusiness'
 import nonBusinessApply from './nonBusinessApply'
 //业务支付审核列表
 import notAudit from './notAudit'
-<<<<<<< HEAD
 //收款通知
 import receipt from './receipt'
 //发票通知
 import billManage from './billManage'
-=======
-//已收款
-import receipt from './receipt'
->>>>>>> fc4a467b5a983b0ed6a2268a0a55d2b12a25724d
 
 let routes = [
     {
@@ -46,10 +41,7 @@ routes = routes.concat(
     nonBusinessApply,
     notAudit,
     receipt,
-<<<<<<< HEAD
     billManage,
-=======
->>>>>>> fc4a467b5a983b0ed6a2268a0a55d2b12a25724d
     [{
       path: '*',
       redirect: '/'

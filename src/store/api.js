@@ -7,18 +7,14 @@ const api = {
     },
     get userNameValidate(){  //验证用户名是否可绑定
         return baseUrl+'/tools/dingtalk_login.ashx?action=username_validate'
-<<<<<<< HEAD
-=======
     },
     //客户管理
     get customerLlist(){    //查看客户分页列表
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_list'
->>>>>>> fc4a467b5a983b0ed6a2268a0a55d2b12a25724d
     },
     get managerOauthBind(){  //用户绑定钉钉userid并授权免登
         return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate'
     },
-<<<<<<< HEAD
     ///钉钉授权绑定 end--------------------------------------------------------
 
 
@@ -31,7 +27,7 @@ const api = {
     },
     get dStatus(){   //接单状态数据绑定
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_dstatus'
-=======
+    },
     get addClient(){    //添加客户
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_add'
     },
@@ -59,7 +55,6 @@ const api = {
     },
     get allcustomer(){  //所有客户信息数据绑定
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_allcustomer'
->>>>>>> fc4a467b5a983b0ed6a2268a0a55d2b12a25724d
     },
     get checkStatus(){   //审批状态数据绑定
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_checkstatus'
