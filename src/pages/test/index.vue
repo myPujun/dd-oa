@@ -9,7 +9,6 @@ export default {
 mounted: function () {
         // GET /someUrl
         let params = {
-<<<<<<< HEAD
             // pageSize:'999',
             // pageIndex:'1',
             // keywords:'',
