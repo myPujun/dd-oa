@@ -29,7 +29,11 @@ export default {
         list:{
             type:Array,
             default:[]
-        }
+        },
+		type:{
+		    type:Number,
+		    default:1 // 1 单选 2 多选
+		}
     },
     components: {},
     computed: {},
@@ -39,7 +43,10 @@ export default {
     methods: {
         activeItem(item){
             if(!item.isChecked){
-                this.$set(item,'isChecked',true)
+				if(1 == this.type){
+					this.chageReset();
+				}
+				this.$set(item,'isChecked',true)
             }else{
                 this.$set(item,'isChecked',!item.isChecked)
             }

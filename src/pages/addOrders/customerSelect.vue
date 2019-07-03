@@ -1,101 +1,151 @@
-<!-- 付款明细列表首页 -->
+<!-- 客户管理首页 -->
 <template>
     <div>
-        <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
         <div class="search_box flex flex_a_c flex_j_c">
-           <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索客户名称">
+           <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索联系人姓名或公司名称">
         </div>
         <div class="customer_list">
-            <h2 class="amount">共{{list.length}}条</h2>
+            <h2 class="amount">共{{list.length}}人</h2>
             <ul class="list">
-                <li v-for="(item,index) in list" :key="index">
+                <li v-for="(item,index) in list" :key="index" @click="activeItem(item)" :class="[isSelected(item.c_id) ? 'active':'']">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <img class="icon" :src="isIocn[item.rpd_flag1]" alt="">
-                            <img class="icon" :src="isIocn[item.rpd_flag2]" alt="">
-                            <img class="icon" :src="isIocn[item.rpd_flag3]" alt="">
+                            <img class="icon" :src="isIocn[item.c_flag]" alt="">
                             <h2 class="name">{{item.c_name}}</h2>
-                            <!-- <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
-                            <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span> -->
-                        </section>
-                        <section class="operation_icon flex">
-                            <router-link tag="span" :to="{path:'/receiptDetails',query:{id:item.rp_id}}"></router-link>
-                            <span></span>
+                            <input type="button" :class="{blue:item.c_isUse}" :value="item.c_isUse?'启用': '禁用'">
                         </section>
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
-                            <span>{{item.rpd_oid}}</span>
-                            <span>{{item.rpd_money}}</span>
-                            <span>{{item.rpd_foredate | formatDate}}</span>
+                            <span v-show="item.c_num">{{item.c_num}}</span>
+                            <span>{{item.co_name}}</span>
+                            <span>{{item.co_number}}</span>
                         </div>
                     </div>
                 </li>
             </ul>
         </div>
-        <top-nav title="收款通知"></top-nav>
+		<div class="choose_btn_box">
+			<div class="choose_btn">
+			    <!-- <button @click="chageReset">重置</button> -->
+			    <button @click="selectCancel">取消</button>
+			    <button class="affirm" @click="selectClient">确认</button>
+			</div>
+		</div>
     </div>
 </template>
 
 <script>
 import tabList from '../../components/tab.vue'
 import {mapActions} from 'vuex'
-import {formatDate} from '../../assets/js/date.js'
 
 import audit from '../../assets/img/audit.png'
 import audit_no from '../../assets/img/audit_no.png'
 import audit_yes from '../../assets/img/audit_yes.png'
+import * as dd from 'dingtalk-jsapi'
+
 export default {
     name:"",
     data() {
        return {
-           topTabList:['付款明细','预付款'],
+           topTabList:['普通客户','管理用客户','内部客户'],
            tabIndex:0,
            list:[],
+           selectList:[],
            isIocn:[audit,audit_no,audit_yes],
-           searchText:''
+           searchText:'',
+		   selectType:1  ,// 选择模式，1 单选 ；2 多选
+		   selectMax:0    // 多选模式下，最多可选多少个，0 不限
        };
-    },
-    filters:{
-        formatDate(time){
-            let date = new Date(time)
-            return formatDate(date,'yyyy-MM-dd')
-        }
     },
     components: {
         tabList,
     },
-    computed: {},
-    created(){},
-    mounted() {        
-        this.payDetailList()
+    computed: {
+		
+	},
+    created(){
+
+    },
+    mounted() {
+        this.customerList()
+		this.selectList = [this.$route.query.selected_id]
     },
     methods: {
         ...mapActions([
-            'getPayDetailList'
+            'getCustomerList'
         ]),
-        payDetailList({} = {}){
+		isSelected:function(_id){
+			return this.selectList.includes(_id);
+		},
+		activeItem(item){
+			if(1 == this.selectType){
+				this.selectList = [item.c_id];
+			}
+			else{
+				if(this.selectList.includes(item.c_id)){
+					this.selectList = this.selectList.filter(function(el){
+						return el != item.c_id;
+					})
+				}
+				else{
+					if(this.selectMax > 0 && this.selectList.length > (this.selectMax - 1)){
+						dd.device.notification.alert({
+							message: '最多允许选择'+this.selectMax+'个',
+							title: "",//可传空
+							buttonName: "知道了",
+							onSuccess : function() {
+								//onSuccess将在点击button之后回调
+								/*回调*/
+							},
+							onFail : function(err) {}
+						});
+						return;
+					}
+					this.selectList.push(item.c_id);
+				}
+			}
+		},
+        chageReset(){
+            this.selectList = [];
+        },
+		selectCancel(){
+			this.$router.go(-1)
+		},
+        selectClient(){
+            let activeList = []
+			let _this = this;
+            _this.list.map((item,index) => {
+                if(_this.isSelected(item.c_id)){
+                    activeList.push({
+						name:item.c_name,
+						id:item.c_id,
+						co_number:item.co_number,
+						co_name:item.co_name,
+						co_id:item.co_id
+					})
+                }
+            })
+			// console.log(activeList)
+			this.$store.dispatch("changeSelectClient", activeList)
+			setTimeout(function() {
+				_this.$router.go(-1)
+			}, 100);
+        },
+        customerList({type = 1} = {}){
             let params = {
                 pageIndex:1,
                 pageSize:999,
                 keywords:this.searchText,
-                managerid:1
+                type,
+                managerid:14
             }
-            this.getPayDetailList(params).then(res => {
+            this.getCustomerList(params).then(res => {
                 this.list = res.data.list
             })
         },
         changeSearch(){
-            this.payDetailList({})
-        },
-        changeTab(index){
-            if(index==0) {
-                this.tabIndex = index
-                this.payDetailList({})
-            }
-            else{
-                this.$router.push('/payDetail')
-            }
+            this.customerList({type:this.tabIndex+1})
         }
     },
 }
@@ -133,6 +183,7 @@ export default {
         }
     }
     .customer_list{
+		margin-bottom:50px;
         .amount{
             height: .65rem;
             line-height: .65rem;
@@ -155,11 +206,6 @@ export default {
                 .name{
                     color: $blue_1;
                     font-size: $size_24;
-                }
-                .isExpect{
-                    font-size: $size_20;
-                    margin-left: .1rem;
-                    color:green;
                 }
                 input{
                     width: .86rem;
@@ -230,6 +276,55 @@ export default {
             }
         }
     }
+	.list li{
+		position: relative;
+		padding: 15px 0;
+		font-size: .28rem;
+		color: #333;
+		padding-right: .6rem;
+		border-bottom: 1px solid #f1f1f1;
+		&:after{
+		    content: '';
+		    position: absolute;
+		    right:.2rem;
+		    top: 50%;
+		    transform: translateY(-50%);
+		    width: .35rem;
+		    height: .35rem;
+		    border-radius: 50%;
+		    border: 1px solid #CCC;
+		    box-sizing: border-box;
+		}
+	}
+	.list li.active::after{
+				content: '';
+				background-image: url('../../assets/img/icon_choose.png');
+				background-size: .34rem;
+				background-repeat: no-repeat;
+				background-position: center;  
+				border: none;     
+			}
+	.choose_btn_box{position:fixed;bottom:0;width:100%;}
+	.choose_btn{
+	    display: flex;
+	    justify-content: space-around;
+	    border-top: 1px solid #f1f1f1;
+	    button{
+	        outline: none;
+	        background: none;
+	        border: none;
+	        flex: 1;
+	        height: .8rem;
+	        line-height: .8rem;
+	        color:#333;
+	        font-size: .3rem;
+	        background-color: #f7f7f7;
+	        &.affirm{
+	            background-color: rgb(79,148,241);
+	            color: #FFF;
+	        }
+	    }
+	}
 </style>
 
 

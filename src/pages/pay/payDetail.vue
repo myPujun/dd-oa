@@ -7,14 +7,14 @@
         </div>
         <div class="customer_list">
             <h2 class="amount">共{{list.length}}条</h2>
-            <router-link tag="span" :to="{path:'/payDetail'}">dddd</router-link>
             <ul class="list">
                 <li v-for="(item,index) in list" :key="index">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <img class="icon" alt="">
+                            <img class="icon" :src="isIocn[item.rp_flag]" alt="">
+                            <img class="icon" :src="isIocn[item.rp_flag1]" alt="">
                             <h2 class="name">{{item.c_name}}</h2>
-                            <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
+                            <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已付款':'待付款'" class="blueq">
                             <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span>
                         </section>
                         <section class="operation_icon flex">
@@ -24,8 +24,8 @@
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
-                            <span>{{item.rpd_foredate | formatDate}}</span>
-                            <span>{{item.rpd_money}}</span>
+                            <span>{{item.rp_foredate | formatDate}}</span>
+                            <span>{{item.rp_money}}</span>
                             <span v-show="item.pm_name">{{item.pm_name}}</span>
                             <span v-show="item.rp_date">{{item.rp_date | formatDate}}</span>
                         </div>
@@ -42,6 +42,9 @@ import tabList from '../../components/tab.vue'
 import {mapActions} from 'vuex'
 import {formatDate} from '../../assets/js/date.js'
 
+import audit from '../../assets/img/audit.png'
+import audit_no from '../../assets/img/audit_no.png'
+import audit_yes from '../../assets/img/audit_yes.png'
 export default {
     name:"",
     data() {
@@ -49,6 +52,7 @@ export default {
            topTabList:['付款明细','预付款'],
            tabIndex:1,
            list:[],
+           isIocn:[audit,audit_no,audit_yes],
            searchText:''
        };
     },
@@ -71,12 +75,12 @@ export default {
         ...mapActions([
             'getPaytList'
         ]),
-        payList({rp_isconfirm = 0} = {}){
+        payList({rp_isExpect = 1} = {}){
             let params = {
                 pageIndex:1,
                 pageSize:999,
                 keywords:this.searchText,
-                rp_isconfirm,
+                rp_isExpect,
                 managerid:1
             }
             this.getPaytList(params).then(res => {
@@ -84,12 +88,16 @@ export default {
             })
         },
         changeSearch(){
-            this.payList({rp_isconfirm:this.tabIndex})
+            this.payList({rp_isExpect:this.tabIndex})
         },
         changeTab(index){
-            console.log(index)
-            this.tabIndex = index
-            this.payList({rp_isconfirm:index})
+            if(index==1){
+                this.tabIndex = index
+                this.payList({rp_isExpect:index})
+            }
+            else{
+                this.$router.push('/pay')
+            }
         }
     },
 }
