@@ -8,25 +8,6 @@ const api = {
     get userNameValidate(){  //验证用户名是否可绑定
         return baseUrl+'/tools/dingtalk_login.ashx?action=username_validate'
     },
-    //客户管理
-    get customerLlist(){    //查看客户分页列表
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_list'
-    },
-    get managerOauthBind(){  //用户绑定钉钉userid并授权免登
-        return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate'
-    },
-    get addClient(){    //添加客户
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_add'
-    },
-    get editClient(){   //编辑客户
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_edit'
-    },
-    get addOrder(){ //新增订单
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_edit'
-    },
-    get addLinkman(){   //添加联系人
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=contact_add'
-    },
     ///钉钉授权绑定 end--------------------------------------------------------
 
 
@@ -95,6 +76,9 @@ const api = {
     get customerAdd(){  //新增客户详情
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_add'
     },
+    get customerObtain(){   //获取客户详情
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=get_customerById'
+    },
     get customerEdit(){ //编辑客户详情
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_edit'
     },
@@ -104,6 +88,7 @@ const api = {
     get contactEdit(){   //编辑主、次要联系人
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=contact_edit'
     },
+    
     ///客户管理模块 end--------------------------------------------------------
 
 

@@ -31,11 +31,12 @@ export default {
     computed: {},
     created(){
         let {datails,type} = this.$route.query
+        let {co_name,co_number} = datails.contacts_list[0]
         this.datails = datails
         this.type = type
-        
         if(type == 'EDIT'){
             this.navTitle = '编辑联系人信息'
+            this.addData = {co_name,co_number}
         }
     },
     mounted() {
@@ -43,7 +44,8 @@ export default {
     },
     methods: {
         ...mapActions([
-            'getAddLinkman'
+            'getAddLinkman',
+            'getContactEdit'
         ]),
         submit(){
             
@@ -72,7 +74,13 @@ export default {
                     }
                 })
             }else{
-                
+               this.getContactEdit(params).then(res => {
+                    if(!res.data.status){
+                        this.ddSet.setToast({text:res.data.msg})
+                    }else{
+                        this.ddSet.setToast({text:"编辑成功"})
+                    }
+               }) 
             }
         }
     },

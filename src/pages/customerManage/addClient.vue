@@ -15,11 +15,11 @@
                 <label class="title"><span>税号</span></label>
                 <input type="text" v-model="addData.c_num" placeholder="请输入统一社会信用代码（税号）">
             </li>
-            <li class="flex flex_a_c">
+            <li class="flex flex_a_c" v-if="type == 'add'">
                 <label class="title"><span class="must">主联系人</span></label>
                 <input type="text" v-model="addData.co_name" placeholder="请输入主要联系人姓名">
             </li>
-            <li class="flex flex_a_c">
+            <li class="flex flex_a_c" v-if="type == 'add'">
                 <label class="title"><span class="must">联系号码</span></label>
                 <input type="text" v-model="addData.co_number" placeholder="请输入客户的电话号码">
             </li>
@@ -51,7 +51,7 @@ export default {
             addData:{
                 managerid:14
             },
-            typeList:[
+            typeList:[  //类型
                 {
                     key:'普通客户',
                     value:'1'
@@ -66,18 +66,18 @@ export default {
                 },
             ],
             typeName:'',
-            enabled:[
+            enabled:[   //启用
                 {
                     key:'否',
-                    value:false,
+                    value:'0',
                 },
                 {
                     key:'是',
-                    value:true
+                    value:'1'
                 }
             ],
             enabledName:'',
-            flag:[
+            flag:[  //审核
                 {
                     key:'待审',
                     value:'0'
@@ -99,11 +99,19 @@ export default {
     components: {},
     computed: {},
     created(){
-        let {type,datails} = this.$route.query
+        let {type,c_id} = this.$route.query
         this.type = type
-        this.addData = datails
         if(type == 'EDIT'){
-            this.typeName = this.typeList[parseInt(datails.c_type)-1].key
+            let params = {
+                c_id
+            }
+            this.getCustomerObtain(params).then(res => {
+                this.addData = res.data
+                this.typeName = this.typeList[this.addData.c_type].key
+                this.flagName = this.flag[this.addData.c_flag].key
+                this.enabledName = this.addData.c_isUse?'是':'否'
+                this.addData.c_isUse = this.addData.c_isUse ? '0' : '1'
+            })
         }
     },
     mounted() {
@@ -111,7 +119,9 @@ export default {
     },
     methods: {
         ...mapActions([
-            'getAddClient'
+            'getAddClient',
+            'getEditClient',
+            'getCustomerObtain'
         ]),
         submit(item){ //提交
             if(!this.typeName){
@@ -122,11 +132,11 @@ export default {
                 this.ddSet.setToast({text:'请填写客户名称'})
                 return
             }
-            if(!this.addData.co_name){
+            if(!this.addData.co_name && this.type == 'add'){
                 this.ddSet.setToast({text:'主要联系人不能为空'})
                 return
             }
-            if(!this.addData.co_number){
+            if(!this.addData.co_number && this.type == 'add'){
                 this.ddSet.setToast({text:'主要联系号码不能为空'})
                 return
             }
@@ -140,9 +150,14 @@ export default {
                     }
                 })
             }else{
-
+                this.getEditClient(this.addData).then(res => {
+                    if(res.data.status){
+                        this.ddSet.setToast({text:'编辑客户成功'})
+                    }else{
+                        this.ddSet.setToast({text:res.data.msg})
+                    }
+                })
             }
-            
         },
         chosen(item){
             let selectedKey,source

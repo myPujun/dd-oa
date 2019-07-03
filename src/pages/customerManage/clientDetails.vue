@@ -7,7 +7,8 @@
                     <div class="message flex">
                         <div class="icon"></div>
                         <h3 class="name">{{datails.c_name}}</h3>
-                        <img class="compile" src="../../assets/img/redact_2.png" alt="" @click="edit">
+                        <img class="compile" src="../../assets/img/redact_2.png" alt="" 
+                        @click="goPage('addClient')">
                     </div>
                     <div class="code flex">
                         <span>{{clientType[datails.c_type-1]}}</span>
@@ -21,7 +22,7 @@
             <div class="client_massage">
                 <h2 class="name">{{datails.contacts_list[0].co_name}}</h2>
                 <p class="tel">{{datails.contacts_list[0].co_number}}</p>
-                <img class="compile" src="../../assets/img/redact_2.png" alt="">
+                <img class="compile" src="../../assets/img/redact_2.png" alt=""  @click="goPage('addLinkman')">
             </div>
         </div>
         <div class="client_list" v-if="datails.contacts_list.length-1 !== 0">
@@ -80,8 +81,13 @@ export default {
         ...mapActions([
             'getCustomerDetails'
         ]),
-        edit(){ //编辑客户
-            this.$router.push({path:'/addClient',query:{datails:this.datails,type:'EDIT'}})
+        goPage(item){
+            if(item == 'addClient'){        //编辑客户
+                this.$router.push({path:`/${item}`,query:{c_id:this.datails.c_id,type:'EDIT'}})
+            }
+            if(item == 'addLinkman'){
+                this.$router.push({path:'/addLinkman',query:{datails:this.datails,type:'EDIT'}})
+            }
         },
         addLinkman(){
             this.$router.push({path:'/addLinkman',query:{datails:this.datails,type:'add'}})
