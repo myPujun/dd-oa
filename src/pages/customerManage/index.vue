@@ -8,7 +8,7 @@
         <div class="customer_list">
             <h2 class="amount">共{{list.length}}人</h2>
             <ul class="list">
-                <li v-for="(item,index) in list" :key="index">
+                <li v-for="(item,index) in list" :key="index" @click="goPage('clientDetails',item.c_id)">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <img class="icon" :src="isIocn[item.c_flag]" alt="">
@@ -16,7 +16,7 @@
                             <input type="button" :class="{blue:item.c_isUse}" :value="item.c_isUse?'启用': '禁用'">
                         </section>
                         <section class="operation_icon flex">
-                            <router-link tag="span" :to="{path:'/clientDetails',query:{id:item.c_id}}"></router-link>
+                            <span @click.stop="goPage('addClient',item.c_id)"></span>
                             <span></span>
                         </section>
                     </div>
@@ -61,7 +61,6 @@ export default {
         
     },
     mounted() {
-        
         this.customerList()
     },
     methods: {
@@ -71,16 +70,28 @@ export default {
         addClient(){
             this.$router.push({path:'/addClient',query:{type:'add'}})
         },
+        goPage(item,params){
+            if(item == 'clientDetails'){
+                this.$router.push({path:`/${item}`,query:{id:params}})
+            }
+            if(item == 'addClient'){
+                this.$router.push({path:`/${item}`,query:{c_id:params,type:'EDIT'}})
+            }
+        },
         customerList({type = 1} = {}){
+            this.ddSet.showLoad()
             let params = {
                 pageIndex:1,
                 pageSize:999,
                 keywords:this.searchText,
                 type,
-                managerid:14
+                managerid:14    ////测试ID
             }
             this.getCustomerList(params).then(res => {
+                this.ddSet.hideLoad()
                 this.list = res.data.list
+            }).catch(err => {
+                this.ddSet.hideLoad()
             })
         },
         changeSearch(){
@@ -136,6 +147,12 @@ export default {
             background-color: $gery_3;
         }
         .list{
+            position: absolute;
+            top: 2.3rem;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            overflow-y: auto;
             .company{
                 padding: 0 .3rem;
                 height: .65rem;

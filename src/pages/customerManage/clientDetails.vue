@@ -1,13 +1,14 @@
 <!-- 客户详情 -->
 <template>
-    <div class="body_gery" v-if="datails">
+    <div class="body_gery" v-if="isDatails">
         <div class="details">
             <div class="company_message flex">
                 <div class="company">
                     <div class="message flex">
                         <div class="icon"></div>
                         <h3 class="name">{{datails.c_name}}</h3>
-                        <img class="compile" src="../../assets/img/redact_2.png" alt="" @click="edit">
+                        <img class="compile" src="../../assets/img/redact_2.png" alt="" 
+                        @click="goPage('addClient')">
                     </div>
                     <div class="code flex">
                         <span>{{clientType[datails.c_type-1]}}</span>
@@ -21,7 +22,7 @@
             <div class="client_massage">
                 <h2 class="name">{{datails.contacts_list[0].co_name}}</h2>
                 <p class="tel">{{datails.contacts_list[0].co_number}}</p>
-                <img class="compile" src="../../assets/img/redact_2.png" alt="">
+                <img class="compile" src="../../assets/img/redact_2.png" alt=""  @click="goPage('addLinkman')">
             </div>
         </div>
         <div class="client_list" v-if="datails.contacts_list.length-1 !== 0">
@@ -37,7 +38,7 @@
                             {{item.co_number}}
                         </p>
                     </div>
-                    <img class="compile" src="../../assets/img/redact_3.png" alt="">
+                    <img class="compile" src="../../assets/img/redact_3.png" @click="goPage('addLinkman',item)" alt="">
                 </li>
             </ul>
         </div>
@@ -58,6 +59,7 @@ export default {
            clientId:null,
            isIocn:[audit,audit_no,audit_yes],
            datails:{},
+           isDatails:false,
            clientType:['普通客户','管理用客户','内部客户']
        };
     },
@@ -69,8 +71,13 @@ export default {
     created(){
         let {id} = this.$route.query
         this.clientId = id
+        this.ddSet.showLoad()
         this.getCustomerDetails({c_id:id}).then(res => {
+            this.ddSet.hideLoad()
             this.datails = res.data
+            this.isDatails = true
+        }).catch(err => {
+            this.ddSet.hideLoad()
         })
     },
     mounted() {
@@ -80,8 +87,16 @@ export default {
         ...mapActions([
             'getCustomerDetails'
         ]),
-        edit(){ //编辑客户
-            this.$router.push({path:'/addClient',query:{datails:this.datails,type:'EDIT'}})
+        goPage(item,msg){
+            if(item == 'addClient'){        //编辑客户
+                this.$router.push({path:`/${item}`,query:{c_id:this.datails.c_id,type:'EDIT'}})
+            }
+            if(item == 'addLinkman'){
+                this.$router.push({path:`/${item}`,query:{datails:this.datails,type:'EDIT'}})
+            }
+            if(item == 'addLinkman' && msg){
+                this.$router.push({path:`/${item}`,query:{datails:this.datails,type:'msg',msg}})
+            }
         },
         addLinkman(){
             this.$router.push({path:'/addLinkman',query:{datails:this.datails,type:'add'}})
@@ -126,6 +141,7 @@ export default {
                 .code{
                     color: #f2cb51;
                     font-size: $size_20;
+                    margin-top: .2rem;
                     span{
                         padding:.1rem;
                         border-radius: .04rem;
