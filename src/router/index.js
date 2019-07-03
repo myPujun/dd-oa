@@ -21,7 +21,7 @@ import nonBusinessApply from './nonBusinessApply'
 import notAudit from './notAudit'
 //收款通知
 import receipt from './receipt'
-//付款通知
+//付款明细
 import pay from './pay'
 //发票通知
 import billManage from './billManage'

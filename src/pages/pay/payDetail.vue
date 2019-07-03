@@ -1,4 +1,4 @@
-<!-- 收款通知列表首页 -->
+<!-- 预付款列表首页 -->
 <template>
     <div>
        <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
@@ -46,7 +46,7 @@ export default {
     name:"",
     data() {
        return {
-           topTabList:['付款通知','付款明细','预付款'],
+           topTabList:['付款明细','预付款'],
            tabIndex:1,
            list:[],
            searchText:''
@@ -64,13 +64,14 @@ export default {
     computed: {},
     created(){},
     mounted() {        
-        this.payDetailList()
+        this.payList()
     },
+    
     methods: {
         ...mapActions([
-            'getPayDetailList'
+            'getPaytList'
         ]),
-        payDetailList({rp_isconfirm = 0} = {}){
+        payList({rp_isconfirm = 0} = {}){
             let params = {
                 pageIndex:1,
                 pageSize:999,
@@ -78,17 +79,17 @@ export default {
                 rp_isconfirm,
                 managerid:1
             }
-            this.getPayDetailList(params).then(res => {
+            this.getPaytList(params).then(res => {
                 this.list = res.data.list
             })
         },
         changeSearch(){
-            this.payDetailList({rp_isconfirm:this.tabIndex})
+            this.payList({rp_isconfirm:this.tabIndex})
         },
         changeTab(index){
             console.log(index)
             this.tabIndex = index
-            this.payDetailList({rp_isconfirm:index})
+            this.payList({rp_isconfirm:index})
         }
     },
 }

@@ -1,16 +1,16 @@
 //付款通知列表
-import payList from '../pages/pay/index'  
+import payDetailList from '../pages/pay/index'  
 //付款明细列表
-import payDetailList from '../pages/pay/payDetail'  
+import payList from '../pages/pay/payDetail'  
 
 const routes = [
     {
         path:'/pay',
-        component:payList,
+        component:payDetailList,
     },
     {
         path:'/payDetail',
-        component:payDetailList,
+        component:payList,
     }
 ]
 
