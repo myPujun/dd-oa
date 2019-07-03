@@ -48,9 +48,7 @@ export default {
     name:"",
     data() {
         return {
-            addData:{
-                managerid:14
-            },
+            addData:{},
             typeList:[  //类型
                 {
                     key:'普通客户',
@@ -69,11 +67,11 @@ export default {
             enabled:[   //启用
                 {
                     key:'否',
-                    value:'0',
+                    value:false,
                 },
                 {
                     key:'是',
-                    value:'1'
+                    value:true
                 }
             ],
             enabledName:'',
@@ -110,7 +108,6 @@ export default {
                 this.typeName = this.typeList[this.addData.c_type].key
                 this.flagName = this.flag[this.addData.c_flag].key
                 this.enabledName = this.addData.c_isUse?'是':'否'
-                this.addData.c_isUse = this.addData.c_isUse ? '0' : '1'
             })
         }
     },
@@ -140,22 +137,30 @@ export default {
                 this.ddSet.setToast({text:'主要联系号码不能为空'})
                 return
             }
+            this.addData.managerid = 14 //测试ID
+            this.ddSet.showLoad()
             if(this.type == 'add'){
                 this.getAddClient(this.addData).then(res => {
+                    this.ddSet.hideLoad()
                     if(res.data.status){
                         this.ddSet.setToast({text:'新增客户成功'})
                         this.$router.go(-1)
                     }else{
                         this.ddSet.setToast({text:res.data.msg})
                     }
+                }).catch(err => {
+                    this.ddSet.hideLoad()
                 })
             }else{
                 this.getEditClient(this.addData).then(res => {
+                    this.ddSet.hideLoad()
                     if(res.data.status){
                         this.ddSet.setToast({text:'编辑客户成功'})
                     }else{
                         this.ddSet.setToast({text:res.data.msg})
                     }
+                }).catch(err => {
+                    this.ddSet.hideLoad()
                 })
             }
         },

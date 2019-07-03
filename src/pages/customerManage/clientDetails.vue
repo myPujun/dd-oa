@@ -38,7 +38,7 @@
                             {{item.co_number}}
                         </p>
                     </div>
-                    <img class="compile" src="../../assets/img/redact_3.png" alt="">
+                    <img class="compile" src="../../assets/img/redact_3.png" @click="goPage('addLinkman',item)" alt="">
                 </li>
             </ul>
         </div>
@@ -71,9 +71,13 @@ export default {
     created(){
         let {id} = this.$route.query
         this.clientId = id
+        this.ddSet.showLoad()
         this.getCustomerDetails({c_id:id}).then(res => {
+            this.ddSet.hideLoad()
             this.datails = res.data
             this.isDatails = true
+        }).catch(err => {
+            this.ddSet.hideLoad()
         })
     },
     mounted() {
@@ -83,12 +87,15 @@ export default {
         ...mapActions([
             'getCustomerDetails'
         ]),
-        goPage(item){
+        goPage(item,msg){
             if(item == 'addClient'){        //编辑客户
                 this.$router.push({path:`/${item}`,query:{c_id:this.datails.c_id,type:'EDIT'}})
             }
             if(item == 'addLinkman'){
-                this.$router.push({path:'/addLinkman',query:{datails:this.datails,type:'EDIT'}})
+                this.$router.push({path:`/${item}`,query:{datails:this.datails,type:'EDIT'}})
+            }
+            if(item == 'addLinkman' && msg){
+                this.$router.push({path:`/${item}`,query:{datails:this.datails,type:'msg',msg}})
             }
         },
         addLinkman(){
@@ -134,6 +141,7 @@ export default {
                 .code{
                     color: #f2cb51;
                     font-size: $size_20;
+                    margin-top: .2rem;
                     span{
                         padding:.1rem;
                         border-radius: .04rem;
