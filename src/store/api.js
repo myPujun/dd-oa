@@ -21,6 +21,31 @@ const api = {
     get dStatus(){   //接单状态数据绑定
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_dstatus'
     },
+    get addClient(){    //添加客户
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_add'
+    },
+    get editClient(){   //编辑客户
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_edit'
+    },
+    get addOrder(){ //新增订单
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_edit'
+    },
+    get addLinkman(){   //添加联系人
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=contact_add'
+    },
+    ///钉钉授权绑定 end--------------------------------------------------------
+
+
+    ///数据初始化 start--------------------------------------------------------
+    get contractPrices(){   //合同造价数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_contractprice'
+    },
+    get fStatus(){   //订单状态数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_fstatus'
+    },
+    get dStatus(){   //接单状态数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_dstatus'
+    },
     get allcustomer(){  //所有客户信息数据绑定
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_allcustomer'
     },

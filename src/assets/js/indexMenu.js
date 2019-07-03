@@ -75,12 +75,12 @@ let list = [
             },
             {
                 imgUrl:require('../img/nav_list/icon_notice_2.png'),
-                link:'',
+                link:'pay',
                 name:'已付款'
             },
             {
                 imgUrl:require('../img/nav_list/icon_notice_3.png'),
-                link:'',
+                link:'billManage',
                 name:'已开票'
             },
         ]

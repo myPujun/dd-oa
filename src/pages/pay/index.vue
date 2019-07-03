@@ -1,4 +1,4 @@
-<!-- 客户管理首页 -->
+<!-- 付款明细列表首页 -->
 <template>
     <div>
         <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
@@ -11,10 +11,12 @@
                 <li v-for="(item,index) in list" :key="index">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <!-- <img class="icon" alt=""> -->
+                            <img class="icon" :src="isIocn[item.rpd_flag1]" alt="">
+                            <img class="icon" :src="isIocn[item.rpd_flag2]" alt="">
+                            <img class="icon" :src="isIocn[item.rpd_flag3]" alt="">
                             <h2 class="name">{{item.c_name}}</h2>
-                            <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
-                            <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span>
+                            <!-- <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
+                            <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span> -->
                         </section>
                         <section class="operation_icon flex">
                             <router-link tag="span" :to="{path:'/receiptDetails',query:{id:item.rp_id}}"></router-link>
@@ -41,13 +43,17 @@ import tabList from '../../components/tab.vue'
 import {mapActions} from 'vuex'
 import {formatDate} from '../../assets/js/date.js'
 
+import audit from '../../assets/img/audit.png'
+import audit_no from '../../assets/img/audit_no.png'
+import audit_yes from '../../assets/img/audit_yes.png'
 export default {
     name:"",
     data() {
        return {
-           topTabList:['未收款','已收款'],
+           topTabList:['付款明细','预付款'],
            tabIndex:0,
            list:[],
+           isIocn:[audit,audit_no,audit_yes],
            searchText:''
        };
     },
@@ -63,35 +69,29 @@ export default {
     computed: {},
     created(){},
     mounted() {        
-        this.receiptList()
+        this.payDetailList()
     },
     methods: {
         ...mapActions([
-            'getReceiptList'
+            'getPayDetailList'
         ]),
-        receiptList({rp_isconfirm = 0} = {}){
+        payDetailList({} = {}){
             let params = {
                 pageIndex:1,
                 pageSize:999,
                 keywords:this.searchText,
-                rp_isconfirm,
                 managerid:1
             }
-            this.getReceiptList(params).then(res => {
+            this.getPayDetailList(params).then(res => {
                 this.list = res.data.list
             })
         },
         changeSearch(){
-            this.receiptList({rp_isconfirm:this.tabIndex})
+            this.payDetailList({})
         },
-        changeTab(index) {
-            if(index==0) {
-                this.tabIndex = index
-                this.receiptList({rp_isconfirm:index})
-            }
-            else{
-                this.$router.push('/receiptDetails')
-            }
+        changeTab(index){
+            this.tabIndex = index
+            this.payDetailList({})
         }
     },
 }

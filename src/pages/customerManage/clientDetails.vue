@@ -1,6 +1,6 @@
 <!-- 客户详情 -->
 <template>
-    <div class="body_gery" v-if="datails">
+    <div class="body_gery" v-if="isDatails">
         <div class="details">
             <div class="company_message flex">
                 <div class="company">
@@ -59,6 +59,7 @@ export default {
            clientId:null,
            isIocn:[audit,audit_no,audit_yes],
            datails:{},
+           isDatails:false,
            clientType:['普通客户','管理用客户','内部客户']
        };
     },
@@ -72,6 +73,7 @@ export default {
         this.clientId = id
         this.getCustomerDetails({c_id:id}).then(res => {
             this.datails = res.data
+            this.isDatails = true
         })
     },
     mounted() {

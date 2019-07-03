@@ -21,7 +21,12 @@ module.exports = {
     },
 
     // Various Dev Server settings
+<<<<<<< HEAD
     host: '192.168.88.12', // can be overwritten by process.env.HOST
+=======
+
+    host: '192.168.31.217', // can be overwritten by process.env.HOST
+>>>>>>> 4be80f111d0a891042f8e3edd6ec773a5dac5bbe
     // host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
@@ -41,7 +46,6 @@ module.exports = {
     // set this to false - it *may* help
     // https://vue-loader.vuejs.org/en/options.html#cachebusting
     cacheBusting: true,
-
     cssSourceMap: true
   },
 

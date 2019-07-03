@@ -1,3 +1,4 @@
+
 //收款通知列表
 import receipt from '../pages/receipt/index'  
 //收款通知明细

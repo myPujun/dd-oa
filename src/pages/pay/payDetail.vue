@@ -1,17 +1,18 @@
-<!-- 客户管理首页 -->
+<!-- 预付款列表首页 -->
 <template>
     <div>
-        <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
+       <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
         <div class="search_box flex flex_a_c flex_j_c">
            <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索客户名称">
         </div>
         <div class="customer_list">
             <h2 class="amount">共{{list.length}}条</h2>
+            <router-link tag="span" :to="{path:'/payDetail'}">dddd</router-link>
             <ul class="list">
                 <li v-for="(item,index) in list" :key="index">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <!-- <img class="icon" alt=""> -->
+                            <img class="icon" alt="">
                             <h2 class="name">{{item.c_name}}</h2>
                             <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
                             <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span>
@@ -23,8 +24,8 @@
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
-                            <span>{{item.rp_foredate | formatDate}}</span>
-                            <span>{{item.rp_money}}</span>
+                            <span>{{item.rpd_foredate | formatDate}}</span>
+                            <span>{{item.rpd_money}}</span>
                             <span v-show="item.pm_name">{{item.pm_name}}</span>
                             <span v-show="item.rp_date">{{item.rp_date | formatDate}}</span>
                         </div>
@@ -33,7 +34,7 @@
             </ul>
         </div>
         <top-nav title="收款通知"></top-nav>
-    </div>
+    </div> 
 </template>
 
 <script>
@@ -45,8 +46,8 @@ export default {
     name:"",
     data() {
        return {
-           topTabList:['未收款','已收款'],
-           tabIndex:0,
+           topTabList:['付款明细','预付款'],
+           tabIndex:1,
            list:[],
            searchText:''
        };
@@ -63,13 +64,14 @@ export default {
     computed: {},
     created(){},
     mounted() {        
-        this.receiptList()
+        this.payList()
     },
+    
     methods: {
         ...mapActions([
-            'getReceiptList'
+            'getPaytList'
         ]),
-        receiptList({rp_isconfirm = 0} = {}){
+        payList({rp_isconfirm = 0} = {}){
             let params = {
                 pageIndex:1,
                 pageSize:999,
@@ -77,21 +79,17 @@ export default {
                 rp_isconfirm,
                 managerid:1
             }
-            this.getReceiptList(params).then(res => {
+            this.getPaytList(params).then(res => {
                 this.list = res.data.list
             })
         },
         changeSearch(){
-            this.receiptList({rp_isconfirm:this.tabIndex})
+            this.payList({rp_isconfirm:this.tabIndex})
         },
-        changeTab(index) {
-            if(index==0) {
-                this.tabIndex = index
-                this.receiptList({rp_isconfirm:index})
-            }
-            else{
-                this.$router.push('/receiptDetails')
-            }
+        changeTab(index){
+            console.log(index)
+            this.tabIndex = index
+            this.payList({rp_isconfirm:index})
         }
     },
 }
@@ -227,5 +225,3 @@ export default {
         }
     }
 </style>
-
-
