@@ -84,9 +84,14 @@ export default {
         changeSearch(){
             this.receiptList({rp_isconfirm:this.tabIndex})
         },
-        changeTab(index){
-            this.tabIndex = index
-            this.receiptList({rp_isconfirm:index})
+        changeTab(index) {
+            if(index==0) {
+                this.tabIndex = index
+                this.receiptList({rp_isconfirm:index})
+            }
+            else{
+                this.$router.push('/receiptDetails')
+            }
         }
     },
 }
