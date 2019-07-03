@@ -10,7 +10,7 @@ const mutations = {
 }
 const actions = {
     getUser({commit},params){
-        return ajax.post(api.user,params)
+        return ajax.post(api.dingtalkUseridValidate,params)
     }
 }
 

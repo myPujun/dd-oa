@@ -23,6 +23,8 @@ import notAudit from './notAudit'
 import receipt from './receipt'
 //付款通知
 import pay from './pay'
+//发票通知
+import billManage from './billManage'
 
 let routes = [
     {
@@ -42,6 +44,7 @@ routes = routes.concat(
     notAudit,
     receipt,
     pay,
+    billManage,
     [{
       path: '*',
       redirect: '/'

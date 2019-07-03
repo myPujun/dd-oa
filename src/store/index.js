@@ -7,6 +7,7 @@ import test from './modules/test'
 import addOrders from './modules/addOrders'
 import receipt from './modules/receipt'
 import pay from './modules/pay'
+import billManage from './modules/billManage'
 
 Vue.use(Vuex)
 
@@ -17,6 +18,7 @@ export default new Vuex.Store({
         receipt,
         pay,
         test,
-        addOrders
+        addOrders,
+        billManage
     }
 })

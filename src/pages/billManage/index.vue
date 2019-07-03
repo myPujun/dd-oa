@@ -1,61 +1,47 @@
-<!-- 客户管理首页 -->
+<!-- 发票通知管理首页 -->
 <template>
     <div>
         <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
         <div class="search_box flex flex_a_c flex_j_c">
-           <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索客户名称">
+           <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索凭证号或收款对象">
         </div>
         <div class="customer_list">
             <h2 class="amount">共{{list.length}}条</h2>
             <ul class="list">
-                <li v-for="(item,index) in list" :key="index">
+                <li v-for="(item,index) in list" :key="index">                    
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <!-- <img class="icon" alt=""> -->
-                            <h2 class="name">{{item.c_name}}</h2>
-                            <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
-                            <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span>
-                        </section>
-                        <section class="operation_icon flex">
-                            <router-link tag="span" :to="{path:'/receiptDetails',query:{id:item.rp_id}}"></router-link>
-                            <span></span>
+                            <!-- <img class="icon" :src="isIocn[item.c_flag]" alt=""> -->
+                            <router-link tag="span" :to="{path:'/billDetails',query:{id:item.inv_id}}"><h2 class="name">{{item.c_name}}</h2></router-link>
+                            <input type="button" :class="{blue:item.inv_isConfirm}" :value="item.inv_isConfirm==false ? '未开票' : '已开票'">
                         </section>
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
-                            <span>{{item.rp_foredate | formatDate}}</span>
-                            <span>{{item.rp_money}}</span>
-                            <span v-show="item.pm_name">{{item.pm_name}}</span>
-                            <span v-show="item.rp_date">{{item.rp_date | formatDate}}</span>
+                            <span v-show="item.inv_oid">订单号：{{item.inv_oid}}</span>
+                            <span>开票金额：{{item.inv_money}}</span>
                         </div>
                     </div>
                 </li>
             </ul>
         </div>
-        <top-nav title="收款通知"></top-nav>
+        <top-nav title="发票通知"></top-nav>
     </div>
 </template>
 
 <script>
 import tabList from '../../components/tab.vue'
 import {mapActions} from 'vuex'
-import {formatDate} from '../../assets/js/date.js'
 
 export default {
     name:"",
     data() {
        return {
-           topTabList:['未收款','已收款'],
+           topTabList:['未开票','已开票'],
            tabIndex:0,
            list:[],
            searchText:''
        };
-    },
-    filters:{
-        formatDate(time){
-            let date = new Date(time)
-            return formatDate(date,'yyyy-MM-dd')
-        }
     },
     components: {
         tabList,
@@ -63,30 +49,30 @@ export default {
     computed: {},
     created(){},
     mounted() {        
-        this.receiptList()
+        this.BillList()
     },
     methods: {
         ...mapActions([
-            'getReceiptList'
+            'getBillList'
         ]),
-        receiptList({rp_isconfirm = 0} = {}){
+        BillList({inv_isConfirm = 0} = {}){
             let params = {
                 pageIndex:1,
                 pageSize:999,
                 keywords:this.searchText,
-                rp_isconfirm,
+                inv_isConfirm,
                 managerid:1
             }
-            this.getReceiptList(params).then(res => {
+            this.getBillList(params).then(res => {
                 this.list = res.data.list
             })
         },
         changeSearch(){
-            this.receiptList({rp_isconfirm:this.tabIndex})
+            this.BillList({inv_isConfirm:this.tabIndex})
         },
         changeTab(index){
             this.tabIndex = index
-            this.receiptList({rp_isconfirm:index})
+            this.BillList({inv_isConfirm:index})
         }
     },
 }
@@ -146,11 +132,6 @@ export default {
                 .name{
                     color: $blue_1;
                     font-size: $size_24;
-                }
-                .isExpect{
-                    font-size: $size_20;
-                    margin-left: .1rem;
-                    color:green;
                 }
                 input{
                     width: .86rem;
