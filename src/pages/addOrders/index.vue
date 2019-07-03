@@ -185,8 +185,9 @@ export default {
 			this.formData.c_id = this.clientId;
             this.formData.managerid = 14;
             this.formData.fstatus=0;
-			//console.log(this.formData)
-			//alert(JSON.stringify(this.formData))
+            this.formData.orderID='';
+			console.log(this.formData)
+			alert(JSON.stringify(this.formData))
 			_this.submitOrder(this.formData).then(function(res){
 				alert(JSON.stringify(res))
 				console.log(res)

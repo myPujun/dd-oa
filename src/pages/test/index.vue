@@ -25,7 +25,6 @@ mounted: function () {
             
             "fstatus":"0",
             "orderID":"",
-            "o_isPush":"0",
             "o_sdate":"2019-07-03",
             "o_edate":"2019-07-05",
             "o_contractprice":"50万以下",
