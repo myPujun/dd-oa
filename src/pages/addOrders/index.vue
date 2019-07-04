@@ -6,10 +6,12 @@
                 <label class="title"><span>订单号</span></label>
                 <h3 class="hint_1">系统自动生成</h3>
             </li>
-            <!-- <li class="flex flex_a_c flex_s_b">
+			<!-- 
+            <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>下单人</span></label>
                 <input type="text" :value="loginName" readonly>
-            </li> -->
+            </li>
+			 -->
             <li class="flex flex_a_c flex_s_b" @click="changeClient">
                 <label class="title"><span class="must">客户</span></label>
                 <input type="text" :value="clientName" readonly>
@@ -35,10 +37,6 @@
             <li class="flex flex_a_c">
                 <label class="title"><span>活动地点</span></label>
                 <input type="text" v-model="formData.o_address" placeholder="请输入活动地点">
-            </li>
-            <li class="li_auto flex">
-                <label class="title"><span>合同内容</span></label>
-                <textarea v-model="formData.o_contractcontent" placeholder="请输入合同内容"></textarea>
             </li>
             <li class="flex flex_a_c flex_s_b" @click="selectRangeDate">
                 <label class="title"><span>活动日期</span></label>
@@ -70,18 +68,17 @@
 				<input type="text" :value="employee4Text" readonly>
 			    <div class="icon_right add"></div>
 			</li>
-			 
-            <li class="flex flex_a_c flex_s_b" @click="changeFstatus">
-                <label class="title"><span>订单状态</span></label>
-                <input type="text" readonly :value="formData.o_status">
-                <div class="icon_right arrows_right"></div>
-            </li>
-            <li class="flex flex_a_c flex_s_b" @click="changePushstatus">
-                <label class="title"><span>推送上级审核</span></label>
-                 <input type="text" readonly :value="formData.o_isPush">
-                <div class="icon_right arrows_right"></div>
-            </li>
-            <!--
+			<li class="flex flex_a_c flex_s_b" @click="changeFstatus">
+			    <label class="title"><span>订单状态</span></label>
+			    <input type="text" readonly :value="formData.o_status_text">
+			    <div class="icon_right arrows_right"></div>
+			</li>
+			<li class="flex flex_a_c flex_s_b" @click="changePushstatus">
+			    <label class="title"><span>推送上级审核</span></label>
+				<input type="text" readonly :value="formData.o_isPush_text">
+			    <div class="icon_right arrows_right"></div>
+			</li>
+			<!--
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>锁单状态</span></label>
                 <input type="text" placeholder="未锁">
@@ -182,10 +179,11 @@ export default {
         ]),
         submit(){   //提交
 			let _this = this
+			// 判断必填
+			
+			
 			this.formData.c_id = this.clientId;
-            this.formData.managerid = 14;
-            this.formData.fstatus=0;
-            this.formData.orderID='';
+			this.formData.managerid = 14;
 			console.log(this.formData)
 			alert(JSON.stringify(this.formData))
 			_this.submitOrder(this.formData).then(function(res){
@@ -226,27 +224,14 @@ export default {
 				// 区域改变，清空人员
 				_this.claerEmployee();
 			}
-			if('employee1' == _this.chooseEl || 'employee3' == _this.chooseEl ){
+			if('employee1' == _this.chooseEl || 
+			'employee2' == _this.chooseEl || 'employee3' == _this.chooseEl || 'employee4' == _this.chooseEl){
 				let tmpTexts = [];
 				let tmpEmployees = [];
 				let tmpGonghaos = [];
 				items.map(function(item,index){
 					tmpTexts.push(item.de_name)
 					tmpEmployees.push(item['de_name'] + '|'+item['de_subname']+'|'+item['de_area'])
-					tmpGonghaos.push(item['de_subname'])
-				})
-				_this.$set(_this.employeeChoose,_this.chooseEl,tmpGonghaos)
-				
-				_this.$set(_this,_this.chooseEl + 'Text',tmpTexts.join(','))
-				_this.$set(_this.formData,_this.chooseEl,tmpEmployees.join(','))
-            }
-            if('employee2' == _this.chooseEl || 'employee4' == _this.chooseEl){
-				let tmpTexts = [];
-				let tmpEmployees = [];
-				let tmpGonghaos = [];
-				items.map(function(item,index){
-					tmpTexts.push(item.de_name)
-					tmpEmployees.push(item['de_name'] + '|'+item['de_subname']+'|'+item['de_area']+'|0')
 					tmpGonghaos.push(item['de_subname'])
 				})
 				_this.$set(_this.employeeChoose,_this.chooseEl,tmpGonghaos)
@@ -353,37 +338,54 @@ export default {
 				this.$set(this.formData,'co_number','')
 				this.$set(this.formData,'co_id',0)
 			}
-        },
-        changePushstatus(){
+		},
+		changePushstatus(){
             let _this = this
             this.getPushstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
-                let source = res.data
+                let source = []
+                res.data.map((item,index) => {
+                    let obj = {
+                        key:item.value,
+                        value:item.key
+                    }
+                	source.push(obj)
+                })
                 _this.ddSet.setChosen({source}).then(res => {
-                    _this.$set(_this.formData,'o_isPush',res.key)
+                    _this.$set(_this.formData,'o_isPush',res.value)
+                    _this.$set(_this.formData,'o_isPush_text',res.key)
                 })
             })
         },
         changeFstatus(){
             let _this = this
             this.getFstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
-                let source = res.data
+                let source = []
+                res.data.map((item,index) => {
+                    let obj = {
+                        key:item.value,
+                        value:item.key
+                    }
+                	source.push(obj)
+                })
                 _this.ddSet.setChosen({source}).then(res => {
-                    _this.$set(_this.formData,'o_status',res.key)
+                    _this.$set(_this.formData,'o_status',res.value)
+                    _this.$set(_this.formData,'o_status_text',res.key)
                 })
             })
         },
         changeDstatus(){    //接单状态
 			let _this = this;
             this.getDstatus().then(res => {
-                let source
-                Object.values(res.data).map((item,index) => {
+                let source = []
+                res.data.map((item,index) => {
                     let obj = {
-                        key:item,
-                        type:index
+                        key:item.value,
+                        value:item.key
                     }
+					source.push(obj)
                 })
                 _this.ddSet.setChosen({source}).then(res => {
-                    _this.$set(_this.formData,'o_dstatus',res.type)
+                    _this.$set(_this.formData,'o_status',res.type)
                 })
             })
         },
