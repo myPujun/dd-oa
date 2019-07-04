@@ -17,7 +17,7 @@
                             <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span>
                         </section>
                         <section class="operation_icon flex">
-                            <router-link tag="span" :to="{path:'/receiptDetails',query:{id:item.rp_id}}"></router-link>
+                            <span @click.stop="goPage('receiptDetails',item.rp_id)"></span>
                             <span></span>
                         </section>
                     </div>
@@ -32,6 +32,7 @@
                 </li>
             </ul>
         </div>
+        <button @click="receiptDetails">添加收款通知</button>
         <top-nav title="收款通知"></top-nav>
     </div>
 </template>
@@ -69,6 +70,14 @@ export default {
         ...mapActions([
             'getReceiptList'
         ]),
+        receiptDetails(){
+            this.$router.push({path:'/receiptDetails',query:{type:'add'}})
+        },
+        goPage(item,params){
+            if(item == 'receiptDetails'){
+                this.$router.push({path:`/${item}`,query:{rp_id:params,type:'EDIT'}})
+            }
+        },
         receiptList({rp_isconfirm = 0} = {}){
             let params = {
                 pageIndex:1,

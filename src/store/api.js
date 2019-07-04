@@ -88,6 +88,9 @@ const api = {
     get payMethod(){   //支付方式数据绑定
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_paymethod'
     },
+    get methodData(){   //获取收付方式数据
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=method_data'
+    },
     ///数据初始化 end--------------------------------------------------------
 
 

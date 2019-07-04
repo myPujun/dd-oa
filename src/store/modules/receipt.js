@@ -8,6 +8,9 @@ const actions = {
     getReceiptDetails({commit},params){   //收款通知明细
         return ajax.post(api.payDetails ,params)
     },
+    getMethod({commit},params){   //收款方式
+        return ajax.post(api.payMethod ,params)
+    }
 }
 
 export default {
