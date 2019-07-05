@@ -112,11 +112,11 @@ export default {
     },
     computed: {},
     created(){
-        this.ddSet.setTitleRight({title:'订单查询'}).then(res => {
-            if(res){
+        // this.ddSet.setTitleRight({title:'订单查询'}).then(res => {
+        //     if(res){
 
-            }
-        })
+        //     }
+        // })
     },
     mounted() {
 		this.newOrderList()
