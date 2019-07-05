@@ -8,19 +8,19 @@ const actions = {
     getCustomerDetails({commit},params){    //客户详情
         return ajax.post(api.customerDetails,params)
     },
-    getAddClient({commit},params){  //新增客户
+    getCustomerAdd({commit},params){  //新增客户
         return ajax.post(api.customerAdd,params)
     },
     getCustomerObtain({commit},params){ //获取客户信息
         return ajax.post(api.customerObtain,params)
     },
-    getEditClient({commit},params){     //编辑客户
+    getCustomerEdit({commit},params){     //编辑客户
         return ajax.post(api.customerEdit,params)
     },
-    getAddLinkman({commit},params){ //添加次要联系人
+    getLinkmanAdd({commit},params){ //添加次要联系人
         return ajax.post(api.contactAdd,params)
     },
-    getContactEdit({commit},params){
+    getContactEdit({commit},params){ //编辑主、次要联系人
         return ajax.post(api.contactEdit,params)
     }
 }

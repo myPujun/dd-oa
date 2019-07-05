@@ -8,33 +8,10 @@ const api = {
     get userNameValidate(){  //验证用户名是否可绑定
         return baseUrl+'/tools/dingtalk_login.ashx?action=username_validate'
     },
-    ///钉钉授权绑定 end--------------------------------------------------------
-
-
-    ///数据初始化 start--------------------------------------------------------
-    get contractPrices(){   //合同造价数据绑定
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_contractprice'
-    },
-    get fStatus(){   //订单状态数据绑定
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_fstatus'
-    },
-    get dStatus(){   //接单状态数据绑定
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_dstatus'
-    },
-    get addClient(){    //添加客户
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_add'
-    },
-    get editClient(){   //编辑客户
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_edit'
-    },
-    get addOrder(){ //新增订单
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_edit'
-    },
-    get addLinkman(){   //添加联系人
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=contact_add'
+    get managerOauthBind(){  //用户绑定钉钉userid并授权免登
+        return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate'
     },
     ///钉钉授权绑定 end--------------------------------------------------------
-
 
     ///数据初始化 start--------------------------------------------------------
     get contractPrices(){   //合同造价数据绑定
@@ -124,7 +101,10 @@ const api = {
     get orderList(){ //订单分页数据列表
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_list'
     },
-    get orderEdit(){ //新增和修改订单信息
+    get orderAdd(){ //新增订单信息
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_edit'
+    },
+    get orderEdit(){ //修改订单信息
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_edit'
     },
     get orderDetails(){ //查看订单详细信息

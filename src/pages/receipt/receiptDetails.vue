@@ -66,9 +66,9 @@ export default {
     },
     methods: {
         ...mapActions([
-            'getAllcustomer',
-            'getAddClient',
-            'getEditClient',
+            'getAllCustomer',
+            'getCustomerAdd',
+            'getCustomerEdit',
             'getReceiptDetails',
             'getMethod',
             'methodData'
@@ -93,7 +93,7 @@ export default {
             this.addData.managerid = 14 //测试ID
             this.ddSet.showLoad()
             if(this.type == 'add'){
-                this.getAddClient(this.addData).then(res => {
+                this.getCustomerAdd(this.addData).then(res => {
                     this.ddSet.hideLoad()
                     if(res.data.status){
                         this.ddSet.setToast({text:'新增客户成功'})
@@ -105,7 +105,7 @@ export default {
                     this.ddSet.hideLoad()
                 })
             }else{
-                this.getEditClient(this.addData).then(res => {
+                this.getCustomerEdit(this.addData).then(res => {
                     this.ddSet.hideLoad()
                     if(res.data.status){
                         this.ddSet.setToast({text:'编辑客户成功'})
