@@ -32,13 +32,24 @@ const actions = {
     getEmployeebyarea({commit},params){ //根据活动归属地ID获取组织架构及人员
         return ajax.post(api.employeebyarea,params)
     },
+	getLockStatus({commit},params){ //锁单状态数据绑定
+	    return ajax.post(api.lockStatus,params)
+	},
 	/**
 	 * 提交订单
 	 */
 	submitOrder({commit},params){
 		return ajax.post(api.orderEdit,params)
 	},
-	
+	/**
+	 * 获取订单列表
+	 */
+	getOrderList({commit},params){
+		return ajax.post(api.orderList,params)
+	},
+	/**
+	 * 选择客户时使用
+	 */
 	changeSelectClient ({commit},clientArray) {
 		commit("change_select_client_array", clientArray)
 	},

@@ -226,12 +226,18 @@ export default {
 			}
 			if('employee1' == _this.chooseEl || 
 			'employee2' == _this.chooseEl || 'employee3' == _this.chooseEl || 'employee4' == _this.chooseEl){
+				let tmpStatusText = '';
+				// 特殊处理 employee2 和 employee4 需要多加一个状态
+				if ('employee2' == _this.chooseEl || 'employee4' == _this.chooseEl) {
+					tmpStatusText = '|0';
+				}
+				
 				let tmpTexts = [];
 				let tmpEmployees = [];
 				let tmpGonghaos = [];
 				items.map(function(item,index){
 					tmpTexts.push(item.de_name)
-					tmpEmployees.push(item['de_name'] + '|'+item['de_subname']+'|'+item['de_area'])
+					tmpEmployees.push(item['de_name'] + '|'+item['de_subname']+'|'+item['de_area']+tmpStatusText)
 					tmpGonghaos.push(item['de_subname'])
 				})
 				_this.$set(_this.employeeChoose,_this.chooseEl,tmpGonghaos)

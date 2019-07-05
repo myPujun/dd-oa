@@ -178,7 +178,8 @@ export default {
         },
         getMethodList(){//收款方式
             let _this = this
-            this.getMethod({ddkey:'dingzreafyvgzklylomj'}).then(res => {
+            this.getMethod({managerid:14}).then(res => {
+                    console.log(res)
                 let source = []
                 res.data.map((item,index) => {
                     let obj = {
@@ -187,7 +188,9 @@ export default {
                     }
                 	source.push(obj)
                 })
+                console.log(source)
                 _this.ddSet.setChosen({source}).then(res => {
+                console.log(res)
                     _this.$set(_this.addData,'rp_method',res.value)
                     _this.$set(_this.addData,'rp_method_text',res.key)
                 })

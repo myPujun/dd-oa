@@ -2,15 +2,15 @@
 <template>
     <div class="labelSearch" v-show="show">
         <ul class="label_list">
-            <li v-for="(item,index) in labelList" :key="index">
-                <h2 class="title" :class="{'blueTitle':index == 1,'greenTitle':index == 0}">{{item.title}}</h2>
+            <li v-for="(item,index) in list" :key="index" :class="item.class">
+                <h2 class="title" :class="item.class">{{item.title}}</h2>
                 <div class="list flex flex_wrap" >
-                    <span v-for="label in item.list" @click="activeLabel(label)">{{label}}</span>
+                    <span v-for="(label,l) in item.list" :class="{active:label.isChecked}" @click="activeLabel(l,index)">{{label.text}}</span>
                 </div>
             </li>
         </ul>
         <div class="label_btn flex">
-            <button class="reset">重置</button>
+            <button class="reset" @click="chageReset">重置</button>
             <button class="confirm" @click="chageConfirm">确定</button>
         </div>
     </div>
@@ -21,31 +21,41 @@ export default {
     name:"",
     data() {
         return {
-            labelList:[
-                {
-                    title:'合同造价',
-                    list:['不限','普通活动','重大活动','特大活动']
-                },
-                {
-                    title:'锁单状态',
-                    list:['不限','未锁单','已锁单']
-                },
-                {
-                    title:'订单状态',
-                    list:['不限','待定','取消','确认']
-                },
-                {
-                    title:'接单状态',
-                    list:['不限','待定','处理中','已完成','未安排人员']
-                },
-            ]
-        };
+            /*
+			list:[
+			   {
+			       title:'合同造价',
+			       class:'greenTitle',
+			       list:[]
+			   },
+			   {
+			       title:'锁单状态',
+			   	class:'blueTitle',
+			       list:[]
+			   },
+			   {
+			       title:'订单状态',
+			   	class:'',
+			       list:[]
+			   },
+			   {
+			       title:'接单状态',
+			   	class:'',
+			       list:[]
+			   },
+		   ],
+			*/
+        }
     },
     props:{
         show:{
             type:Boolean,
             default:false
-        }
+        },
+		list:{
+		    type:Array,
+		    default:[]
+		}
     },
     components: {},
     computed: {},
@@ -53,11 +63,34 @@ export default {
 
     },
     methods: {
-        activeLabel(){
-            
+        activeLabel(_index,_pid){
+			this.claerOneRowChecked(this.list[_pid].list)
+            this.list[_pid].list[_index].isChecked = true;
         },
+		claerOneRowChecked(_list){
+			_list.map((item) => {
+				item.isChecked = false;
+			})
+		},
+		chageReset(){
+		    this.list.map((item,index) => {
+		        this.claerOneRowChecked(item.list)
+				this.$set(item.list[0],'isChecked',true)
+		    })
+		},
         chageConfirm(){
-            this.$emit('on-label',true)
+			let actives = [];
+			this.list.map((item,index) => {
+				item.list.map((ll) => {
+					if(ll.isChecked){
+						actives.push({
+							key:item.s_key,
+							value:ll.value
+						})
+					}
+				})
+			})
+            this.$emit('on-label',actives)
         }
     },
 }
@@ -71,9 +104,9 @@ export default {
         right: 0;
         bottom: 0;
         padding-bottom: .8rem;
+		background-color: #FFF;
     }
     .label_list{
-        background-color: #FFF;
         padding: 0 .22rem;
         li{
             .title{
@@ -152,4 +185,16 @@ export default {
             color:#FFF;
         }
     }
+	.label_list li .list span.active{
+		background-color: #FFF7EB;
+		color: #F1A972;
+	}
+	.label_list li.blueTitle .list span.active{
+		background-color: #EBF3FF;
+		color: #7AACE6;
+	}
+	.label_list li.greenTitle .list span.active{
+		background-color: #E4F7F3;
+		color: #65BC9B;
+	}
 </style>
