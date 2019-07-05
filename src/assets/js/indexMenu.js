@@ -90,17 +90,17 @@ let list = [
         list:[
             {
                 imgUrl:require('../img/nav_list/icon_balance_1.png'),
-                link:'',
-                name:'未付款订单'
+                link:'unpaidManage',
+                name:'未收款订单'
             },
             {
                 imgUrl:require('../img/nav_list/icon_balance_2.png'),
-                link:'',
+                link:'overpayManage',
                 name:'多付款订单'
             },
             {
                 imgUrl:require('../img/nav_list/icon_balance_3.png'),
-                link:'',
+                link:'unauditManage',
                 name:'审核未通过订单'
             },
         ]
@@ -110,18 +110,8 @@ let list = [
         list:[
             {
                 imgUrl:require('../img/nav_list/icon_statistics.png'),
-                link:'',
-                name:'月份统计'
-            },
-            {
-                imgUrl:require('../img/nav_list/icon_statistics.png'),
-                link:'',
-                name:'季度统计'
-            },
-            {
-                imgUrl:require('../img/nav_list/icon_statistics.png'),
-                link:'',
-                name:'年份统计'
+                link:'reportManage',
+                name:'业务统计'
             },
         ]
     },

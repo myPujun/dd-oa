@@ -25,6 +25,12 @@ import receipt from './receipt'
 import pay from './pay'
 //发票通知
 import billManage from './billManage'
+//未收款订单
+import unpaidManage from './unpaidManage'
+//多付款订单
+import overpayManage from './overpayManage'
+//审核未通过订单
+import unauditManage from './unauditManage'
 
 let routes = [
     {
@@ -45,6 +51,9 @@ routes = routes.concat(
     receipt,
     pay,
     billManage,
+    unpaidManage,
+    overpayManage,
+    unauditManage,
     [{
       path: '*',
       redirect: '/'
