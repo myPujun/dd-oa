@@ -126,7 +126,7 @@ import {
 	mapState
 } from 'vuex'
 import choose from '../../components/choose.vue'
-import * as dd from 'dingtalk-jsapi'
+// import * as dd from 'dingtalk-jsapi'
 import dayjs from 'dayjs'
 
 export default {
@@ -348,7 +348,7 @@ export default {
 		changePushstatus(){
             let _this = this
             this.getPushstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
-                let source = []
+                let source = [],selectedKey = _this.formData.o_isPush_text
                 res.data.map((item,index) => {
                     let obj = {
                         key:item.value,
@@ -356,7 +356,7 @@ export default {
                     }
                 	source.push(obj)
                 })
-                _this.ddSet.setChosen({source}).then(res => {
+                _this.ddSet.setChosen({source,selectedKey}).then(res => {
                     _this.$set(_this.formData,'o_isPush',res.value)
                     _this.$set(_this.formData,'o_isPush_text',res.key)
                 })
@@ -365,7 +365,7 @@ export default {
         changeFstatus(){
             let _this = this
             this.getFstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
-                let source = []
+                let source = [],selectedKey = _this.formData.o_status_text
                 res.data.map((item,index) => {
                     let obj = {
                         key:item.value,
@@ -373,7 +373,7 @@ export default {
                     }
                 	source.push(obj)
                 })
-                _this.ddSet.setChosen({source}).then(res => {
+                _this.ddSet.setChosen({source,selectedKey}).then(res => {
                     _this.$set(_this.formData,'o_status',res.value)
                     _this.$set(_this.formData,'o_status_text',res.key)
                 })
@@ -399,7 +399,8 @@ export default {
             let _this = this
             this.getContractprices({ddkey:'dingzreafyvgzklylomj'}).then(res => {
                 let source = res.data
-                _this.ddSet.setChosen({source}).then(res => {
+                let selectedKey = _this.formData.o_contractprice
+                _this.ddSet.setChosen({source,selectedKey}).then(res => {
                     _this.$set(_this.formData,'o_contractprice',res.key)
                 })
             })
