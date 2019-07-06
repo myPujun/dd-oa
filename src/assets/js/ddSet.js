@@ -1,4 +1,5 @@
 import * as dd from 'dingtalk-jsapi'
+import dayjs from 'dayjs'
 
 async function showLoad(text = '使劲加载中..'){
     dd.device.notification.showPreloader({
@@ -68,10 +69,28 @@ function setDatepicker({format = 'yyyy-MM-dd',value = ''} = {}){
         })
     })
 }
+//日期区间
+function setChooseInterval({defaultStart = 0,defaultEnd = 0} = {}){
+    return new Promise(function(resolve, reject) {
+        dd.biz.calendar.chooseInterval({
+            defaultStart:dayjs().valueOf(),
+		    defaultEnd:dayjs().add(1, 'day').valueOf(),
+            onSuccess : function(result) {
+                return result
+                //onSuccess将在点击完成之后回调
+                /*{
+                    value: "2015-02-10"
+                }
+                */
+            },
+        })
+    })
+}
 export default {
     setToast,
     setChosen,
     setDatepicker,
+    setChooseInterval,
     showLoad,
     hideLoad
 }

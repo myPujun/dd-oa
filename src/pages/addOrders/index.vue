@@ -126,14 +126,19 @@ import {
 	mapState
 } from 'vuex'
 import choose from '../../components/choose.vue'
-// import * as dd from 'dingtalk-jsapi'
+import * as dd from 'dingtalk-jsapi'
 import dayjs from 'dayjs'
 
 export default {
     name:"",
     data() {
         return {
-            formData:{},
+            formData:{
+                'o_status_text':'待定',
+                'fstatus':'0',
+                'o_isPush_text':'未推送',
+                'o_isPush':'False'
+            },
             clientList:[],
             clientName:'请选择',
 			clientId:0,
@@ -184,23 +189,23 @@ export default {
                 this.ddSet.setToast({text:'请选择客户'})
                 return
             }
-            if(!formData.o_contractprice){
+            if(!_this.formData.o_contractprice){
                 this.ddSet.setToast({text:'请选择合同造价'})
                 return
             }
-            if(!formData.o_content){
+            if(!_this.formData.o_content){
                 this.ddSet.setToast({text:'请输入活动名称'})
                 return
             }
-            if(!formData.o_address){
+            if(!_this.formData.o_address){
                 this.ddSet.setToast({text:'请输入活动地点'})
                 return
             }
-            if(!this.date_range){
+            if(!_this.date_range){
                 this.ddSet.setToast({text:'请选择活动日期'})
                 return
             }
-            if(!formData.o_place){
+            if(!_this.formData.o_place){
                 this.ddSet.setToast({text:'请选择活动归属地'})
                 return
             }
@@ -371,7 +376,7 @@ export default {
 		changePushstatus(){
             let _this = this
             this.getPushstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
-                let source = [],selectedKey = _this.formData.o_isPush_text
+                let source = [],selectedKey = '未推送'
                 res.data.map((item,index) => {
                     let obj = {
                         key:item.value,
@@ -388,7 +393,7 @@ export default {
         changeFstatus(){
             let _this = this
             this.getFstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
-                let source = [],selectedKey = _this.formData.o_status_text
+                let source = [],selectedKey = '待定'
                 res.data.map((item,index) => {
                     let obj = {
                         key:item.value,
@@ -397,23 +402,11 @@ export default {
                 	source.push(obj)
                 })
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
-                    _this.$set(_this.formData,'o_status',res.value)
+                    _this.$set(_this.formData,'fstatus',res.value)
                     _this.$set(_this.formData,'o_status_text',res.key)
                 })
             })
-        },
-        changeDstatus(){    //接单状态
-			let _this = this;
-            this.getDstatus().then(res => {
-                let source = []
-                res.data.map((item,index) => {
-                    let obj = {
-                        key:item.value,
-                        value:item.key
-                    }
-                })
-            })
-        },
+        },        
         changeCost(){   //合同造价
             let _this = this
             this.getContractprices({ddkey:'dingzreafyvgzklylomj'}).then(res => {
@@ -425,10 +418,20 @@ export default {
             })
         },
       selectRangeDate(){ //活动日期
-			let _this = this
+            let _this = this
+            // _this.ddSet.setChooseInterval({}).then(res => {
+            //        console.log(res)
+            //        var sdate = dayjs(res.start).format('YYYY-MM-DD');
+			// 	   var edate = dayjs(res.end).format('YYYY-MM-DD');
+            //        console.log(sdate)
+            //        console.log(edate)
+			// 	   _this.date_range = sdate + '至' + edate;
+			// 	   _this.$set(_this.formData,'o_sdate',sdate)
+			// 	   _this.$set(_this.formData,'o_edate',edate)
+            //     })   
 			dd.biz.calendar.chooseInterval({
 				defaultStart:dayjs().valueOf(),
-				defaultEnd:dayjs().add(1, 'month').valueOf(),
+				defaultEnd:dayjs().add(1, 'day').valueOf(),
 				onSuccess : function(result) {
 					//onSuccess将在点击确定之后回调
 					/*{
