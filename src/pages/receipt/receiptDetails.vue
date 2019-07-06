@@ -9,24 +9,24 @@
             </li>
             <li class="flex flex_a_c">
                 <label class="title"><span class="must">收款金额</span></label>
-                <input type="text" v-model="addData.rp_money" placeholder="请输入收款金额">
+                <input type="text" v-model="addData.rpmoney" placeholder="请输入收款金额">
             </li>
             <li class="flex flex_a_c flex_s_b" @click="selectDate">
                 <label class="title"><span class="must">预收日期</span></label>
-                <input type="text" v-model="addData.rp_foredate" readonly placeholder="请选择预收日期">
+                <input type="text" v-model="addData.rpforedate" readonly placeholder="请选择预收日期">
                 <div class="icon_right time"></div>
             </li>
 			<li class="flex flex_a_c flex_s_b" @click="getMethodList">
 			    <label class="title"><span class="must">收款方式</span></label>
-			    <input type="text" readonly :value="methodName">
+			    <input type="text" readonly v-model="addData.rp_method_text">
 			    <div class="icon_right arrows_right"></div>
 			</li>
             <li class="li_auto flex">
                 <label class="title"><span>收款内容</span></label>
-                <textarea v-model="addData.rp_content" placeholder="请输入收款内容"></textarea>
+                <textarea v-model="addData.rpcontent" placeholder="请输入收款内容"></textarea>
             </li>
         </ul>
-        <top-nav :title='type == "add" ? "添加收款通知":"编辑收款通知"' :text='"保存"' @rightClick="submit"></top-nav>
+        <top-nav :title='type == "add" ? "添加收款通知":"查看收款通知"' ></top-nav>
     </div>
 </template>
 
@@ -39,10 +39,9 @@ export default {
             addData:{},
             clientList:[],
             clientName:'请选择收款对象',
-            clientId:0,          
-            methodid:0,
-            methodName:'',  
-            type:''
+            clientId:0,         
+            type:'',
+            rpid:0
         };
     },
     components: {},
@@ -50,17 +49,21 @@ export default {
     created(){
         let {type,rp_id} = this.$route.query
         this.type = type
+        this.rpid=rp_id
         if(type == 'EDIT'){
             let params = {
                 rp_id
             }
             this.getReceiptDetails(params).then(res => {
+                console.log(res.data)
                 this.addData = res.data
                 this.clientName=this.addData.c_name
                 this.clientId=this.addData.c_id
-                this.foredate = this.addData.rp_foredate
-                this.methodid=this.addData.rp_method
-                this.methodName = this.addData.pm_name
+                this.addData.rpmoney=this.addData.rp_money
+                this.addData.rpforedate = this.addData.rp_foredate
+                this.addData.rpmethod=this.addData.rp_method
+                this.addData.rp_method_text= this.addData.pm_name
+                this.addData.rpcontent = this.addData.rp_content
             })
         }
     },
@@ -78,19 +81,15 @@ export default {
             'addReceipt'
         ]),
         submit(item){ //提交
-            if(!this.addData.c_name){
+            if(!this.clientId){
                 this.ddSet.setToast({text:'请选择收款对象'})
                 return
             }
-            if(!this.addData.rp_money){
+            if(!this.addData.rpmoney){
                 this.ddSet.setToast({text:'请输入收款金额'})
                 return
             }
-            if(!this.addData.foredate){
-                this.ddSet.setToast({text:'请选择预收日期'})
-                return
-            }
-            if(!this.addData.foredate){
+            if(!this.addData.rpforedate){
                 this.ddSet.setToast({text:'请选择预收日期'})
                 return
             }
@@ -98,9 +97,12 @@ export default {
                 this.ddSet.setToast({text:'请选择收款方式'})
                 return
             }
-
+            this.addData.rpid=this.rpid
+            this.addData.rptype='True'
+            this.addData.rpcid=this.clientId
             this.addData.managerid = 14 //测试ID
             this.ddSet.showLoad()
+            console.log(this.addData)
             if(this.type == 'add'){
                 this.addReceipt(this.addData).then(res => {
                     this.ddSet.hideLoad()
@@ -170,7 +172,7 @@ export default {
 		},
         selectDate(){ //活动日期
             this.ddSet.setDatepicker().then(res => {
-                    this.$set(this.addData,'rp_foredate',res.value)
+                    this.$set(this.addData,'rpforedate',res.value)
                 })
         },
         getMethodList(){//收款方式
@@ -178,7 +180,7 @@ export default {
             this.getMethod({managerid:14}).then(res => {
                     console.log(res)
                 let source = []
-                let selectedKey = _this.addData.rp_method
+                let selectedKey = _this.addData.rpmethod
                 res.data.map((item,index) => {
                     let obj = {
                         key:item.value,
@@ -187,7 +189,7 @@ export default {
                 	source.push(obj)
                 })
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
-                    _this.$set(_this.addData,'rp_method',res.value)
+                    _this.$set(_this.addData,'rpmethod',res.value)
                     _this.$set(_this.addData,'rp_method_text',res.key)
                 })
             })
