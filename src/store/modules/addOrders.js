@@ -3,7 +3,7 @@ import ajax from '../ajax'
 
 const actions = {
     getAddOrders({commit},params){  //
-        return ajax.post(api.addOrder,params)
+        return ajax.post(api.orderAdd,params)
     },
     getAllcustomer({commit},params){    //所有客户信息数据绑定
         return ajax.post(api.allcustomer,params)

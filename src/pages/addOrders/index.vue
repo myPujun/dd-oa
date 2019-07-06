@@ -126,7 +126,7 @@ import {
 	mapState
 } from 'vuex'
 import choose from '../../components/choose.vue'
-import * as dd from 'dingtalk-jsapi'
+// import * as dd from 'dingtalk-jsapi'
 import dayjs from 'dayjs'
 
 export default {
@@ -371,7 +371,7 @@ export default {
 		changePushstatus(){
             let _this = this
             this.getPushstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
-                let source = []
+                let source = [],selectedKey = _this.formData.o_isPush_text
                 res.data.map((item,index) => {
                     let obj = {
                         key:item.value,
@@ -379,30 +379,16 @@ export default {
                     }
                 	source.push(obj)
                 })
-                // _this.ddSet.setChosen({source}).then(res => {
-                //     _this.$set(_this.formData,'o_isPush',res.value)
-                //     _this.$set(_this.formData,'o_isPush_text',res.key)
-                // })
-                dd.biz.util.chosen({
-                    source,
-                    onSuccess : function(result) {
-                        _this.$set(_this.formData,'o_isPush',result.key)
-                    },
-                    onFail : function(err) {
-                        dd.device.notification.toast({
-                            icon: '', //icon样式，有success和error，默认为空
-                            text: err, //提示信息
-                            duration: 3, //显示持续时间，单位秒，默认按系统规范[android只有两种(<=2s >2s)]
-                            delay: 0, //延迟显示，单位秒，默认0
-                        })
-                    }
+                _this.ddSet.setChosen({source,selectedKey}).then(res => {
+                    _this.$set(_this.formData,'o_isPush',res.value)
+                    _this.$set(_this.formData,'o_isPush_text',res.key)
                 })
             })
         },
         changeFstatus(){
             let _this = this
             this.getFstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
-                let source = []
+                let source = [],selectedKey = _this.formData.o_status_text
                 res.data.map((item,index) => {
                     let obj = {
                         key:item.value,
@@ -410,22 +396,20 @@ export default {
                     }
                 	source.push(obj)
                 })
-                // _this.ddSet.setChosen({source}).then(res => {
-                //     _this.$set(_this.formData,'o_status',res.value)
-                //     _this.$set(_this.formData,'o_status_text',res.key)
-                // })
-                dd.biz.util.chosen({
-                    source,
-                    onSuccess : function(result) {
-                        _this.$set(_this.formData,'o_status',result.key)
-                    },
-                    onFail : function(err) {
-                        dd.device.notification.toast({
-                            icon: '', //icon样式，有success和error，默认为空
-                            text: err, //提示信息
-                            duration: 3, //显示持续时间，单位秒，默认按系统规范[android只有两种(<=2s >2s)]
-                            delay: 0, //延迟显示，单位秒，默认0
-                        })
+                _this.ddSet.setChosen({source,selectedKey}).then(res => {
+                    _this.$set(_this.formData,'o_status',res.value)
+                    _this.$set(_this.formData,'o_status_text',res.key)
+                })
+            })
+        },
+        changeDstatus(){    //接单状态
+			let _this = this;
+            this.getDstatus().then(res => {
+                let source = []
+                res.data.map((item,index) => {
+                    let obj = {
+                        key:item.value,
+                        value:item.key
                     }
                 })
             })
@@ -434,23 +418,10 @@ export default {
             let _this = this
             this.getContractprices({ddkey:'dingzreafyvgzklylomj'}).then(res => {
                 let source = res.data
-                _this.ddSet.setChosen({source}).then(res => {
+                let selectedKey = _this.formData.o_contractprice
+                _this.ddSet.setChosen({source,selectedKey}).then(res => {
                     _this.$set(_this.formData,'o_contractprice',res.key)
-                })
-                // dd.biz.util.chosen({
-                //     source,
-                //     onSuccess : function(result) {
-                //         _this.$set(_this.formData,'o_contractprice',result.key)
-                //     },
-                //     onFail : function(err) {
-                //         dd.device.notification.toast({
-                //             icon: '', //icon样式，有success和error，默认为空
-                //             text: err, //提示信息
-                //             duration: 3, //显示持续时间，单位秒，默认按系统规范[android只有两种(<=2s >2s)]
-                //             delay: 0, //延迟显示，单位秒，默认0
-                //         })
-                //     }
-                // })
+                })                
             })
         },
       selectRangeDate(){ //活动日期

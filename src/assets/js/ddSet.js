@@ -32,36 +32,40 @@ async function setToast({icon = '',text = '',duration = 3,delay = 0} = {}){
     })
 }
 //设置下拉控件
-async function setChosen({source = [],selectedKey = ''} = {}){
-    dd.biz.util.chosen({
-        source,
-        selectedKey, // 默认选中的key
-        onSuccess : function(result) {
-            return result
-        },
-        onFail : function(err) {
-            dd.device.notification.toast({
-                icon: '', //icon样式，有success和error，默认为空
-                text: err, //提示信息
-                duration: 3, //显示持续时间，单位秒，默认按系统规范[android只有两种(<=2s >2s)]
-                delay: 0, //延迟显示，单位秒，默认0
-            })
-        }
+function setChosen({source = [],selectedKey = ''} = {}){
+    return new Promise(function(resolve, reject) {
+        dd.biz.util.chosen({
+            source,
+            selectedKey, // 默认选中的key
+            onSuccess : function(result) {
+                resolve(result) 
+            },
+            onFail : function(err) {
+                dd.device.notification.toast({
+                    icon: '', //icon样式，有success和error，默认为空
+                    text: err, //提示信息
+                    duration: 3, //显示持续时间，单位秒，默认按系统规范[android只有两种(<=2s >2s)]
+                    delay: 0, //延迟显示，单位秒，默认0
+                })
+            }
+        })
     })
 }
 //日期时间
-async function setDatepicker({format = 'yyyy-MM-dd',value = ''} = {}){
-    dd.biz.util.datepicker({
-        format,//注意：format只支持android系统规范，即2015-03-31格式为yyyy-MM-dd
-        value, //默认显示日期
-        onSuccess : function(result) {
-            return result
-            //onSuccess将在点击完成之后回调
-            /*{
-                value: "2015-02-10"
-            }
-            */
-        },
+function setDatepicker({format = 'yyyy-MM-dd',value = ''} = {}){
+    return new Promise(function(resolve, reject) {
+        dd.biz.util.datepicker({
+            format,//注意：format只支持android系统规范，即2015-03-31格式为yyyy-MM-dd
+            value, //默认显示日期
+            onSuccess : function(result) {
+                return result
+                //onSuccess将在点击完成之后回调
+                /*{
+                    value: "2015-02-10"
+                }
+                */
+            },
+        })
     })
 }
 export default {

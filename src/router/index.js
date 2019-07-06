@@ -31,6 +31,8 @@ import unpaidManage from './unpaidManage'
 import overpayManage from './overpayManage'
 //审核未通过订单
 import unauditManage from './unauditManage'
+//非业务支付申请
+import unbusinessManage from './unbusinessManage'
 
 let routes = [
     {
@@ -54,6 +56,7 @@ routes = routes.concat(
     unpaidManage,
     overpayManage,
     unauditManage,
+    unbusinessManage,
     [{
       path: '*',
       redirect: '/'

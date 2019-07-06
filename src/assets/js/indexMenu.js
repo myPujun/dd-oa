@@ -35,7 +35,7 @@ let list = [
             },
             {
                 imgUrl:require('../img/nav_list/icon_NonOperative.png'),
-                link:'',
+                link:'unbusinessManage',
                 name:'非业务支付申请'
             },
         ]
