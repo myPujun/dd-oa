@@ -20,16 +20,21 @@ async function hideLoad(){
     })
 }
 //toast
-async function setToast({icon = '',text = '',duration = 3,delay = 0} = {}){
-    dd.device.notification.toast({
-        icon, //icon样式，有success和error，默认为空
-        text, //提示信息
-        duration, //显示持续时间，单位秒，默认按系统规范[android只有两种(<=2s >2s)]
-        delay, //延迟显示，单位秒，默认0
-        onSuccess : function(result) {
-            /*{}*/
-        },
-        onFail : function(err) {}
+function setToast({icon = '',text = '',duration = 3,delay = 0} = {}){
+    return new Promise(function(resolve, reject) {
+        dd.device.notification.toast({
+            icon, //icon样式，有success和error，默认为空
+            text, //提示信息
+            duration, //显示持续时间，单位秒，默认按系统规范[android只有两种(<=2s >2s)]
+            delay, //延迟显示，单位秒，默认0
+            onSuccess : function(result) {
+                setTimeout(function () {
+                    resolve(true)
+                },duration*1000)
+                /*{}*/
+            },
+            onFail : function(err) {}
+        })
     })
 }
 //设置下拉控件
@@ -59,7 +64,7 @@ function setDatepicker({format = 'yyyy-MM-dd',value = ''} = {}){
             format,//注意：format只支持android系统规范，即2015-03-31格式为yyyy-MM-dd
             value, //默认显示日期
             onSuccess : function(result) {
-                return result
+                resolve(result) 
                 //onSuccess将在点击完成之后回调
                 /*{
                     value: "2015-02-10"
@@ -76,7 +81,7 @@ function setChooseInterval({defaultStart = 0,defaultEnd = 0} = {}){
             defaultStart:dayjs().valueOf(),
 		    defaultEnd:dayjs().add(1, 'day').valueOf(),
             onSuccess : function(result) {
-                return result
+                resolve(result) 
                 //onSuccess将在点击完成之后回调
                 /*{
                     value: "2015-02-10"

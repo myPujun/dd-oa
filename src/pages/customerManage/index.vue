@@ -15,7 +15,7 @@
                             <h2 class="name">{{item.c_name}}</h2>
                             <input type="button" :class="{blue:item.c_isUse}" :value="item.c_isUse?'启用': '禁用'">
                         </section>
-                        <section class="operation_icon flex">
+                        <section class="operation_icon flex" v-if="item.c_flag !== 2">
                             <span @click.stop="goPage('addClient',item.c_id)"></span>
                             <span></span>
                         </section>

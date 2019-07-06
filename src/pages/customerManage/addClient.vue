@@ -105,14 +105,14 @@ export default {
             }
             this.getCustomerObtain(params).then(res => {
                 this.addData = res.data
-                this.typeName = this.typeList[this.addData.c_type].key
+                this.typeName = this.typeList[this.addData.c_type-1].key
                 this.flagName = this.flag[this.addData.c_flag].key
                 this.enabledName = this.addData.c_isUse?'是':'否'
             })
         }
     },
     mounted() {
-
+        
     },
     methods: {
         ...mapActions([
@@ -143,8 +143,9 @@ export default {
                 this.getAddClient(this.addData).then(res => {
                     this.ddSet.hideLoad()
                     if(res.data.status){
-                        this.ddSet.setToast({text:'新增客户成功'})
-                        this.$router.go(-1)
+                        this.ddSet.setToast({text:'新增客户成功'}).then(res => {
+                            this.$router.go(-1)
+                        })
                     }else{
                         this.ddSet.setToast({text:res.data.msg})
                     }
