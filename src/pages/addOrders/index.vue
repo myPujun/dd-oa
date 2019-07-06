@@ -135,9 +135,9 @@ export default {
         return {
             formData:{
                 'o_status_text':'待定',
-                'fstatus':'0',
-                'o_isPush_text':'未推送',
-                'o_isPush':'False'
+                //'fstatus':'0',
+                'o_isPush_text':'未推送'
+                //'o_isPush':'False'
             },
             clientList:[],
             clientName:'请选择',
@@ -209,7 +209,14 @@ export default {
                 this.ddSet.setToast({text:'请选择活动归属地'})
                 return
             }
-			
+            if(!_this.formData.fstatus){
+                _this.formData.fstatus='0'
+            }
+            if(!_this.formData.o_isPush){
+                _this.formData.o_isPush='False'
+            }
+
+            
 			this.formData.c_id = this.clientId;
 			this.formData.managerid = 14;
 			console.log(this.formData)

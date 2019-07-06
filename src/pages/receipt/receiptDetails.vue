@@ -13,12 +13,12 @@
             </li>
             <li class="flex flex_a_c flex_s_b" @click="selectDate">
                 <label class="title"><span class="must">预收日期</span></label>
-                <input type="text" :value="foredate" readonly placeholder="请选择预收日期">
+                <input type="text" v-model="addData.rp_foredate" readonly placeholder="请选择预收日期">
                 <div class="icon_right time"></div>
             </li>
 			<li class="flex flex_a_c flex_s_b" @click="getMethodList">
 			    <label class="title"><span class="must">收款方式</span></label>
-			    <input type="text" readonly :value="addData.rp_method_text">
+			    <input type="text" readonly :value="methodName">
 			    <div class="icon_right arrows_right"></div>
 			</li>
             <li class="li_auto flex">
@@ -39,9 +39,10 @@ export default {
             addData:{},
             clientList:[],
             clientName:'请选择收款对象',
-            clientId:0,            
-            type:'',
-            foredate:''
+            clientId:0,          
+            methodid:0,
+            methodName:'',  
+            type:''
         };
     },
     components: {},
@@ -58,6 +59,8 @@ export default {
                 this.clientName=this.addData.c_name
                 this.clientId=this.addData.c_id
                 this.foredate = this.addData.rp_foredate
+                this.methodid=this.addData.rp_method
+                this.methodName = this.addData.pm_name
             })
         }
     },
@@ -71,32 +74,38 @@ export default {
             'getCustomerEdit',
             'getReceiptDetails',
             'getMethod',
-            'methodData'
+            'methodData',
+            'addReceipt'
         ]),
         submit(item){ //提交
-            if(!this.typeName){
-                this.ddSet.setToast({text:'请选择客户类别'})
-                return
-            }
             if(!this.addData.c_name){
-                this.ddSet.setToast({text:'请填写客户名称'})
+                this.ddSet.setToast({text:'请选择收款对象'})
                 return
             }
-            if(!this.addData.co_name && this.type == 'add'){
-                this.ddSet.setToast({text:'主要联系人不能为空'})
+            if(!this.addData.rp_money){
+                this.ddSet.setToast({text:'请输入收款金额'})
                 return
             }
-            if(!this.addData.co_number && this.type == 'add'){
-                this.ddSet.setToast({text:'主要联系号码不能为空'})
+            if(!this.addData.foredate){
+                this.ddSet.setToast({text:'请选择预收日期'})
                 return
             }
+            if(!this.addData.foredate){
+                this.ddSet.setToast({text:'请选择预收日期'})
+                return
+            }
+            if(!this.addData.rp_method_text){
+                this.ddSet.setToast({text:'请选择收款方式'})
+                return
+            }
+
             this.addData.managerid = 14 //测试ID
             this.ddSet.showLoad()
             if(this.type == 'add'){
-                this.getCustomerAdd(this.addData).then(res => {
+                this.addReceipt(this.addData).then(res => {
                     this.ddSet.hideLoad()
                     if(res.data.status){
-                        this.ddSet.setToast({text:'新增客户成功'})
+                        this.ddSet.setToast({text:'新增收款通知成功'})
                         this.$router.go(-1)
                     }else{
                         this.ddSet.setToast({text:res.data.msg})
@@ -105,10 +114,10 @@ export default {
                     this.ddSet.hideLoad()
                 })
             }else{
-                this.getCustomerEdit(this.addData).then(res => {
+                this.addReceipt(this.addData).then(res => {
                     this.ddSet.hideLoad()
                     if(res.data.status){
-                        this.ddSet.setToast({text:'编辑客户成功'})
+                        this.ddSet.setToast({text:'编辑收款通知成功'})
                     }else{
                         this.ddSet.setToast({text:res.data.msg})
                     }
@@ -160,27 +169,16 @@ export default {
 			}
 		},
         selectDate(){ //活动日期
-			let _this = this
-			dd.biz.calendar.datepicker({
-				onSuccess : function(result) {
-					//onSuccess将在点击确定之后回调
-					/*{
-						start: 1514908800000,
-						end: 1514995200000,
-						timezone:8
-					}
-					*/
-				   _this.foredate =result.value
-				   _this.$set(_this.addData,'rp_foredate',_this.foredate)
-				},
-				onFail : function(err) {}
-			})
+            this.ddSet.setDatepicker().then(res => {
+                    this.$set(this.addData,'rp_foredate',res.value)
+                })
         },
         getMethodList(){//收款方式
             let _this = this
             this.getMethod({managerid:14}).then(res => {
                     console.log(res)
                 let source = []
+                let selectedKey = _this.addData.rp_method
                 res.data.map((item,index) => {
                     let obj = {
                         key:item.value,
@@ -188,9 +186,7 @@ export default {
                     }
                 	source.push(obj)
                 })
-                console.log(source)
-                _this.ddSet.setChosen({source}).then(res => {
-                console.log(res)
+                _this.ddSet.setChosen({source,selectedKey}).then(res => {
                     _this.$set(_this.addData,'rp_method',res.value)
                     _this.$set(_this.addData,'rp_method_text',res.key)
                 })

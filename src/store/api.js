@@ -179,6 +179,9 @@ const api = {
     get paymentList(){ //付款通知分页列表
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=payment_list'
     },
+    get receiptpay_add(){ //添加编辑收付款通知
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=receiptpay_add'
+    },
     get paydetailList(){ //付款明细分页列表
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=paydetail_list'
     },
