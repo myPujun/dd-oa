@@ -33,7 +33,7 @@
             </ul>
         </div>
         <button @click="receiptDetails">添加收款通知</button>
-        <top-nav title="收款通知"></top-nav>
+        <top-nav title="收款通知" text='添加' @rightClick="receiptDetails"></top-nav>
     </div>
 </template>
 

@@ -11,6 +11,10 @@ const actions = {
     getMethod({commit},params){   //收款方式
         return ajax.post(api.payMethod ,params)
     }
+    ,
+    addReceipt({commit},params){   //添加编辑收款通知
+        return ajax.post(api.receiptpay_add ,params)
+    }
 }
 
 export default {

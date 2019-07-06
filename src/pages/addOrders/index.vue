@@ -26,30 +26,30 @@
                 <input type="text"  readonly :value="formData.co_number" placeholder="请选择客户">
             </li>
             <li class="flex flex_a_c flex_s_b" @click="changeCost">
-                <label class="title"><span>合同造价</span></label>
+                <label class="title"><span class="must">合同造价</span></label>
                 <input type="text" :value="formData.o_contractprice" readonly>
                 <div class="icon_right arrows_right"></div>
             </li>
             <li class="flex flex_a_c">
-                <label class="title"><span>活动名称</span></label>
+                <label class="title"><span class="must">活动名称</span></label>
                 <input type="text" v-model="formData.o_content" placeholder="请输入活动名称">
             </li>
             <li class="flex flex_a_c">
-                <label class="title"><span>活动地点</span></label>
+                <label class="title"><span class="must">活动地点</span></label>
                 <input type="text" v-model="formData.o_address" placeholder="请输入活动地点">
             </li>
             <li class="flex flex_a_c flex_s_b" @click="selectRangeDate">
-                <label class="title"><span>活动日期</span></label>
+                <label class="title"><span class="must">活动日期</span></label>
                 <input type="text" :value="date_range" readonly placeholder="请选择活动日期">
                 <div class="icon_right time"></div>
             </li>
             <li class="flex flex_a_c flex_s_b" @click="cahgeArea">
-                <label class="title"><span>活动归属地</span></label>
+                <label class="title"><span class="must">归属地</span></label>
                 <input type="text" :value="placeText" readonly>
                 <div class="icon_right arrows_right"></div>
             </li>
             <li class="flex flex_a_c flex_s_b" @click="staff(1,'employee1')">
-                <label class="title"><span>报账人员</span></label>
+                <label class="title"><span class="must">报账人员</span></label>
                 <input type="text" :value="employee1Text" readonly>
                 <div class="icon_right add"></div>
             </li>
@@ -74,7 +74,7 @@
 			    <div class="icon_right arrows_right"></div>
 			</li>
 			<li class="flex flex_a_c flex_s_b" @click="changePushstatus">
-			    <label class="title"><span>推送上级审核</span></label>
+			    <label class="title"><span>推送状态</span></label>
 				<input type="text" readonly :value="formData.o_isPush_text">
 			    <div class="icon_right arrows_right"></div>
 			</li>
@@ -126,14 +126,19 @@ import {
 	mapState
 } from 'vuex'
 import choose from '../../components/choose.vue'
-// import * as dd from 'dingtalk-jsapi'
+import * as dd from 'dingtalk-jsapi'
 import dayjs from 'dayjs'
 
 export default {
     name:"",
     data() {
         return {
-            formData:{},
+            formData:{
+                'o_status_text':'待定',
+                //'fstatus':'0',
+                'o_isPush_text':'未推送'
+                //'o_isPush':'False'
+            },
             clientList:[],
             clientName:'请选择',
 			clientId:0,
@@ -180,8 +185,38 @@ export default {
         submit(){   //提交
 			let _this = this
 			// 判断必填
-			
-			
+			if(!this.clientId){
+                this.ddSet.setToast({text:'请选择客户'})
+                return
+            }
+            if(!_this.formData.o_contractprice){
+                this.ddSet.setToast({text:'请选择合同造价'})
+                return
+            }
+            if(!_this.formData.o_content){
+                this.ddSet.setToast({text:'请输入活动名称'})
+                return
+            }
+            if(!_this.formData.o_address){
+                this.ddSet.setToast({text:'请输入活动地点'})
+                return
+            }
+            if(!_this.date_range){
+                this.ddSet.setToast({text:'请选择活动日期'})
+                return
+            }
+            if(!_this.formData.o_place){
+                this.ddSet.setToast({text:'请选择活动归属地'})
+                return
+            }
+            if(!_this.formData.fstatus){
+                _this.formData.fstatus='0'
+            }
+            if(!_this.formData.o_isPush){
+                _this.formData.o_isPush='False'
+            }
+
+            
 			this.formData.c_id = this.clientId;
 			this.formData.managerid = 14;
 			console.log(this.formData)
@@ -348,7 +383,7 @@ export default {
 		changePushstatus(){
             let _this = this
             this.getPushstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
-                let source = [],selectedKey = _this.formData.o_isPush_text
+                let source = [],selectedKey = '未推送'
                 res.data.map((item,index) => {
                     let obj = {
                         key:item.value,
@@ -365,7 +400,7 @@ export default {
         changeFstatus(){
             let _this = this
             this.getFstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
-                let source = [],selectedKey = _this.formData.o_status_text
+                let source = [],selectedKey = '待定'
                 res.data.map((item,index) => {
                     let obj = {
                         key:item.value,
@@ -374,27 +409,11 @@ export default {
                 	source.push(obj)
                 })
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
-                    _this.$set(_this.formData,'o_status',res.value)
+                    _this.$set(_this.formData,'fstatus',res.value)
                     _this.$set(_this.formData,'o_status_text',res.key)
                 })
             })
-        },
-        changeDstatus(){    //接单状态
-			let _this = this;
-            this.getDstatus().then(res => {
-                let source = []
-                res.data.map((item,index) => {
-                    let obj = {
-                        key:item.value,
-                        value:item.key
-                    }
-					source.push(obj)
-                })
-                _this.ddSet.setChosen({source}).then(res => {
-                    _this.$set(_this.formData,'o_status',res.type)
-                })
-            })
-        },
+        },        
         changeCost(){   //合同造价
             let _this = this
             this.getContractprices({ddkey:'dingzreafyvgzklylomj'}).then(res => {
@@ -402,14 +421,24 @@ export default {
                 let selectedKey = _this.formData.o_contractprice
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
                     _this.$set(_this.formData,'o_contractprice',res.key)
-                })
+                })                
             })
         },
       selectRangeDate(){ //活动日期
-			let _this = this
+            let _this = this
+            // _this.ddSet.setChooseInterval({}).then(res => {
+            //        console.log(res)
+            //        var sdate = dayjs(res.start).format('YYYY-MM-DD');
+			// 	   var edate = dayjs(res.end).format('YYYY-MM-DD');
+            //        console.log(sdate)
+            //        console.log(edate)
+			// 	   _this.date_range = sdate + '至' + edate;
+			// 	   _this.$set(_this.formData,'o_sdate',sdate)
+			// 	   _this.$set(_this.formData,'o_edate',edate)
+            //     })   
 			dd.biz.calendar.chooseInterval({
 				defaultStart:dayjs().valueOf(),
-				defaultEnd:dayjs().add(1, 'month').valueOf(),
+				defaultEnd:dayjs().add(1, 'day').valueOf(),
 				onSuccess : function(result) {
 					//onSuccess将在点击确定之后回调
 					/*{
