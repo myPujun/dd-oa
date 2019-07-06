@@ -1,71 +1,201 @@
-[33mcommit 8cf8cc533360627bb868e8577217969e5289a9cf[m[33m ([m[1;36mHEAD -> [m[1;32mdev[m[33m, [m[1;31morigin/dev[m[33m)[m
-Author: wslyzhh <328384030@qq.com>
-Date:   Tue Jul 2 08:39:26 2019 +0800
+let baseUrl =  process.env.NODE_ENV === 'production' ? '' : '/api'
+const api = {
+    
+    ///钉钉授权绑定 start--------------------------------------------------------
+    get dingtalkUseridValidate(){  //验证是否已绑定钉钉userid用户
+        return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate'
+    },
+    get userNameValidate(){  //验证用户名是否可绑定
+        return baseUrl+'/tools/dingtalk_login.ashx?action=username_validate'
+    },
+    get managerOauthBind(){  //用户绑定钉钉userid并授权免登
+        return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate'
+    },
+    ///钉钉授权绑定 end--------------------------------------------------------
 
-    ...
+    ///数据初始化 start--------------------------------------------------------
+    get contractPrices(){   //合同造价数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_contractprice'
+    },
+    get fStatus(){   //订单状态数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_fstatus'
+    },
+    get dStatus(){   //接单状态数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_dstatus'
+    },
+    get allcustomer(){  //所有客户信息数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_allcustomer'
+    },
+    get checkStatus(){   //审批状态数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_checkstatus'
+    },
+    get lockStatus(){   //锁单状态数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_lockstatus'
+    },
+    get invoiceConfirmStatus(){   //开票状态数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_invoiceconfirmstatus'
+    },
+    get pushStatus(){   //推送上级审批数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_pushstatus'
+    },
+    get area(){ //活动归属地数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_area'
+    },
+    get allCustomer(){  //所有客户信息数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_allcustomer'
+    },
+    get contactsByCid(){    //根据客户ID获取主要联系人及号码
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_contactsbycid'
+    },
+    get employeebyarea(){   //根据活动归属地ID获取组织架构及人员
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_employeebyarea'
+    },
+    get unBusinessNature(){   //非业务支付申请支付类别
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_unbusinessnature'
+    },
+    get unBusinessPayFunction(){   //非业务支付员工往来支付用途
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_unbusinesspayfunction'
+    },
+    get nature(){   //业务性质数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_nature'
+    },
+    get natureDetail(){   //业务明细数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_naturedetail'
+    },
+    get payMethod(){   //支付方式数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_paymethod'
+    },
+    get methodData(){   //获取收付方式数据
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=method_data'
+    },
+    ///数据初始化 end--------------------------------------------------------
 
-[33mcommit 230fa37404aad0db58cf0cd6eaf7754b0e819ca0[m
-Author: wslyzhh <328384030@qq.com>
-Date:   Tue Jul 2 00:34:11 2019 +0800
 
-    test
+    ///客户管理模块 start--------------------------------------------------------
+    get customerList(){    //查看客户分页列表
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_list'
+    },
+    get customerDetails(){  //查看客户详细信息
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_show'
+    },
+    get customerAdd(){  //新增客户详情
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_add'
+    },
+    get customerObtain(){   //获取客户详情
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=get_customerById'
+    },
+    get customerEdit(){ //编辑客户详情
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_edit'
+    },
+    get contactAdd(){   //新增次要联系人
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=contact_add'
+    },
+    get contactEdit(){   //编辑主、次要联系人
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=contact_edit'
+    },
+    
+    ///客户管理模块 end--------------------------------------------------------
 
-[33mcommit 4a02921b6a3825bc9fbb87703be34f4cad5835cb[m
-Author: wslyzhh <328384030@qq.com>
-Date:   Tue Jul 2 00:28:00 2019 +0800
 
-    merge
+    ///订单管理模块 start--------------------------------------------------------
+    get orderList(){ //订单分页数据列表
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_list'
+    },
+    get orderAdd(){ //新增订单信息
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_edit'
+    },
+    get orderEdit(){ //修改订单信息
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_edit'
+    },
+    get orderDetails(){ //查看订单详细信息
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_show'
+    },
 
-[33mcommit b48606c0c011a76003b21c54920d7356963133cd[m
-Author: zccee <zccee@sina.com>
-Date:   Mon Jul 1 23:43:32 2019 +0800
 
-    整合接口API调用地址
+    get unBusinessPayList(){ //非业务支付申请分页数据列表
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_list'
+    },
+    get unBusinessPayDetails(){ //查看非业务支付申请
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_show'
+    },
+    get unBusinessPayAdd(){ //新增非业务支付申请
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_add'
+    },  
+    get unBusinessPayEdit(){ //修改业务支付申请
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_edit'
+    },  
+    get unBusinessPayAudit(){ //审批业务支付申请
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_audit'
+    },  
+    get unBusinessPayConfirmPay(){ //业务支付申请支付确认
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_confirm_pay'
+    },
 
-[33mcommit 0bae3c87081eb95421cc57f55a6c49d6b37b50ad[m[33m ([m[1;32mwslyz[m[33m)[m
-Author: Jean <1176205845@qq.com>
-Date:   Sun Jun 30 23:54:58 2019 +0800
 
-    添加客户、新增订单增加表单交互
+    get financeAdd(){ //新增收款通知\付款通知
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=finance_add'
+    },
+    get financeAudit(){ //审批业务信息
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=finance_audit'
+    },
+    
 
-[33mcommit 0320f5497dc81e020a99cf9b9f30a7240e69386d[m
-Author: Jean <1176205845@qq.com>
-Date:   Thu Jun 27 01:10:46 2019 +0800
+    get invoiceList(){ //发票申请分页数据列表
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=invoice_list'
+    },
+    get invoiceDetails(){ //查看发票申请
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=invoice_show'
+    },
+    get invoiceAdd(){ //新增发票申请
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=invoice_add'
+    },
+    get invoiceAudit(){ //审批发票申请
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=invoice_audit'
+    },
+    get invoiceConfirm(){ //确认发票申请是否已开票
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=invoice_confirm'
+    },
 
-    修复生产环境不能调用
 
-[33mcommit 00bfe768b8eee4a927d790479453765cfbdebb72[m
-Author: Jean <1176205845@qq.com>
-Date:   Wed Jun 26 01:25:14 2019 +0800
+    get payList(){ //预付款审核分页列表
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=pay_list'
+    },
+    get payDetails(){ //查看预付款信息
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=pay_show'
+    },
+    get payAudit(){ //审批预付款信息
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=pay_audit'
+    },
+    get payConfirm(){ //预付款确认支付
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=pay_confirm'
+    },
+    ///订单管理模块 end--------------------------------------------------------
 
-    调试客户管理接口
 
-[33mcommit 7f9243c3d111f008f71c906689dd50217f0f2843[m
-Author: Jean <1176205845@qq.com>
-Date:   Tue Jun 25 00:45:21 2019 +0800
+    ///通知管理模块 start--------------------------------------------------------
+    get receiptList(){ //收款通知分页列表
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=receipt_list'
+    },
+    get paymentList(){ //付款通知分页列表
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=payment_list'
+    },
+    get paydetailList(){ //付款明细分页列表
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=paydetail_list'
+    },
+    get paydetailDetails(){ //查看付款明细详细信息
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=paydetail_show'
+    },
+    get billList(){ //开票通知分页列表
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=bill_list'
+    },
+    ///通知管理模块 end--------------------------------------------------------
 
-    增加接口调用
-
-[33mcommit 0b38b0eac33380bf9bad7ec45758798aecec061f[m
-Author: Jean <1176205845@qq.com>
-Date:   Tue Jun 18 00:51:17 2019 +0800
-
-    增加订单查询
-
-[33mcommit 9d1884628fd3ad3e8993a25773d71b896280e8cc[m
-Author: Jean <1176205845@qq.com>
-Date:   Fri Jun 14 00:25:57 2019 +0800
-
-    封装dd公共方法、新增订单
-
-[33mcommit af4ad388cb6934ccb9ec6c53cd3a2bfbb47a851f[m
-Author: Jean <1176205845@qq.com>
-Date:   Wed Jun 12 01:11:36 2019 +0800
-
-    重新整理了router、文件夹页面
-
-[33mcommit 1d04c5c93bfeb88755241cbaa4f4e0dcc9a4076e[m
-Author: Jean <1176205845@qq.com>
-Date:   Mon May 20 00:13:17 2019 +0800
-
-    第一次提交
+    ///公共方法管理模块 start--------------------------------------------------------    
+    get upLoadFile(){
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=UpLoadFile'
+    }
+    ///公共方法管理模块 end-------------------------------------------------------- 
+}
+export {
+    api
+}
