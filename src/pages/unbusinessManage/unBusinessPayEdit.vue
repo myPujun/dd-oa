@@ -31,9 +31,9 @@
                 <label class="title"><span class="must">金额</span></label>
                 <input type="text" v-model="editData.uba_money" placeholder="请输入有效金额">
             </li>
-            <li class="flex flex_a_c flex_s_b">
+            <li class="flex flex_a_c flex_s_b" @click="selectDate">
                 <label class="title"><span class="must">预付日期</span></label>
-                <input type="text" v-model="editData.uba_foreDate" placeholder="请选择日期"  @click="selectDate">
+                <input type="text" readonly v-model="editData.uba_foreDate" placeholder="请选择日期"  >
                 <div class="icon_right time"></div>
             </li>
             <li class="li_auto flex">
@@ -112,7 +112,9 @@ export default {
         },
         selectDate(){ //活动日期
 			let _this = this
-			_this.ddSet.setChosen()
+			_this.ddSet.setDatepicker().then(res => {
+                _this.$set(this.editData,'uba_foreDate',res.value)
+            })
         }
     },
     beforeDestroy(){
