@@ -5,9 +5,17 @@
 </template>
 
 <script>
-
 export default {
-  name: 'App'
+  name: 'App',
+  created(){
+    
+  },
+  mounted(){
+      
+  },
+  methods:{
+   
+  }
 }
 </script>
 

@@ -52,17 +52,59 @@ export default {
     },
     components: {},
     computed: {
-        ...mapMutations([
-            'setUser'
-        ])
+        ...mapState({
+            userInfo: state => state.user.userInfo,
+            corpid:state => state.user.corpid
+        })
     },
     mounted() {
-        // let param = new URLSearchParams()
-        // param.append('oauth_userid','pujun')
-        this.getUser({oauth_userid:'pujun'}).then(res => {
-            this.$store.commit('setUser',res)
+        let user = {
+            "id":14,//自增ID
+            "role_id": 3,//角色ID
+            "role_type":2,//管理员类型1超管2系管
+            "user_name":"ZB000",//用户名
+            "password":'48D5BAB94F9FA6FC',//登录密码
+            "salt":"F8N46B",//6位随机字符串,加密用到
+            "avatar":null,//管理员头像
+            "real_name":"系统管理员",//用户昵称
+            "telephone":"18888888888",//联系电话
+            "email":null,//电子邮箱
+            "is_audit":0,//信息是否要审核，0未否1为是
+            "is_lock":0,//是否锁定，0为否1为是
+            "add_time":"2019-05-21 08:50:36.120",//添加时间
+            "departID": 135,//岗位ID
+            "departTree":"海南快思图商务会展有限公司-行政人事部-系统管理员",//岗位结构
+            "departTreeID":" 17-29-135 ",//岗位结构
+            "detaildepart":"系统管理员",//具体岗位
+            "area":" HQ",//区域
+            "RolePemissionList":[{
+                    "urp_id":411,
+                    "urp_type":2, 
+                    "urp_username":'',
+                    "urp_code":"0401",
+                },{
+                    "urp_id":412,
+                    "urp_type":2, 
+                    "urp_username":'',
+                    "urp_code":"0402"
+            }]//员工的角色权限
+        }
+        this.$store.commit('setUser',user)
+        //获取企业ID
+        this.getCorpid().then(res => {
+            this.$store.commit('setCorpid',res.data.corpid)
         })
-
+        //获取用户信息
+        this.ddSet.infoCode(this.corpid).then(res => {
+            this.userid(res.code)
+        })
+        //验证用户名是否可绑定
+        let params = {
+            username:'ZB000'
+        }
+        this.getUserName(params).then(res => {  
+            this.$store.commit('setBinding',res.data.status)
+        })
         //获取菜单列表
         this.navList = menu
         setInterval(() => {
@@ -75,8 +117,21 @@ export default {
     },
     methods: {
         ...mapActions([
-            'getUser'
-        ])
+            'getUserId',
+            'getUserName',
+            'getCorpid'
+        ]),
+        userid(code){
+            this.getUserId({code}).then(res => {
+                if(res.data.status == 3){
+                    this.$store.commit('setUser',res.data)
+                }else if(res.data.status == 2){
+                    this.$router.push({path:'/register'})
+                }else{
+                    this.ddSet.setToast({text:res.data.msg})
+                }
+            })
+        }
     },
 }
 </script>
