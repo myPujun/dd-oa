@@ -1,6 +1,8 @@
 let baseUrl =  process.env.NODE_ENV === 'production' ? '' : '/api'
 const api = {
-    
+    get corpid(){
+        return baseUrl+'/tools/dingtalk_login.ashx?action=get_dingtalk_corpid'
+    },
     ///钉钉授权绑定 start--------------------------------------------------------
     get dingtalkUseridValidate(){  //验证是否已绑定钉钉userid用户
         return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate'
@@ -9,7 +11,7 @@ const api = {
         return baseUrl+'/tools/dingtalk_login.ashx?action=username_validate'
     },
     get managerOauthBind(){  //用户绑定钉钉userid并授权免登
-        return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate'
+        return baseUrl+'/tools/dingtalk_login.ashx?action= manager_oauth_bind'
     },
     ///钉钉授权绑定 end--------------------------------------------------------
 

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import home from '@/pages/home' //首页
+import register from '@/pages/register'
  
 //测试管理
 import test from './test'
@@ -60,6 +61,9 @@ routes = routes.concat(
     [{
       path: '*',
       redirect: '/'
+    },{
+      path:'/register',
+      component:register
     }]
 )
 
