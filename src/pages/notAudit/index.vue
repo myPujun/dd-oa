@@ -1,102 +1,122 @@
-<!-- 业务支付审核列表 -->
+<!-- 付款明细列表首页 -->
 <template>
     <div>
         <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
         <div class="search_box flex flex_a_c flex_j_c">
-           <input type="text" placeholder="搜索联系人姓名或公司名称">
+           <input type="text" v-model="searchData.keywords" @input="changeSearch" placeholder="搜索客户名称">
         </div>
         <div class="customer_list">
+            <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-                <router-link to="/nonBusinessDetails">
+                <router-link tag="li" :to="{path:'/payDetailEdit',query: {rpd_id:item.rpd_id,type:'EDIT'}}" v-for="(item,index) in showPayList" :key="index">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <img class="icon" src="../../assets/img/audit_yes.png" alt="">
-                            
-                            <router-link tag="h2" class="name" to="/clientDetails">业务活动执行备用金借款</router-link>
-                            <input type="button" value="未支付">
+                            <img class="icon" :src="isIocn[item.rpd_flag1]" alt="">
+                            <img class="icon" :src="isIocn[item.rpd_flag2]" alt="">
+                            <img class="icon" :src="isIocn[item.rpd_flag3]" alt="">
+                            <h2 class="name">{{item.c_name}}</h2>
+                            <!-- <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
+                            <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span> -->
                         </section>
-                        <section class="operation_icon flex">
+                        <!-- <section class="operation_icon flex">
+                            <router-link tag="span" :to="{path:'/receiptDetails',query:{id:item.rp_id}}"></router-link>
                             <span></span>
-                            <span></span>
-                        </section>
+                        </section> -->
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
-                            <span>No.20190415002</span>
-                            <span>员工往来</span>
+                            <span>{{item.rpd_oid}}</span>
+                            <span>{{item.rpd_money}}</span>
+                            <span>{{item.rpd_foredate | formatDate}}</span>
                         </div>
                     </div>
                 </router-link>
-                <li>
-                    <div class="company flex flex_a_c flex_s_b">
-                        <section class="flex flex_a_c">
-                            <img class="icon" src="../../assets/img/audit_yes.png" alt="">
-                            <h2 class="name">业务活动执行备用金借款</h2>
-                            <input class="blue" type="button" value="已支付">
-                        </section>
-                        <section class="operation_icon flex">
-                            <span></span>
-                            <span></span>
-                        </section>
-                    </div>
-                    <div class="message flex flex_a_c flex_s_b">
-                        <div class="message_list flex">
-                            <span>No.20190415002</span>
-                            <span>员工往来</span>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="company flex flex_a_c flex_s_b">
-                        <section class="flex flex_a_c">
-                            <img class="icon" src="../../assets/img/audit.png" alt="">
-                            <h2 class="name">员工餐费</h2>
-                            <input type="button" value="未支付">
-                        </section>
-                        <section class="operation_icon flex">
-                            <span></span>
-                            <span></span>
-                        </section>
-                    </div>
-                    <div class="message flex flex_a_c flex_s_b">
-                        <div class="message_list flex">
-                            <span>No.20190415003</span>
-                            <span>工薪支付</span>
-                        </div>
-                    </div>
-                </li>
             </ul>
+            <div class="loadmore" @click="loadNextPage" v-show="pageTotal > searchData.pageIndex">
+				点击加载更多
+			</div>
         </div>
+        <top-nav title="付款通知"></top-nav>
     </div>
 </template>
 
 <script>
 import tabList from '../../components/tab.vue'
+import {mapActions} from 'vuex'
+import {formatDate} from '../../assets/js/date.js'
+
+import audit from '../../assets/img/audit.png'
+import audit_no from '../../assets/img/audit_no.png'
+import audit_yes from '../../assets/img/audit_yes.png'
 export default {
     name:"",
     data() {
        return {
            topTabList:['待审批','已审批'],
-           tabIndex:0,
+           isIocn:[audit,audit_no,audit_yes],
+           showPayList:[],
+           pageTotal:9,
+		   recordTotal:9,
+		   searchData:{
+			    pageIndex:1,
+                pageSize:10,
+                keywords:'',
+                type:'check',
+                flag:'0',
+                managerid:16
+		   }
        };
+    },
+    filters:{
+        formatDate(time){
+            let date = new Date(time)
+            return formatDate(date,'yyyy-MM-dd')
+        }
     },
     components: {
         tabList,
     },
     computed: {},
-    created(){
-        this.ddSet.setTitleRight({title:'业务支付审核列表'}).then(res => {
-            if(res){
-
-            }
-        })
-    },
-    mounted() {
-        
+    created(){},
+    mounted() {        
+        this.newpayDetailList()
     },
     methods: {
+        ...mapActions([
+            'getPayDetailList'
+        ]),
+        loadNextPage(){
+			this.payDetailList()
+		},
+        payDetailList(){            
+            let _this = this
+            _this.searchData.pageIndex++
+            this.getPayDetailList(_this.searchData).then(res => {
+                if(res.data.msg){
+					_this.ddSet.setToast({text:res.data.msg})
+					return
+				}
+				if(_this.searchData.pageIndex < 2){
+					_this.showPayList = res.data.list;
+					_this.recordTotal = res.data.pageTotal
+					_this.pageTotal = Math.ceil(_this.recordTotal / _this.searchData.pageSize)
+				}
+				else{
+					_this.showPayList = _this.showPayList.concat(res.data.list);
+				}
+            })
+        },
+        newpayDetailList(){
+			let _this = this
+			_this.searchData.pageIndex = 0;
+			_this.payDetailList()
+		},
+        changeSearch(){
+            this.newpayDetailList()
+        },
         changeTab(index){
-            this.tabIndex = index
+            this.searchData.flag = index;
+			this.newpayDetailList()
         }
     },
 }
@@ -156,6 +176,11 @@ export default {
                 .name{
                     color: $blue_1;
                     font-size: $size_24;
+                }
+                .isExpect{
+                    font-size: $size_20;
+                    margin-left: .1rem;
+                    color:green;
                 }
                 input{
                     width: .86rem;
