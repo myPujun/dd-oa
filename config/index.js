@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-          target: 'http://oa.zcenet.com',//后端接口地址
+          target: 'http://localhost/MettingSys',//后端接口地址
           changeOrigin: true,//是否允许跨越
           pathRewrite: {
               '^/api': '',//重写,
@@ -21,7 +21,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: '192.168.31.217', // can be overwritten by process.env.HOST
+    host: '192.168.0.116', // can be overwritten by process.env.HOST
     // host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
