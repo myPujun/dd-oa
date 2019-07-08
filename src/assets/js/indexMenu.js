@@ -47,7 +47,7 @@ let list = [
         list:[
             {
                 imgUrl:require('../img/nav_list/icon_finance_1.png'),
-                link:'',
+                link:'notAudit',
                 name:'业务支付审核',
                 code:['0603','0402','0601']
             },

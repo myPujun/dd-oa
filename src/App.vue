@@ -16,7 +16,7 @@ export default {
       }
   },
   created(){
-    
+    // this.userid('11')
   },
   mounted(){
     //获取企业ID
