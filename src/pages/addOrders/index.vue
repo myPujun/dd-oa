@@ -423,7 +423,7 @@ export default {
                 let selectedKey = _this.formData.o_contractprice
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
                     _this.$set(_this.formData,'o_contractprice',res.key)
-                })                
+                })
             })
         },
       selectRangeDate(){ //活动日期

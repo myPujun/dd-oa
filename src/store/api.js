@@ -7,11 +7,14 @@ const api = {
     get dingtalkUseridValidate(){  //验证是否已绑定钉钉userid用户
         return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate'
     },
+    get dingtalkUseridValidateTest(){  //验证是否已绑定钉钉userid用户---test
+        return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate_Test'
+    },
     get userNameValidate(){  //验证用户名是否可绑定
         return baseUrl+'/tools/dingtalk_login.ashx?action=username_validate'
     },
     get managerOauthBind(){  //用户绑定钉钉userid并授权免登
-        return baseUrl+'/tools/dingtalk_login.ashx?action= manager_oauth_bind'
+        return baseUrl+'/tools/dingtalk_login.ashx?action=manager_oauth_bind'
     },
     ///钉钉授权绑定 end--------------------------------------------------------
 
@@ -125,6 +128,9 @@ const api = {
     },  
     get unBusinessPayEdit(){ //修改业务支付申请
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_edit'
+    }, 
+    get unBusinessPayAuditBind(){ //绑定非业务支付审批类型
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_auditBind'
     },  
     get unBusinessPayAudit(){ //审批业务支付申请
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_audit'

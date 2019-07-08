@@ -8,11 +8,14 @@ const actions = {
     getUnBusinessPayDetails({commit},params){   //查看非业务支付申请
         return ajax.post(api.unBusinessPayDetails ,params)
     },
-    getUnBusinessPayAdd({commit},params){   //新增非业务支付申请
-        return ajax.post(api.unBusinessPayAdd ,params)
-    },
+    // getUnBusinessPayAdd({commit},params){   //新增非业务支付申请
+    //     return ajax.post(api.unBusinessPayAdd ,params)
+    // },
     getUnBusinessPayEdit({commit},params){   //修改业务支付申请
         return ajax.post(api.unBusinessPayEdit ,params)
+    },
+    getUnBusinessPayAuditObtain({commit},params){ //初始化非业务支付审批数据
+        return ajax.post(api.unBusinessPayAuditBind ,params)
     },
     getUnBusinessPayAudit({commit},params){   //审批业务支付申请
         return ajax.post(api.unBusinessPayAudit ,params)
