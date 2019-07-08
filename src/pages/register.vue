@@ -7,7 +7,7 @@
         <div class="from">
             <input type="text" v-model="fromData.username" placeholder="请输入手机号">
             <input type="password" v-model="fromData.password" placeholder="请输入密码">
-             <input class="from_btn" type="button" value="登录" @click="submit">
+            <input class="from_btn" type="button" value="登录" @click="submit">
         </div>
         <top-nav title="登录"></top-nav>
     </div>
@@ -25,7 +25,7 @@ export default {
     components: {},
     computed: {
         ...mapState({
-            corpId:state => state.user.corpid
+            corpId:state => state.user.corpid,
         })
     },
     mounted() {
@@ -38,13 +38,14 @@ export default {
         submit(){
             if(!this.fromData.username){
                 this.ddSet.setToast({text:'请输入手机号'})
+                return
             }
             if(!this.fromData.password){
                 this.ddSet.setToast({text:'请输入密码'})
+                return
             }
             this.ddSet.infoCode(this.corpId).then(res => {
-                let code = ''
-                code = res.code
+                let code = res.code
                 let {username,password} = this.fromData
                 let params = {
                     username,
