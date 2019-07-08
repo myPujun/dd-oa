@@ -1,15 +1,20 @@
 let baseUrl =  process.env.NODE_ENV === 'production' ? '' : '/api'
 const api = {
-    
+    get corpid(){
+        return baseUrl+'/tools/dingtalk_login.ashx?action=get_dingtalk_corpid'
+    },
     ///钉钉授权绑定 start--------------------------------------------------------
     get dingtalkUseridValidate(){  //验证是否已绑定钉钉userid用户
         return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate'
+    },
+    get dingtalkUseridValidateTest(){  //验证是否已绑定钉钉userid用户---test
+        return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate_Test'
     },
     get userNameValidate(){  //验证用户名是否可绑定
         return baseUrl+'/tools/dingtalk_login.ashx?action=username_validate'
     },
     get managerOauthBind(){  //用户绑定钉钉userid并授权免登
-        return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate'
+        return baseUrl+'/tools/dingtalk_login.ashx?action=manager_oauth_bind'
     },
     ///钉钉授权绑定 end--------------------------------------------------------
 
@@ -171,8 +176,13 @@ const api = {
     },
     ///订单管理模块 end--------------------------------------------------------
 
+    ///财务管理模块 start------------------------------------------------------
+    get payDetailAudit(){ //业务审批
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=paydetail_audit'
+    },
+    ///财务管理模块 end--------------------------------------------------------
 
-    ///通知管理模块 start--------------------------------------------------------
+    ///通知管理模块 start------------------------------------------------------
     get receiptList(){ //收款通知分页列表
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=receipt_list'
     },

@@ -21,17 +21,19 @@ let list = [
             {
                 imgUrl:require('../img/nav_list/icon_orderQuery.png'),
                 link:'shoppingCart',
-                name:'订单查询'
+                name:'订单查询',
             },
             {
                 imgUrl:require('../img/nav_list/icon_Approva.png'),
                 link:'businessReview',
-                name:'业务审批'
+                name:'业务审批',
+                code:['0603']
             },
             {
                 imgUrl:require('../img/nav_list/icon_business.png'),
                 link:'bigbusiness',
-                name:'特大业务查询'
+                name:'特大业务查询',
+                code:['0401','0601','0604','0603']
             },
             {
                 imgUrl:require('../img/nav_list/icon_NonOperative.png'),
@@ -45,23 +47,27 @@ let list = [
         list:[
             {
                 imgUrl:require('../img/nav_list/icon_finance_1.png'),
-                link:'',
-                name:'业务支付审核'
+                link:'notAudit',
+                name:'业务支付审核',
+                code:['0603','0402','0601']
             },
             {
                 imgUrl:require('../img/nav_list/icon_finance_2.png'),
                 link:'',
-                name:'非业务支付审核'
+                name:'非业务支付审核',
+                code:['0603','0402','0601']
             },
             {
                 imgUrl:require('../img/nav_list/icon_finance_3.png'),
                 link:'',
-                name:'发票审核'
+                name:'发票审核',
+                code:['0603','0402']
             },
             {
                 imgUrl:require('../img/nav_list/icon_finance_4.png'),
                 link:'',
-                name:'预付款审批'
+                name:'预付款审批',
+                code:['0402','0601']
             },
         ]
     },

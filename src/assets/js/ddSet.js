@@ -1,6 +1,22 @@
 import * as dd from 'dingtalk-jsapi'
 import dayjs from 'dayjs'
 
+function infoCode(corpId){
+    return new Promise(function(resolve, reject) {
+        dd.ready(function() {
+            dd.runtime.permission.requestAuthCode({
+                corpId, // 企业id
+                onSuccess: function (info) {
+                    resolve(info)
+                },
+                onFail : function(err) {
+                    setToast({text:JSON.stringify(err)})
+                }
+            });
+        });
+    })
+}
+//显示load
 async function showLoad(text = '使劲加载中..'){
     dd.device.notification.showPreloader({
         text, //loading显示的字符，空表示不显示文字
@@ -11,6 +27,7 @@ async function showLoad(text = '使劲加载中..'){
         onFail : function(err) {}
     })
 }
+//隐藏load
 async function hideLoad(){
     dd.device.notification.hidePreloader({
         onSuccess : function(result) {
@@ -92,6 +109,7 @@ function setChooseInterval({defaultStart = 0,defaultEnd = 0} = {}){
     })
 }
 export default {
+    infoCode,
     setToast,
     setChosen,
     setDatepicker,

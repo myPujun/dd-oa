@@ -2,31 +2,34 @@
 <template>
     <div class="body_gery">
         <ul class="form_list form_list_noborder">
+            <li class="li_auto flex">
+                <label class="title"><span>订单号</span></label>
+                {{addData.rpdoid}}
+            </li>
             <li class="flex flex_a_c flex_s_b" @click="changeClient">
-                <label class="title"><span class="must">收款对象</span></label>
+                <label class="title"><span class="must">付款对象</span></label>
                 <input type="text" :value="clientName" readonly>
                 <div class="icon_right arrows_right"></div>
             </li>
             <li class="flex flex_a_c">
-                <label class="title"><span class="must">收款金额</span></label>
-                <input type="text" v-model="addData.rpmoney" placeholder="请输入收款金额">
+                <label class="title"><span class="must">付款金额</span></label>
+                <input type="text" v-model="addData.rpdmoney" placeholder="请输入付款金额">
             </li>
             <li class="flex flex_a_c flex_s_b" @click="selectDate">
-                <label class="title"><span class="must">预收日期</span></label>
-                <input type="text" v-model="addData.rpforedate" readonly placeholder="请选择预收日期">
+                <label class="title"><span class="must">预付日期</span></label>
+                <input type="text" v-model="addData.rpdforedate" readonly placeholder="请选择预付日期">
                 <div class="icon_right time"></div>
             </li>
-			<li class="flex flex_a_c flex_s_b" @click="getMethodList">
-			    <label class="title"><span class="must">收款方式</span></label>
-			    <input type="text" readonly v-model="addData.rp_method_text">
-			    <div class="icon_right arrows_right"></div>
-			</li>
             <li class="li_auto flex">
                 <label class="title"><span>收款内容</span></label>
-                <textarea v-model="addData.rpcontent" placeholder="请输入收款内容"></textarea>
+                <textarea v-model="addData.rpdcontent" placeholder="请输入收款内容"></textarea>
+            </li>
+            <li class="li_auto flex">
+                <label class="title"><span>文件</span></label>
+                <textarea v-model="addData.rpcontent" ></textarea>
             </li>
         </ul>
-        <top-nav :title='type == "add" ? "添加收款通知":"查看收款通知"' ></top-nav>
+        <top-nav :title='type == "add" ? "添加付款明细":"查看付款明细"' ></top-nav>
     </div>
 </template>
 
@@ -41,29 +44,28 @@ export default {
             clientName:'请选择收款对象',
             clientId:0,         
             type:'',
-            rpid:0
+            rpdid:0
         };
     },
     components: {},
     computed: {...mapState(['addOrders'])},
     created(){
-        let {type,rp_id} = this.$route.query
+        let {type,rpd_id} = this.$route.query
         this.type = type
-        this.rpid=rp_id
+        this.rpdid=rpd_id
         if(type == 'EDIT'){
             let params = {
-                rp_id
+                rpd_id
             }
-            this.getReceiptDetails(params).then(res => {
+            this.getPayDetailEdit(params).then(res => {
                 console.log(res.data)
                 this.addData = res.data
                 this.clientName=this.addData.c_name
                 this.clientId=this.addData.c_id
-                this.addData.rpmoney=this.addData.rp_money
-                this.addData.rpforedate = this.addData.rp_foredate
-                this.addData.rpmethod=this.addData.rp_method
-                this.addData.rp_method_text= this.addData.pm_name
-                this.addData.rpcontent = this.addData.rp_content
+                this.addData.rpdoid = this.addData.rpd_oid
+                this.addData.rpdmoney=this.addData.rpd_money
+                this.addData.rpdforedate = this.addData.rpd_foredate
+                this.addData.rpdcontent = this.addData.rpd_content
             })
         }
     },
@@ -73,7 +75,7 @@ export default {
     methods: {
         ...mapActions([
             'getAllCustomer',
-            'getReceiptDetails',
+            'getPayDetailEdit',
             'getMethod',
             'methodData',
             'addReceipt'
@@ -170,27 +172,8 @@ export default {
 		},
         selectDate(){ //活动日期
             this.ddSet.setDatepicker().then(res => {
-                    this.$set(this.addData,'rpforedate',res.value)
+                    this.$set(this.addData,'rpdforedate',res.value)
                 })
-        },
-        getMethodList(){//收款方式
-            let _this = this
-            this.getMethod({managerid:14}).then(res => {
-                    console.log(res)
-                let source = []
-                let selectedKey = _this.addData.rpmethod
-                res.data.map((item,index) => {
-                    let obj = {
-                        key:item.value,
-                        value:item.key
-                    }
-                	source.push(obj)
-                })
-                _this.ddSet.setChosen({source,selectedKey}).then(res => {
-                    _this.$set(_this.addData,'rpmethod',res.value)
-                    _this.$set(_this.addData,'rp_method_text',res.key)
-                })
-            })
         }
     },
     beforeDestroy(){

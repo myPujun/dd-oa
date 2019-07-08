@@ -3,30 +3,30 @@
     <div class="body_gery">
         <ul class="form_list form_list_noborder">
             <li class="flex flex_a_c flex_s_b" @click="changeClient">
-                <label class="title"><span class="must">收款对象</span></label>
+                <label class="title"><span class="must">付款对象</span></label>
                 <input type="text" :value="clientName" readonly>
                 <div class="icon_right arrows_right"></div>
             </li>
             <li class="flex flex_a_c">
-                <label class="title"><span class="must">收款金额</span></label>
-                <input type="text" v-model="addData.rpmoney" placeholder="请输入收款金额">
+                <label class="title"><span class="must">付款金额</span></label>
+                <input type="text" v-model="addData.rpmoney" placeholder="请输入付款金额">
             </li>
             <li class="flex flex_a_c flex_s_b" @click="selectDate">
-                <label class="title"><span class="must">预收日期</span></label>
-                <input type="text" v-model="addData.rpforedate" readonly placeholder="请选择预收日期">
+                <label class="title"><span class="must">预付日期</span></label>
+                <input type="text" v-model="addData.rpforedate" readonly placeholder="请选择预付日期">
                 <div class="icon_right time"></div>
             </li>
 			<li class="flex flex_a_c flex_s_b" @click="getMethodList">
-			    <label class="title"><span class="must">收款方式</span></label>
+			    <label class="title"><span>付款方式</span></label>
 			    <input type="text" readonly v-model="addData.rp_method_text">
 			    <div class="icon_right arrows_right"></div>
 			</li>
             <li class="li_auto flex">
-                <label class="title"><span>收款内容</span></label>
+                <label class="title"><span>付款内容</span></label>
                 <textarea v-model="addData.rpcontent" placeholder="请输入收款内容"></textarea>
             </li>
         </ul>
-        <top-nav :title='type == "add" ? "添加收款通知":"查看收款通知"' ></top-nav>
+        <top-nav :title='type == "add" ? "添加预付款":"查看预付款"' ></top-nav>
     </div>
 </template>
 
@@ -38,7 +38,7 @@ export default {
         return {
             addData:{},
             clientList:[],
-            clientName:'请选择收款对象',
+            clientName:'请选择付款对象',
             clientId:0,         
             type:'',
             rpid:0
@@ -80,19 +80,19 @@ export default {
         ]),
         submit(item){ //提交
             if(!this.clientId){
-                this.ddSet.setToast({text:'请选择收款对象'})
+                this.ddSet.setToast({text:'请选择付款对象'})
                 return
             }
             if(!this.addData.rpmoney){
-                this.ddSet.setToast({text:'请输入收款金额'})
+                this.ddSet.setToast({text:'请输入付款金额'})
                 return
             }
             if(!this.addData.rpforedate){
-                this.ddSet.setToast({text:'请选择预收日期'})
+                this.ddSet.setToast({text:'请选择预付日期'})
                 return
             }
             if(!this.addData.rp_method_text){
-                this.ddSet.setToast({text:'请选择收款方式'})
+                this.ddSet.setToast({text:'请选择付款方式'})
                 return
             }
             this.addData.rpid=this.rpid

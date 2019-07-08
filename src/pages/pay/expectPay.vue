@@ -3,24 +3,24 @@
     <div>
        <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
         <div class="search_box flex flex_a_c flex_j_c">
-           <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索客户名称">
+           <input type="text" v-model="searchData.keywords" @input="changeSearch" placeholder="搜索客户名称">
         </div>
         <div class="customer_list">
-            <h2 class="amount">共{{list.length}}条</h2>
+            <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-                <li v-for="(item,index) in list" :key="index">
+                <router-link tag="li" :to="{path:'/expectPayEdit',query: {rp_id:item.rp_id,type:'EDIT'}}" v-for="(item,index) in showExpectPayList" :key="index">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <img class="icon" :src="isIocn[item.rp_flag]" alt="">
                             <img class="icon" :src="isIocn[item.rp_flag1]" alt="">
                             <h2 class="name">{{item.c_name}}</h2>
                             <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已付款':'待付款'" class="blueq">
-                            <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span>
+                            <!-- <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span> -->
                         </section>
-                        <section class="operation_icon flex">
+                        <!-- <section class="operation_icon flex">
                             <router-link tag="span" :to="{path:'/receiptDetails',query:{id:item.rp_id}}"></router-link>
                             <span></span>
-                        </section>
+                        </section> -->
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
@@ -30,8 +30,11 @@
                             <span v-show="item.rp_date">{{item.rp_date | formatDate}}</span>
                         </div>
                     </div>
-                </li>
+                </router-link>
             </ul>
+            <div class="loadmore" @click="loadNextPage" v-show="pageTotal > searchData.pageIndex">
+				点击加载更多
+			</div>
         </div>
         <top-nav title="收款通知"></top-nav>
     </div> 
@@ -50,10 +53,18 @@ export default {
     data() {
        return {
            topTabList:['付款明细','预付款'],
-           tabIndex:1,
+           showExpectPayList:[],
            list:[],
            isIocn:[audit,audit_no,audit_yes],
-           searchText:''
+           pageTotal:9,
+		   recordTotal:9,
+		   searchData:{
+			    pageIndex:1,
+                pageSize:999,
+                keywords:'',
+                isExpect:'True',
+                managerid:14
+		   }
        };
     },
     filters:{
@@ -68,32 +79,45 @@ export default {
     computed: {},
     created(){},
     mounted() {        
-        this.payList()
+        this.newpayList()
     },
     
     methods: {
         ...mapActions([
             'getPaytList'
         ]),
-        payList({rp_isExpect = 1} = {}){
-            let params = {
-                pageIndex:1,
-                pageSize:999,
-                keywords:this.searchText,
-                rp_isExpect,
-                managerid:1
-            }
-            this.getPaytList(params).then(res => {
-                this.list = res.data.list
+        loadNextPage(){
+			this.newpayList()
+		},
+        payList(){
+            let _this = this
+            _this.searchData.pageIndex++
+            this.getPaytList(_this.searchData).then(res => {
+                if(res.data.msg){
+					_this.ddSet.setToast({text:res.data.msg})
+					return
+				}
+				if(_this.searchData.pageIndex < 2){
+					_this.showExpectPayList = res.data.list;
+					_this.recordTotal = res.data.pageTotal
+					_this.pageTotal = Math.ceil(_this.recordTotal / _this.searchData.pageSize)
+				}
+				else{
+					_this.showExpectPayList = _this.showExpectPayList.concat(res.data.list);
+				}
             })
         },
+        newpayList(){
+            let _this = this
+			_this.searchData.pageIndex = 0;
+			_this.payList()
+        },
         changeSearch(){
-            this.payList({rp_isExpect:this.tabIndex})
+            this.newpayList()
         },
         changeTab(index){
             if(index==1){
-                this.tabIndex = index
-                this.payList({rp_isExpect:index})
+                this.newpayList()
             }
             else{
                 this.$router.push('/pay')

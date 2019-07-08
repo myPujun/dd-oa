@@ -383,6 +383,7 @@ export default {
 		changePushstatus(){
             let _this = this
             this.getPushstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
+                console.log(res)
                 let source = [],selectedKey = '未推送'
                 res.data.map((item,index) => {
                     let obj = {
@@ -391,6 +392,7 @@ export default {
                     }
                 	source.push(obj)
                 })
+                console.log(source)
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
                     _this.$set(_this.formData,'o_isPush',res.value)
                     _this.$set(_this.formData,'o_isPush_text',res.key)
