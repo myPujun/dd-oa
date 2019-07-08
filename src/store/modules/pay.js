@@ -8,6 +8,9 @@ const actions = {
     getPayDetailList({commit},params){   //付款明细列表
         return ajax.post(api.paydetailList ,params)
     },
+    getPayDetailEdit({commit},params){   //付款明细详情
+        return ajax.post(api.paydetailDetails ,params)
+    },
 }
 
 export default {

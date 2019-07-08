@@ -18,7 +18,7 @@
             <div class="nav" v-for="(nav,navIndex) in navList" :key="navIndex">
                 <h2 class="title">{{nav.title}}</h2>
                 <ul class="list flex flex_wrap">
-                    <router-link v-for="(item,index) in nav.list" :key="index" tag="li" :to="'/'+item.link" 
+                    <router-link v-if="showModules(item.code?item.code:'')" v-for="(item,index) in nav.list" :key="index" tag="li" :to="'/'+item.link" 
                     class="c_flex flex_a_c flex_j_c">
                         <div class="icon">
                             <img :src="item.imgUrl" alt="">
@@ -33,7 +33,6 @@
 
 <script>
 import menu from '../assets/js/indexMenu'
-import axios from 'axios'
 import {mapState,mapActions,mapMutations} from 'vuex'
 export default {
     data() {
@@ -48,21 +47,21 @@ export default {
             ],
             activeIndex:0,
             navList:[],
+            powers:[]
         };
     },
     components: {},
     computed: {
-        ...mapMutations([
-            'setUser'
-        ])
+        ...mapState({
+            userInfo: state => state.user.userInfo,
+            corpid:state => state.user.corpid,
+            powerList:state => state.user.userInfo.RolePemissionList
+        })
+    },
+    created(){
+        this.powers = this.powerList.map(item => item.urp_code)
     },
     mounted() {
-        // let param = new URLSearchParams()
-        // param.append('oauth_userid','pujun')
-        this.getUser({oauth_userid:'pujun'}).then(res => {
-            this.$store.commit('setUser',res)
-        })
-
         //获取菜单列表
         this.navList = menu
         setInterval(() => {
@@ -74,9 +73,45 @@ export default {
         }, 5000);
     },
     methods: {
-        ...mapActions([
-            'getUser'
-        ])
+        showModules(arr){
+            if(!arr){
+                return true
+            }
+            for (let i in arr) {
+                for (let j in this.powers) {
+                    if (this.powers[j] === arr[i])return true;
+                }
+            }
+            return false
+        }
+        // ...mapActions([
+        //     'getUserId',
+        //     'getUserName',
+        //     'getCorpid'
+        // ]),
+        // userid(code){
+        //     this.getUserId({code}).then(res => {
+        //         if(res.data.status == 3){
+        //             this.$store.commit('setUser',res.data)
+        //             let {data} = res.data
+        //             let params = {
+        //                 username:data.user_name
+        //             }
+        //             this.getUserName(params).then(res => {
+        //                 this.$store.commit('setBinding',res.data.status)
+        //                 if(res.data.status === 1){
+        //                     this.ddSet.setToast({text:'已绑定'})
+        //                 }else{
+        //                     this.ddSet.setToast({text:res.data.msg})
+        //                 }
+        //             })
+        //         }else if(res.data.status == 2){
+        //             this.$router.push({path:'/register'})
+        //         }else{
+        //             this.ddSet.setToast({text:res.data.msg})
+        //         }
+        //     })
+        // }
     },
 }
 </script>

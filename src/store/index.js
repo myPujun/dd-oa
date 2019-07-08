@@ -9,6 +9,7 @@ import receipt from './modules/receipt'
 import pay from './modules/pay'
 import billManage from './modules/billManage'
 import unbusinessManage from './modules/unbusinessManage'
+import notAudit from './modules/notAudit'
 
 Vue.use(Vuex)
 
@@ -21,6 +22,7 @@ export default new Vuex.Store({
         test,
         addOrders,
         billManage,
-        unbusinessManage
+        unbusinessManage,
+        notAudit
     }
 })

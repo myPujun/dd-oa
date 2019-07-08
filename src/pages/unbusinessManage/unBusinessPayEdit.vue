@@ -33,7 +33,7 @@
             </li>
             <li class="flex flex_a_c flex_s_b" @click="selectDate">
                 <label class="title"><span class="must">预付日期</span></label>
-                <input type="text" readonly v-model="editData.uba_foreDate" placeholder="请选择日期"  >
+                <input type="text" readonly :value="editData.uba_foreDate" placeholder="请选择日期"  >
                 <div class="icon_right time"></div>
             </li>
             <li class="li_auto flex">
@@ -51,7 +51,7 @@ import {
 	mapState
 } from 'vuex'
 import * as dd from 'dingtalk-jsapi'
-import dayjs from 'dayjs'
+import {formatDate} from '../../assets/js/date.js'
 
 export default {
     name:"",
@@ -62,8 +62,14 @@ export default {
             type:'',
         };
     },
+    filters:{
+        formatDate(time){
+            let date = new Date(time)
+            return formatDate(date,'yyyy-MM-dd')
+        }
+    },
     components: {},
-    computed: {},
+    computed: { },
     created(){
         let {type,uba_id} = this.$route.query
         this.type = type
@@ -73,11 +79,12 @@ export default {
             }
             this.getUnBusinessPayDetails(params).then(res => {
                 this.editData = res.data
+                //this.foreDate = formatDate(this.editData.uba_foreDate, 'yyyy-MM-dd')
             })
         }
     },
     mounted() {
-
+        //this.editData.uba_foreDate = formatDate(this.editData.uba_foreDate, 'yyyy-MM-dd')
     },
     methods: {
         ...mapActions([
@@ -97,7 +104,7 @@ export default {
                 this.ddSet.setToast({text:'预付日期不能为空'})
                 return
             }
-            this.editData.managerid = 14 //测试ID
+            this.editData.managerid = 24 //测试ID
             this.ddSet.showLoad()
             this.getUnBusinessPayEdit(this.editData).then(res => {
                 this.ddSet.hideLoad()

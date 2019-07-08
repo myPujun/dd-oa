@@ -3,12 +3,12 @@
     <div>
         <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
         <div class="search_box flex flex_a_c flex_j_c">
-           <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索客户名称">
+           <input type="text" v-model="searchData.keywords" @input="changeSearch" placeholder="搜索客户名称">
         </div>
         <div class="customer_list">
-            <h2 class="amount">共{{list.length}}条</h2>
+            <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-                <li v-for="(item,index) in list" :key="index">
+                <router-link tag="li" :to="{path:'/receiptDetails',query: {rp_id:item.rp_id,type:'EDIT'}}" v-for="(item,index) in showReceiptList" :key="index">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <!-- <img class="icon" alt=""> -->
@@ -16,10 +16,10 @@
                             <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
                             <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span>
                         </section>
-                        <section class="operation_icon flex">
+                        <!-- <section class="operation_icon flex">
                             <span @click.stop="goPage('receiptDetails',item.rp_id)"></span>
                             <span></span>
-                        </section>
+                        </section> -->
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
@@ -29,11 +29,13 @@
                             <span v-show="item.rp_date">{{item.rp_date | formatDate}}</span>
                         </div>
                     </div>
-                </li>
+                </router-link>
             </ul>
+            <div class="loadmore" @click="loadNextPage" v-show="pageTotal > searchData.pageIndex">
+				点击加载更多
+			</div>
         </div>
-        <button @click="receiptDetails">添加收款通知</button>
-        <top-nav title="收款通知" text='添加' @rightClick="receiptDetails"></top-nav>
+        <top-nav title="收款通知" ></top-nav>
     </div>
 </template>
 
@@ -47,9 +49,17 @@ export default {
     data() {
        return {
            topTabList:['未收款','已收款'],
-           tabIndex:0,
+           showReceiptList:[],
            list:[],
-           searchText:''
+           pageTotal:9,
+		   recordTotal:9,
+		   searchData:{
+			    pageIndex:1,
+                pageSize:999,
+                keywords:'',
+                rp_isconfirm:0,
+                managerid:14
+		   }
        };
     },
     filters:{
@@ -64,7 +74,7 @@ export default {
     computed: {},
     created(){},
     mounted() {        
-        this.receiptList()
+        this.newreceiptList()
     },
     methods: {
         ...mapActions([
@@ -78,24 +88,38 @@ export default {
                 this.$router.push({path:`/${item}`,query:{rp_id:params,type:'EDIT'}})
             }
         },
-        receiptList({rp_isconfirm = 0} = {}){
-            let params = {
-                pageIndex:1,
-                pageSize:999,
-                keywords:this.searchText,
-                rp_isconfirm,
-                managerid:1
-            }
-            this.getReceiptList(params).then(res => {
-                this.list = res.data.list
+        loadNextPage(){
+			this.receiptList()
+		},
+        receiptList(){
+            let _this = this
+            _this.searchData.pageIndex++
+            this.getReceiptList(_this.searchData).then(res => {
+                if(res.data.msg){
+					_this.ddSet.setToast({text:res.data.msg})
+					return
+				}
+				if(_this.searchData.pageIndex < 2){
+					_this.showReceiptList = res.data.list;
+					_this.recordTotal = res.data.pageTotal
+					_this.pageTotal = Math.ceil(_this.recordTotal / _this.searchData.pageSize)
+				}
+				else{
+					_this.showReceiptList = _this.showReceiptList.concat(res.data.list);
+				}
             })
         },
+		newreceiptList(){
+			let _this = this
+			_this.searchData.pageIndex = 0;
+			_this.receiptList()
+		},
         changeSearch(){
-            this.receiptList({rp_isconfirm:this.tabIndex})
+            this.newreceiptList()
         },
         changeTab(index) {
-            this.tabIndex = index
-            this.receiptList({rp_isconfirm:index})
+            this.searchData.rp_isconfirm = index
+				this.newreceiptList()
         }
     },
 }

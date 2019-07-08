@@ -2,10 +2,11 @@
 <template>
     <div class="body_gery">
         <ul class="form_list form_list_noborder">
-            <li class="flex flex_a_c" @click="chosen('type')">
+            <li class="flex flex_a_c">
                 <label class="title"><span>审批类型</span></label>
-                <input type="text" readonly :value="typeName" placeholder="请选择审批类型（必填）">
-                <div class="icon_right arrows_right"></div>
+                <!-- <input type="text" readonly :value="typeName" placeholder="请选择审批类型（必填）">
+                <div class="icon_right arrows_right"></div> -->
+                <h3 class="hint_1">{{typeName}}</h3>
             </li>
             <li class="flex flex_a_c" @click="chosen('flag')">
                 <label class="title"><span>审批状态</span></label>
@@ -17,7 +18,7 @@
                 <textarea v-model="addData.remarks" placeholder="请输入备注"></textarea>
             </li>
         </ul>
-        <top-nav :title="审批业务支付申请" :text='"保存"' @rightClick="submit"></top-nav>
+        <top-nav title="非业务支付审批" text="保存" @rightClick="submit"></top-nav>
     </div>
 </template>
 
@@ -28,6 +29,7 @@ export default {
     data() {
         return {
             addData:{},
+            clientId:0, 
             typeList:[  //类型
                 {
                     key:'部门审批',
@@ -42,6 +44,7 @@ export default {
                     value:'3'
                 },
             ],
+            typeId:0,
             typeName:'',
             flag:[  //审核
                 {
@@ -57,6 +60,7 @@ export default {
                     value:'2'
                 },
             ],
+            flagId:0,
             flagName:"",
             then:0,
         };
@@ -64,15 +68,25 @@ export default {
     components: {},
     computed: {},
     created(){
-        let {c_id} = this.$route.query
+        let {id} = this.$route.query
         let params = {
-            c_id
+            ubaid:id,
+            managerid:24
         }
         // 初始化数据
         this.getUnBusinessPayAuditObtain(params).then(res => {
             this.addData = res.data
-            this.typeName = this.typeList[this.addData.ctype].key
-            this.flagName = this.flag[this.addData.cstatus].key
+            if(!this.addData.status){                    
+                this.ddSet.setToast({text:res.data.msg}).then(res => {
+                    this.$router.go(-1)
+                })
+            }else{
+                this.clientId = id
+                this.typeId = this.typeList[this.addData.type-1].value
+                this.typeName = this.typeList[this.addData.type-1].key
+                this.flagId = this.flag[this.addData.flag].value
+                this.flagName = this.flag[this.addData.flag].key                
+            }
         })
     },
     mounted() {
@@ -84,15 +98,19 @@ export default {
             'getUnBusinessPayAudit'
         ]),
         submit(item){ //提交
-            if(!this.typeName){
-                this.ddSet.setToast({text:'请选择审批类型'})
-                return
-            }
+            // if(!this.typeName){
+            //     this.ddSet.setToast({text:'请选择审批类型'})
+            //     return
+            // }
             if(!this.flagName){
+                console.log(this.flagName)
                 this.ddSet.setToast({text:'请选择审批状态'})
                 return
             }
-            this.addData.managerid = 14 //测试ID
+            this.addData.uba_id = this.clientId
+            this.addData.ctype = this.typeId
+            this.addData.cstatus = this.addData.cstatus
+            this.addData.managerid = 24 //测试ID
             this.ddSet.showLoad()
             this.getUnBusinessPayAudit(this.addData).then(res => {
                 this.ddSet.hideLoad()
@@ -109,18 +127,20 @@ export default {
         },
         chosen(item){
             let selectedKey,source
-            if(item == 'type'){
-                source = this.typeList
-                selectedKey = this.typeName
-            }else if(item == 'flag'){
+            // if(item == 'type'){
+            //     source = this.typeList
+            //     selectedKey = this.typeName
+            // }else 
+            if(item == 'flag'){
                 source = this.flag
                 selectedKey = this.flagName
             }
             this.ddSet.setChosen({source,selectedKey}).then(res => {
-                if(item == 'type'){
-                    this.$set(this,'typeName',res.key)
-                    this.$set(this.addData,'ctype',res.value)
-                }else if(item == 'flag'){
+                // if(item == 'type'){
+                //     this.$set(this,'typeName',res.key)
+                //     this.$set(this.addData,'ctype',res.value)
+                // }else 
+                if(item == 'flag'){
                     this.$set(this,'flagName',res.key)
                     this.$set(this.addData,'cstatus',res.value)
                 }
