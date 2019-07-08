@@ -8,7 +8,7 @@
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-                <router-link tag="li" :to="{path:'/payDetailEdit',query: {rpd_id:item.rpd_id,type:'EDIT'}}" v-for="(item,index) in showPayList" :key="index">
+                <router-link tag="li" :to="{path:'/notAuditDetails',query: {rpd_id:item.rpd_id,type:'Check'}}" v-for="(item,index) in showPayList" :key="index">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <img class="icon" :src="isIocn[item.rpd_flag1]" alt="">
@@ -18,10 +18,9 @@
                             <!-- <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
                             <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span> -->
                         </section>
-                        <!-- <section class="operation_icon flex">
-                            <router-link tag="span" :to="{path:'/receiptDetails',query:{id:item.rp_id}}"></router-link>
-                            <span></span>
-                        </section> -->
+                        <section class="operation_icon flex">
+                            <router-link tag="span" :to="{path:'/notAuditDetails',query:{rpd_id:item.rpd_id,type:'Check'}}"></router-link>
+                        </section>
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
@@ -63,7 +62,7 @@ export default {
                 keywords:'',
                 type:'check',
                 flag:'0',
-                managerid:16
+                managerid:29
 		   }
        };
     },
@@ -205,12 +204,8 @@ export default {
                         background-size: cover;
                     }
                     span:nth-child(1){
-                        background-image: url('../../assets/img/redact_1.png');
-                    }
-                    span:nth-child(2){
-                        background-image: url('../../assets/img/delete.png');
-                        background-size: .25rem .3rem;
-                    }
+                        background-image: url('../../assets/img/auditting.png');
+                    }                    
                 }
             }
             .message{
