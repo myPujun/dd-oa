@@ -9,7 +9,7 @@
             </li>
             <li class="flex flex_a_c flex_s_b" v-if="statusName == '已支付'" @click="selectDate">
                 <label class="title"><span>实付日期</span></label>
-                <input type="text" v-model="addData.uba_date" placeholder="请选择日期">
+                <input type="text" readonly v-model="addData.uba_date" placeholder="请选择日期">
                 <div class="icon_right time"></div>
             </li>
             <li class="flex flex_a_c"  @click="getMethodList">
