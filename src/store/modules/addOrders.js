@@ -1,9 +1,10 @@
+import axios from 'axios'
 import {api} from '../api'
 import ajax from '../ajax'
 
 const actions = {
     getAddOrders({commit},params){  //
-        return ajax.post(api.orderAdd,params)
+        return ajax.post(api.addOrder,params)
     },
     getAllcustomer({commit},params){    //所有客户信息数据绑定
         return ajax.post(api.allcustomer,params)
@@ -12,11 +13,19 @@ const actions = {
         return ajax.post(api.contractPrices,params)
     },
     getContactsbycid({commit},params){  //根据客户ID获取主要联系人及号码
-        return ajax.post(api.contactsbycid,params)
+        return ajax.post(api.contactsByCid,params)
     },
-    getUpLoadFile({commit},params){
-        return ajax.post(api.upLoadFile,params)
+    getUpLoadFile({commit},_formData){ // 上传文件
+        // return _ajax.post(api.upLoadFile,params)
+		return axios(api.upLoadFile,{
+			headers:{'Content-Type': 'multipart/form-data'},
+			method: 'post',
+			data:_formData
+		})
     },
+	delFile({commit},params){  //删除文件
+	    return ajax.post(api.delFile,params)
+	},
     getFstatus({commit},params){    //订单状态数据绑定
         return ajax.post(api.fStatus,params)
     },
@@ -46,6 +55,16 @@ const actions = {
 	 */
 	getOrderList({commit},params){
 		return ajax.post(api.orderList,params)
+	},
+	/**
+	 * 订单详情
+	 */
+	getOrderDetails({commit},params){
+		return ajax.post(api.orderDetails,params)
+	},
+	// 删除订单
+	delOrder({commit},params){
+		return ajax.post(api.orderDel,params)
 	},
 	/**
 	 * 选择客户时使用
