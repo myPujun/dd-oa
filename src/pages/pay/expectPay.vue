@@ -36,7 +36,7 @@
 				点击加载更多
 			</div>
         </div>
-        <top-nav title="收款通知"></top-nav>
+        <top-nav title="付款通知"></top-nav>
     </div> 
 </template>
 
@@ -60,7 +60,7 @@ export default {
 		   recordTotal:9,
 		   searchData:{
 			    pageIndex:1,
-                pageSize:999,
+                pageSize:10,
                 keywords:'',
                 isExpect:'True',
                 managerid:14
@@ -101,6 +101,7 @@ export default {
 					_this.showExpectPayList = res.data.list;
 					_this.recordTotal = res.data.pageTotal
 					_this.pageTotal = Math.ceil(_this.recordTotal / _this.searchData.pageSize)
+                    console.log(res.data)
 				}
 				else{
 					_this.showExpectPayList = _this.showExpectPayList.concat(res.data.list);

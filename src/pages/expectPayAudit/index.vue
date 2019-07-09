@@ -1,38 +1,36 @@
-<!-- 付款明细列表首页 -->
+<!-- 预付款列表首页 -->
 <template>
     <div>
-        <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
+       <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
         <div class="search_box flex flex_a_c flex_j_c">
            <input type="text" v-model="searchData.keywords" @input="changeSearch" placeholder="搜索客户名称">
         </div>
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-                <router-link tag="li" :to="{path:'/notAuditDetails',query: {rpd_id:item.rpd_id,type:'Check'}}" v-for="(item,index) in showPayList" :key="index">
+                <router-link tag="li" :to="{path:'/expectPayAuditDetails',query: {rp_id:item.rp_id,type:'EDIT'}}" v-for="(item,index) in showExpectPayList" :key="index">
                     <div class="company flex flex_a_c flex_s_b">
-                        <section class="flex flex_a_c">                            
+                        <section class="flex flex_a_c">
                             <div v-if='checkType===1'>
-                                <img class="icon" :src="isIocn[item.rpd_flag1]" alt="11">
-                            </div>
-                            <div v-else-if='checkType===2'>
-                                <img class="icon" :src="isIocn[item.rpd_flag2]" alt="22">
+                                <img class="icon" :src="isIocn[item.rp_flag]" alt="11">
                             </div>
                             <div v-else>
-                                <img class="icon" :src="isIocn[item.rpd_flag3]" alt="33">
+                                <img class="icon" :src="isIocn[item.rp_flag1]" alt="22">
                             </div>
                             <h2 class="name">{{item.c_name}}</h2>
-                            <!-- <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
-                            <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span> -->
+                            <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已付款':'待付款'" class="blueq">
+                            <!-- <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span> -->
                         </section>
                         <section class="operation_icon flex">
-                            <router-link tag="span" :to="{path:'/notAuditDetails',query:{rpd_id:item.rpd_id,type:'Check'}}"></router-link>
+                            <router-link tag="span" :to="{path:'/expectPayAuditDetails',query:{id:item.rp_id}}"></router-link>
                         </section>
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
-                            <span>{{item.rpd_oid}}</span>
-                            <span>{{item.rpd_money}}</span>
-                            <span>{{item.rpd_foredate | formatDate}}</span>
+                            <span>{{item.rp_foredate | formatDate}}</span>
+                            <span>{{item.rp_money}}</span>
+                            <span v-show="item.pm_name">{{item.pm_name}}</span>
+                            <span v-show="item.rp_date">{{item.rp_date | formatDate}}</span>
                         </div>
                     </div>
                 </router-link>
@@ -41,8 +39,8 @@
 				点击加载更多
 			</div>
         </div>
-        <top-nav title="付款通知"></top-nav>
-    </div>
+        <top-nav title="收款通知"></top-nav>
+    </div> 
 </template>
 
 <script>
@@ -58,15 +56,17 @@ export default {
     data() {
        return {
            topTabList:['待审批','已审批'],
+           showExpectPayList:[],
+           list:[],
            isIocn:[audit,audit_no,audit_yes],
-           showPayList:[],
            checkType:0,
            pageTotal:9,
 		   recordTotal:9,
 		   searchData:{
 			    pageIndex:1,
-                pageSize:10,
+                pageSize:999,
                 keywords:'',
+                isExpect:'True',
                 type:'check',
                 flag:'0',
                 managerid:29
@@ -85,45 +85,46 @@ export default {
     computed: {},
     created(){},
     mounted() {        
-        this.newpayDetailList()
+        this.newpayList()
     },
+    
     methods: {
         ...mapActions([
-            'getPayDetailList'
+            'getPaytList'
         ]),
         loadNextPage(){
-			this.payDetailList()
+			this.newpayList()
 		},
-        payDetailList(){            
+        payList(){
             let _this = this
             _this.searchData.pageIndex++
-            this.getPayDetailList(_this.searchData).then(res => {
+            this.getPaytList(_this.searchData).then(res => {
                 if(res.data.msg){
 					_this.ddSet.setToast({text:res.data.msg})
 					return
 				}
 				if(_this.searchData.pageIndex < 2){
-					_this.showPayList = res.data.list;
+					_this.showExpectPayList = res.data.list;
 					_this.recordTotal = res.data.pageTotal
-                    _this.pageTotal = Math.ceil(_this.recordTotal / _this.searchData.pageSize)
+					_this.pageTotal = Math.ceil(_this.recordTotal / _this.searchData.pageSize)
                     _this.checkType = res.data.checkType
 				}
 				else{
-					_this.showPayList = _this.showPayList.concat(res.data.list);
+					_this.showExpectPayList = _this.showExpectPayList.concat(res.data.list);
 				}
             })
         },
-        newpayDetailList(){
-			let _this = this
+        newpayList(){
+            let _this = this
 			_this.searchData.pageIndex = 0;
-			_this.payDetailList()
-		},
+			_this.payList()
+        },
         changeSearch(){
-            this.newpayDetailList()
+            this.newpayList()
         },
         changeTab(index){
             this.searchData.flag = index;
-			this.newpayDetailList()
+			this.newpayList()
         }
     },
 }
@@ -213,7 +214,7 @@ export default {
                     }
                     span:nth-child(1){
                         background-image: url('../../assets/img/auditting.png');
-                    }                    
+                    }
                 }
             }
             .message{
@@ -255,5 +256,3 @@ export default {
         }
     }
 </style>
-
-

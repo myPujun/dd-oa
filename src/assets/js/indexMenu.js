@@ -65,7 +65,7 @@ let list = [
             },
             {
                 imgUrl:require('../img/nav_list/icon_finance_4.png'),
-                link:'',
+                link:'expectPayAudit',
                 name:'预付款审批',
                 code:['0402','0601']
             },
