@@ -14,15 +14,21 @@ const actions = {
     getUnBusinessPayEdit({commit},params){   //修改业务支付申请
         return ajax.post(api.unBusinessPayEdit ,params)
     },
+    getUnBusinessPayAuditObtain({commit},params){ //初始化非业务支付审批数据
+        return ajax.post(api.unBusinessPayAuditBind ,params)
+    },
     getUnBusinessPayAudit({commit},params){   //审批业务支付申请
         return ajax.post(api.unBusinessPayAudit ,params)
     },
     getUnBusinessPayConfirmPay({commit},params){   //业务支付申请支付确认
         return ajax.post(api.unBusinessPayConfirmPay ,params)
     },
-    getUnBusinessPayAuditObtain({commit},params){
-        return ajax.post(api)
-    }
+    getUnBusinessNature({commit},params){   //支付类别数据绑定
+        return ajax.post(api.unBusinessNature ,params)
+    },
+    getUnBusinessPayFunction({commit},params){   //业务用途数据绑定
+        return ajax.post(api.unBusinessPayFunction ,params)
+    },
 }
 
 export default {

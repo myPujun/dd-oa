@@ -1,20 +1,15 @@
 let baseUrl =  process.env.NODE_ENV === 'production' ? '' : '/api'
 const api = {
-    get corpid(){
-        return baseUrl+'/tools/dingtalk_login.ashx?action=get_dingtalk_corpid'
-    },
+    
     ///钉钉授权绑定 start--------------------------------------------------------
     get dingtalkUseridValidate(){  //验证是否已绑定钉钉userid用户
         return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate'
-    },
-    get dingtalkUseridValidateTest(){  //验证是否已绑定钉钉userid用户---test
-        return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate_Test'
     },
     get userNameValidate(){  //验证用户名是否可绑定
         return baseUrl+'/tools/dingtalk_login.ashx?action=username_validate'
     },
     get managerOauthBind(){  //用户绑定钉钉userid并授权免登
-        return baseUrl+'/tools/dingtalk_login.ashx?action=manager_oauth_bind'
+        return baseUrl+'/tools/dingtalk_login.ashx?action=dingtalk_userid_validate'
     },
     ///钉钉授权绑定 end--------------------------------------------------------
 
@@ -115,9 +110,6 @@ const api = {
     get orderDetails(){ //查看订单详细信息
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_show'
     },
-	get orderDel(){ //查看订单详细信息
-	    return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_delete'
-	},
 
 
     get unBusinessPayList(){ //非业务支付申请分页数据列表
@@ -132,7 +124,7 @@ const api = {
     get unBusinessPayEdit(){ //修改业务支付申请
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_edit'
     }, 
-    get unBusinessPayAuditBind(){ //绑定非业务支付审批类型
+    get unBusinessPayAuditBind(){ //审批业务支付申请
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_auditBind'
     },  
     get unBusinessPayAudit(){ //审批业务支付申请
@@ -182,21 +174,13 @@ const api = {
     },
     ///订单管理模块 end--------------------------------------------------------
 
-    ///财务管理模块 start------------------------------------------------------
-    get payDetailAudit(){ //业务审批
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=paydetail_audit'
-    },
-    ///财务管理模块 end--------------------------------------------------------
 
-    ///通知管理模块 start------------------------------------------------------
+    ///通知管理模块 start--------------------------------------------------------
     get receiptList(){ //收款通知分页列表
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=receipt_list'
     },
     get paymentList(){ //付款通知分页列表
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=payment_list'
-    },
-    get receiptpay_add(){ //添加编辑收付款通知
-        return baseUrl+'/tools/dingtalk_ajax.ashx?action=receiptpay_add'
     },
     get paydetailList(){ //付款明细分页列表
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=paydetail_list'
@@ -212,10 +196,7 @@ const api = {
     ///公共方法管理模块 start--------------------------------------------------------    
     get upLoadFile(){
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=UpLoadFile'
-    },
-	get delFile(){
-	    return baseUrl+'/tools/dingtalk_ajax.ashx?action=File_delete'
-	}
+    }
     ///公共方法管理模块 end-------------------------------------------------------- 
 }
 export {

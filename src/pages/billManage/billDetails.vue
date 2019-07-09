@@ -77,7 +77,6 @@ export default {
     name:"",
     data() {
        return {
-           clientId:null,
            isIocn:[],
            datails:{},
            isDatails:false,
@@ -88,7 +87,6 @@ export default {
     computed: {},
     created(){
         let {id} = this.$route.query
-        this.clientId = id
         this.ddSet.showLoad()
         this.getBillDetails({inv_id:id}).then(res => {
             this.ddSet.hideLoad()
@@ -103,7 +101,7 @@ export default {
     },
     methods: {
         ...mapActions([
-            'getInvoiceDetails'
+            'getBillDetails'
         ])
     },
 }

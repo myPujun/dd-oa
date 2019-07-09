@@ -14,7 +14,7 @@
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-				<router-link tag="li" to="/lookOrder" v-for="(item,index) in showOrderList" :key="index">
+				<router-link tag="li" :to="{ path: '/lookOrder',query: { id: item.o_id } }" v-for="(item,index) in showOrderList" :key="index">
 				    <div class="company flex flex_a_c flex_s_b">
 				        <section class="flex flex_a_c">
 				            <img class="icon" v-show="0 == item.o_status" src="../../assets/img/audit.png" alt="">
@@ -30,8 +30,8 @@
 							<div v-show="1 == item.o_lockStatus" class="lock-status">已锁单</div>
 				        </section>
 				        <section class="operation_icon flex">
-				            <span @click.prevent.stop="edit"></span>
-				            <span></span>
+				            <span @click.prevent.stop="editOrder(item.o_id)"></span>
+				            <span @click.prevent.stop="delListOrder(item.o_id)"></span>
 				        </section>
 				    </div>
 				    <div class="message flex flex_a_c flex_s_b">
@@ -112,11 +112,11 @@ export default {
     },
     computed: {},
     created(){
-        // this.ddSet.setTitleRight({title:'订单查询'}).then(res => {
-        //     if(res){
+        this.ddSet.setTitleRight({title:'订单查询'}).then(res => {
+            if(res){
 
-        //     }
-        // })
+            }
+        })
     },
     mounted() {
 		this.newOrderList()
@@ -131,7 +131,8 @@ export default {
 		    'getFstatus',
 		    'getDstatus',
 			'getLockStatus',
-			'getOrderList'
+			'getOrderList',
+			'delOrder'
 		]),
 		showSearchBoxChange(){
 			this.showSearchBox = !this.showSearchBox;
@@ -221,9 +222,48 @@ export default {
 				})
 			})
 		},
-        edit(){
-            this.$router.push({path:'/modifyOrder'})
+        editOrder(_id){
+            this.$router.push({path:'/modifyOrder', query: { id: _id }})
         },
+		delListOrder(_id){
+			let _this = this;
+			dd.device.notification.confirm({
+				message: "确认删除《"+_id+"》订单吗",
+				title: "提示",
+				buttonLabels: ['确认', '取消'],
+				onSuccess : function(result) {
+					//onSuccess将在点击button之后回调
+					/*
+					{
+						buttonIndex: 0 //被点击按钮的索引值，Number类型，从0开始
+					}
+					*/
+				   if(0 == result.buttonIndex){
+					   dd.device.notification.showPreloader({})
+					   _this.delOrder({
+						   orderID:_id,
+						   managerid:_this.searchData.managerid
+					   }).then((res) => {
+						   dd.device.notification.hidePreloader({})
+						   if (res.data.status) {
+							   dd.device.notification.toast({
+							   	text: '成功删除订单'
+							   })
+							   _this.showOrderList = _this.showOrderList.filter(function(item){
+								   return item.o_id != _id
+							   })
+						   }
+						   else{
+							   dd.device.notification.toast({
+							   	text: res.data.msg
+							   })
+						   }
+					   })
+				   }
+				},
+				onFail : function(err) {}
+			});
+		},
 		// 处理 时间
 		getListDate(_date){
 			if(!_date){

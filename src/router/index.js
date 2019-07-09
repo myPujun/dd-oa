@@ -20,6 +20,8 @@ import bigbusiness from './bigbusiness'
 import nonBusinessApply from './nonBusinessApply'
 //业务支付审核列表
 import notAudit from './notAudit'
+//预付款审批
+import expectPayAudit from './expectPayAudit'
 //收款通知
 import receipt from './receipt'
 //付款明细
@@ -51,6 +53,7 @@ routes = routes.concat(
     bigbusiness,
     nonBusinessApply,
     notAudit,
+    expectPayAudit,
     receipt,
     pay,
     billManage,

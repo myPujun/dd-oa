@@ -17,9 +17,10 @@
                 <input type="text" :value="clientName" readonly>
                 <div class="icon_right arrows_right"></div>
             </li>
-            <li class="flex flex_a_c">
+            <li class="flex flex_a_c" @click="selectLinkMan">
                 <label class="title"><span>联系人</span></label>
                 <input type="text" readonly :value="formData.co_name" placeholder="请选择客户">
+				<div class="icon_right arrows_right"></div>
             </li>
             <li class="flex flex_a_c">
                 <label class="title"><span>联系号码</span></label>
@@ -134,11 +135,24 @@ export default {
     data() {
         return {
             formData:{
-                'o_status_text':'待定',
-                //'fstatus':'0',
-                'o_isPush_text':'未推送'
-                //'o_isPush':'False'
-            },
+				orderID:'',
+				c_id:0,
+				co_id:0,
+				o_contractprice:'',
+				o_sdate:'',
+				o_edate:'',
+				o_address:'',
+				o_content:'',
+				o_contractcontent:'',
+				o_remarks:'',
+				fstatus:0,
+				employee1:'',
+				employee2:'',
+				employee3:'',
+				employee4:'',
+				o_isPush:'',
+				managerid:14   // TODO:测试当前登录人ID
+			},
             clientList:[],
             clientName:'请选择',
 			clientId:0,
@@ -216,14 +230,20 @@ export default {
                 _this.formData.o_isPush='False'
             }
 
-            
+            dd.device.notification.showPreloader()
 			this.formData.c_id = this.clientId;
-			this.formData.managerid = 14;
-			console.log(this.formData)
-			alert(JSON.stringify(this.formData))
 			_this.submitOrder(this.formData).then(function(res){
-				alert(JSON.stringify(res))
-				console.log(res)
+				dd.device.notification.hidePreloader()
+				if(res.data.status){
+					dd.device.notification.toast({
+						text: '新增订单成功'
+					})
+				}
+				else{
+					dd.device.notification.toast({
+						text: res.data.msg
+					})
+				}
 			})
         },
 		claerEmployee(){ // 清空人员
@@ -258,6 +278,18 @@ export default {
 				_this.$set(_this.formData,'o_place',tmpPlaces.join(','))
 				// 区域改变，清空人员
 				_this.claerEmployee();
+			}
+			if('link_man' == _this.chooseEl){
+				if(items.length){
+					_this.$set(_this.formData,'co_name',items[0].co_name)
+					_this.$set(_this.formData,'co_number',items[0].co_number)
+					_this.$set(_this.formData,'co_id',items[0].co_id)
+				}
+				else{
+					_this.$set(_this.formData,'co_name','')
+					_this.$set(_this.formData,'co_number','')
+					_this.$set(_this.formData,'co_id',0)
+				}
 			}
 			if('employee1' == _this.chooseEl || 
 			'employee2' == _this.chooseEl || 'employee3' == _this.chooseEl || 'employee4' == _this.chooseEl){
@@ -423,7 +455,7 @@ export default {
                 let selectedKey = _this.formData.o_contractprice
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
                     _this.$set(_this.formData,'o_contractprice',res.key)
-                })                
+                })
             })
         },
       selectRangeDate(){ //活动日期
@@ -457,7 +489,34 @@ export default {
 				},
 				onFail : function(err) {}
 			})
-        }
+        },
+		selectLinkMan(){
+			let _this = this
+			if(_this.clientId < 1){
+				dd.device.notification.toast({
+					text: '请先选择客户'
+				})
+				return
+			}
+			_this.getContactsbycid({c_id:_this.clientId}).then(res => {
+				_this.chooseType = 1;
+				_this.chooseEl = 'link_man';
+				let source = []
+				console.log(res)
+			    res.data.map((item,index) => {
+					if(!item.name){
+					    _this.$set(item,'name',item.co_name)
+					}
+					if(this.formData.co_id == item.co_id ){
+						_this.$set(item,'isChecked',true)
+					}
+					source.push(item)
+			    })
+				console.log(source)
+				_this.chooseList = source;
+			    _this.showChoose = true
+			})
+		}
     },
 }
 </script>

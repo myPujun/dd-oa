@@ -40,7 +40,7 @@
 				点击加载更多
 			</div>
         </div>
-        <top-nav title="非业务支付"></top-nav>
+        <top-nav title="非业务支付" text='新增' @rightClick="add"></top-nav>
     </div>
 </template>
 
@@ -82,7 +82,7 @@ export default {
     methods: {
 		...mapActions([
 			'getUnBusinessPayList'
-		]),		
+		]),	
         // changeTab(index){
         //     if(index == 0){
         //         this.searchData.uba_flag = 0
@@ -138,6 +138,9 @@ export default {
 			_this.searchData.pageIndex = 0;
 			_this.UnBusinessPayList()
 		},	
+        add(){
+            this.$router.push({path:'/UnBusinessPayAdd',query:{paytype:1,payfunction:1,type:'add'}})
+        },	
         edit(params){
             this.$router.push({path:'/unBusinessPayEdit',query:{uba_id:params,type:'EDIT'}})
         }

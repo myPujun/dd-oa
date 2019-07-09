@@ -2,44 +2,45 @@
 <template>
     <div class="body_gery" v-if="isDatails">
         <ul class="form_list">
-            <li class="flex flex_a_c flex_s_b">
+            <li class="li_auto flex">
                 <label class="title"><span>支付类别</span></label>
-                 {{datails.uba_type}}
+                <h3 class="hint_1">{{datails.uba_type}}</h3>
             </li>
-            <li class="flex flex_a_c flex_s_b">
+           <li class="li_auto flex">
                 <label class="title"><span>支付用途</span></label>
-                {{datails.uba_function}}
+                <h3 class="hint_1">{{datails.uba_function}}</h3>
             </li>
-            <li class="flex flex_a_c flex_s_b">
+           <li class="li_auto flex">
                 <label class="title"><span>用途说明</span></label>
-                {{datails.uba_instruction}}
+                <h3 class="hint_1">{{datails.uba_instruction}}</h3>
             </li>
-            <li class="flex flex_a_c flex_s_b">
+           <li class="li_auto flex">
                 <label class="title"><span>收款银行</span></label>
-                {{datails.uba_receiveBank}}
+                <h3 class="hint_1">{{datails.uba_receiveBank}}</h3>
             </li>
-            <li class="flex flex_a_c flex_s_b">
+           <li class="li_auto flex">
                 <label class="title"><span>收款账户</span></label>
-                {{datails.uba_receiveBankName}}
+                <h3 class="hint_1">{{datails.uba_receiveBankName}}</h3>
             </li>
-            <li class="flex flex_a_c flex_s_b">
+           <li class="li_auto flex">
                 <label class="title"><span>收款账号</span></label>
-                {{datails.uba_receiveBankNum}}
+                <h3 class="hint_1">{{datails.uba_receiveBankNum}}</h3>
             </li>
-            <li class="flex flex_a_c flex_s_b">
+           <li class="li_auto flex">
                 <label class="title"><span>金额</span></label>
-                {{datails.uba_money}}
+                <h3 class="hint_1">{{datails.uba_money}}</h3>
             </li>
-            <li class="flex flex_a_c flex_s_b">
+           <li class="li_auto flex">
                 <label class="title"><span>预付日期</span></label>
-                {{datails.uba_foreDate}}
+                <h3 class="hint_1">{{datails.uba_foreDate}}</h3>
             </li>
-            <li class="flex flex_a_c flex_s_b">
+           <li class="li_auto flex">
                 <label class="title"><span>备注</span></label>
-                {{datails.uba_remark}}
+                <h3 class="hint_1">{{datails.uba_remark}}</h3>
             </li>
-            <li class="flex flex_a_c flex_s_b">
-                <label class="title"><span>附件</span></label>                
+           <li class="li_auto flex">
+                <label class="title"><span>附件</span></label>
+                <h3 class="hint_1">        </h3>      
             </li>
         </ul>        
         <div class="hint">
@@ -85,6 +86,7 @@ export default {
     },
     methods: {
         ...mapActions([
+            
             'getUnBusinessPayDetails'
         ])
     },

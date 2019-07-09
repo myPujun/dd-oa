@@ -37,11 +37,11 @@ export default {
         ]),
         submit(){
             if(!this.fromData.username){
-                this.ddSet.setToast({text:'请输入手机号'})
+                this.ddSet.setToast({text:'请输入员工账号'})
                 return
             }
             if(!this.fromData.password){
-                this.ddSet.setToast({text:'请输入密码'})
+                this.ddSet.setToast({text:'请输入员工密码'})
                 return
             }
             this.ddSet.infoCode(this.corpId).then(res => {
