@@ -13,7 +13,7 @@
             </li>
             <li class="flex flex_a_c" @click="chosenPayFunction" v-else>
                 <label class="title"><span class="must">支付用途</span></label>
-                <input type="text" readonly v-model="addData.uba_function_text" placeholder="请选择支付用途">
+                <input type="text" readonly v-model="addData.uba_function" placeholder="请选择支付用途">
                 <div class="icon_right arrows_right"></div>
             </li>
             <li class="flex li_auto">
@@ -67,6 +67,7 @@ export default {
             type:'',
             paytype:0,
             payfunction:0,
+            oID:'',
         };
     },
     filters:{
@@ -78,10 +79,11 @@ export default {
     components: {},
     computed: { },
     created(){
-        let {type,paytype,payfunction} = this.$route.query
+        let {type,oID,paytype,payfunction} = this.$route.query
         this.type = type
         this.paytype = paytype
         this.payfunction = payfunction
+        this.addData.uba_oid = oID
     },
     mounted() {
     },
@@ -98,6 +100,10 @@ export default {
                 this.ddSet.setToast({text:'支付类别不能为空'})
                 return
             }
+            if(!this.addData.uba_function){
+                this.ddSet.setToast({text:'支付用途不能为空'})
+                return
+            }
             if(!this.addData.uba_money){
                 this.ddSet.setToast({text:'请填写金额'})
                 return
@@ -106,6 +112,7 @@ export default {
                 this.ddSet.setToast({text:'预付日期不能为空'})
                 return
             }
+            //this.addData.uba_oid = this.oID
             this.addData.managerid = 24 //测试ID
             this.ddSet.showLoad()
             this.getUnBusinessPayAdd(this.addData).then(res => {

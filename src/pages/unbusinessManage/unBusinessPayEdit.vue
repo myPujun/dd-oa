@@ -2,17 +2,20 @@
 <template>
     <div class="body_gery">
         <ul class="form_list form_list_noborder">
-            <li class="flex flex_a_c">
+            <li class="flex flex_a_c" @click="chosenPayType">
                 <label class="title"><span>支付类别</span></label>
-                <!-- <h3 class="hint_1">{{editData.uba_type}}</h3> -->
-                <input type="text" readonly v-model="editData.uba_type" placeholder="请选择支付类别">
+                <input type="text" readonly v-model="editData.uba_type">
             </li>
-            <li class="flex flex_a_c flex_s_b">
+            <li class="flex li_auto" v-if="editData.uba_type>0 ">
                 <label class="title"><span class="must">支付用途</span></label>
-                <input type="text" v-model="editData.uba_function" placeholder="请选择支付用途">
-                <div class="icon_right"></div>
+                <textarea v-model="editData.uba_function" placeholder="请输入支付用途内容"></textarea>
             </li>
-            <li class="flex flex_a_c flex_s_b">
+            <li class="flex flex_a_c" @click="chosenPayFunction" v-else>
+                <label class="title"><span class="must">支付用途</span></label>
+                <input type="text" readonly v-model="editData.uba_function" placeholder="请选择支付用途">
+                <div class="icon_right arrows_right"></div>
+            </li>
+            <li class="flex li_auto">
                 <label class="title"><span>用途说明</span></label>
                 <input type="text" v-model="editData.uba_instruction" placeholder="请输入用途说明内容">
             </li>
@@ -61,6 +64,9 @@ export default {
             editData:{},
             then:0,
             type:'',
+            paytype:0,
+            payfunction:0,
+            //oID:'',
         };
     },
     filters:{
@@ -72,14 +78,26 @@ export default {
     components: {},
     computed: { },
     created(){
-        let {type,uba_id} = this.$route.query
+       let {uba_id,type} = this.$route.query        
         this.type = type
+        // this.paytype = paytype
+        // this.payfunction = payfunction
+        // this.editData.uba_oid = oID
         if(type == 'EDIT'){
             let params = {
                 uba_id           
             }
             this.getUnBusinessPayDetails(params).then(res => {
                 this.editData = res.data
+                if(this.editData.uba_type == 0) {
+                   if(this.editData.uba_function == "业务活动执行备用金借款") {
+                        this.paytype = 0
+                        this.payfunction = 0
+                   } else{                       
+                        this.paytype = 1
+                        this.payfunction = 1
+                   }
+                }                
                 //this.foreDate = formatDate(this.editData.uba_foreDate, 'yyyy-MM-dd')
             })
         }
@@ -89,15 +107,16 @@ export default {
     },
     methods: {
         ...mapActions([
+            'getUnBusinessNature',
+            'getUnBusinessPayFunction',
             'getUnBusinessPayDetails',
             'getUnBusinessPayEdit'
         ]),
         submit(item){ //提交
-            console.log(this.editData.uba_type)
-            // if(!this.editData.uba_type){
-            //     this.ddSet.setToast({text:'支付类别不能为空'})
-            //     return
-            // }
+            if(!this.editData.uba_function){
+                this.ddSet.setToast({text:'支付用途不能为空'})
+                return
+            }
             if(!this.editData.uba_money){
                 this.ddSet.setToast({text:'请填写金额'})
                 return
@@ -125,6 +144,45 @@ export default {
 			let _this = this
 			_this.ddSet.setDatepicker().then(res => {
                 _this.$set(this.editData,'uba_foreDate',res.value)
+            })
+        },                    
+        chosenPayType(){   //支付类别
+            let _this = this
+            this.getUnBusinessNature({type:this.paytype}).then(res => {
+                //console.log(res)
+                let source = []
+                let selectedKey = _this.editData.uba_type
+                res.data.map((item,index) => {
+                    let obj = {
+                        key:item.value,
+                        value:item.key
+                    }
+                	source.push(obj)
+                })
+                _this.ddSet.setChosen({source,selectedKey}).then(res => {
+                    _this.$set(_this.editData,'uba_type',res.value)
+                    _this.$set(_this.editData,'uba_type_text',res.key)
+                })
+            })
+        },                 
+        chosenPayFunction(){   //支付用途
+            let _this = this
+            console.log(this.payfunction)
+            this.getUnBusinessPayFunction({type:this.payfunction}).then(res => {
+                //console.log(res)
+                let source = []
+                let selectedKey = _this.editData.uba_function
+                res.data.map((item,index) => {
+                    let obj = {
+                        key:item.value,
+                        value:item.key
+                    }
+                    source.push(obj)
+                })
+                _this.ddSet.setChosen({source,selectedKey}).then(res => {
+                    _this.$set(_this.editData,'uba_function',res.value)
+                    _this.$set(_this.editData,'uba_function_text',res.key)
+                })
             })
         }
     },
