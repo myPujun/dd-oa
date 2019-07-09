@@ -4,11 +4,12 @@
         <ul class="form_list form_list_noborder">
             <li class="flex flex_a_c">
                 <label class="title"><span>支付类别</span></label>
-                <h3 class="hint_1">{{editData.uba_type}}</h3>
+                <!-- <h3 class="hint_1">{{editData.uba_type}}</h3> -->
+                <input type="text" readonly v-model="editData.uba_type" placeholder="请选择支付类别">
             </li>
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span class="must">支付用途</span></label>
-                <input type="text" v-model="editData.uba_function" placeholder="业务活动执行备用金借款">
+                <input type="text" v-model="editData.uba_function" placeholder="请选择支付用途">
                 <div class="icon_right"></div>
             </li>
             <li class="flex flex_a_c flex_s_b">
@@ -92,10 +93,11 @@ export default {
             'getUnBusinessPayEdit'
         ]),
         submit(item){ //提交
-            if(!this.editData.uba_type){
-                this.ddSet.setToast({text:'支付用途不能为空'})
-                return
-            }
+            console.log(this.editData.uba_type)
+            // if(!this.editData.uba_type){
+            //     this.ddSet.setToast({text:'支付类别不能为空'})
+            //     return
+            // }
             if(!this.editData.uba_money){
                 this.ddSet.setToast({text:'请填写金额'})
                 return
