@@ -2,9 +2,9 @@
 <template>
     <div class="body_gery">
         <ul class="form_list form_list_noborder">
-            <li class="flex flex_a_c" @click="chosen('status')">
+            <li class="flex flex_a_c" @click="chosenStatus">
                 <label class="title"><span>支付状态</span></label>
-                <input type="text" readonly :value="statusName" placeholder="请选择审批类型（必填）">
+                <input type="text" readonly :value="statusName" placeholder="请选择支付状态">
                 <div class="icon_right arrows_right"></div>
             </li>
             <li class="flex flex_a_c flex_s_b" v-if="statusName == '已支付'" @click="selectDate">
@@ -14,7 +14,7 @@
             </li>
             <li class="flex flex_a_c"  @click="getMethodList">
                 <label class="title"><span class="must">付款方式</span></label>
-                <input type="text" readonly v-model="addData.uba_payMethod_text" placeholder="请选择审批状态（必填）">
+                <input type="text" readonly :value="addData.methodName" placeholder="请选择付款方式">
                 <div class="icon_right arrows_right"></div>
             </li>
         </ul>
@@ -23,13 +23,12 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapActions,mapState} from 'vuex'
 export default {
     name:"",
     data() {
         return {
             addData:{},
-            typeName:'',
             clientId:0,
             statusList:[  //类型
                 {
@@ -48,7 +47,11 @@ export default {
         };
     },
     components: {},
-    computed: {},
+    computed: {
+        ...mapState({
+            userId:state => state.user.userInfo.id
+        })
+    },
     created(){
         let {id} = this.$route.query
         let params = {
@@ -60,7 +63,6 @@ export default {
             this.clientId = id
             this.statusName = this.addData.uba_isConfirm?'已支付':'待支付'
             this.methodid=this.addData.uba_payMethod
-            //this.methodName = this.addData.pm_name
         })
     },
     mounted() {
@@ -73,12 +75,16 @@ export default {
             'getUnBusinessPayConfirmPay'
         ]),
         submit(item){ //提交
-            if(!_this.addData.methodName){
+            if(!this.statusName){
                 this.ddSet.setToast({text:'请选择付款类型'})
                 return
             }
+            if(!this.addData.methodName){
+                this.ddSet.setToast({text:'请选择付款方式'})
+                return
+            }
             this.addData.uba_id = this.clientId
-            this.addData.managerid = 14 //测试ID
+            this.addData.managerid = this.userId //userID
             this.ddSet.showLoad()
             this.getUnBusinessPayConfirmPay(this.addData).then(res => {
                 this.ddSet.hideLoad()
@@ -92,23 +98,18 @@ export default {
                 this.ddSet.hideLoad()
             })           
         },
-        chosen(item){
+        chosenStatus(){
             let selectedKey,source
-            if(item == 'status'){
                 source = this.statusList
                 selectedKey = this.statusName
-            }
             this.ddSet.setChosen({source,selectedKey}).then(res => {
-                if(item == 'status'){
-                    this.$set(this,'statusName',res.key)
-                    this.$set(this.addData,'status',res.value)
-                }
+                this.$set(this,'statusName',res.key)
+                this.$set(this.addData,'uba_isConfirm',res.value == 'true'?true:false)
             })
         },               
         getMethodList(){   //付款方式
             let _this = this
             this.getMethod({managerid:14}).then(res => {
-                //console.log(res)
                 let source = []
                 let selectedKey = _this.addData.uba_payMethod
                 res.data.map((item,index) => {
@@ -120,7 +121,7 @@ export default {
                 })
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
                     _this.$set(_this.addData,'uba_payMethod',res.value)
-                    _this.$set(_this.addData,'uba_payMethod_text',res.key)
+                    _this.$set(_this.addData,'methodName',res.key)
                 })
             })
         },
