@@ -8,7 +8,7 @@
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-                <router-link tag="li" :to="{path:'/expectPayAuditDetails',query: {rp_id:item.rp_id,type:'EDIT'}}" v-for="(item,index) in showExpectPayList" :key="index">
+                <router-link tag="li" :to="{path:'/expectPayAuditDetails',query: {rp_id:item.rp_id,type:'check'}}" v-for="(item,index) in showExpectPayList" :key="index">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <div v-if='checkType===1'>
@@ -22,7 +22,7 @@
                             <!-- <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span> -->
                         </section>
                         <section class="operation_icon flex">
-                            <router-link tag="span" :to="{path:'/expectPayAuditDetails',query:{id:item.rp_id}}"></router-link>
+                            <router-link tag="span" :to="{path:'/expectPayAuditDetails',query:{rp_id:item.rp_id,type:'check'}}"></router-link>
                         </section>
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
