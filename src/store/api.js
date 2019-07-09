@@ -115,6 +115,9 @@ const api = {
     get orderDetails(){ //查看订单详细信息
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_show'
     },
+	get orderDel(){ //查看订单详细信息
+	    return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_delete'
+	},
 
 
     get unBusinessPayList(){ //非业务支付申请分页数据列表
@@ -209,7 +212,10 @@ const api = {
     ///公共方法管理模块 start--------------------------------------------------------    
     get upLoadFile(){
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=UpLoadFile'
-    }
+    },
+	get delFile(){
+	    return baseUrl+'/tools/dingtalk_ajax.ashx?action=File_delete'
+	}
     ///公共方法管理模块 end-------------------------------------------------------- 
 }
 export {

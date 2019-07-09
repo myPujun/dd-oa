@@ -10,6 +10,7 @@ import pay from './modules/pay'
 import billManage from './modules/billManage'
 import unbusinessManage from './modules/unbusinessManage'
 import notAudit from './modules/notAudit'
+import expectPayAudit from './modules/expectPayAudit'
 
 Vue.use(Vuex)
 
@@ -23,6 +24,7 @@ export default new Vuex.Store({
         addOrders,
         billManage,
         unbusinessManage,
-        notAudit
+        notAudit,
+        expectPayAudit
     }
 })

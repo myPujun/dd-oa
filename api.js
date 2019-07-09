@@ -123,6 +123,9 @@ const api = {
     },  
     get unBusinessPayEdit(){ //修改业务支付申请
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_edit'
+    }, 
+    get unBusinessPayAuditBind(){ //审批业务支付申请
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_auditBind'
     },  
     get unBusinessPayAudit(){ //审批业务支付申请
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_audit'
