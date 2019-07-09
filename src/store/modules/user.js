@@ -21,7 +21,7 @@ const actions = {
         return ajax.post(api.corpid,params)
     },
     getUserId({commit},params){ //用户绑定钉钉userid并授权免登--获取用户信息
-        return ajax.post(api.dingtalkUseridValidate,params)
+        return ajax.post(api.dingtalkUseridValidateTest,params)
     },
     getUserName({commit},params){   //验证用户名是否可绑定
         return ajax.post(api.userNameValidate,params)

@@ -18,7 +18,7 @@
                 <div class="icon_right arrows_right"></div>
             </li>
         </ul>
-        <top-nav :title="确认支付业务支付申请" :text='"保存"' @rightClick="submit"></top-nav>
+        <top-nav title="确认支付业务支付申请" :text='"保存"' @rightClick="submit"></top-nav>
     </div>
 </template>
 
@@ -29,6 +29,7 @@ export default {
     data() {
         return {
             addData:{},
+            typeName:'',
             statusList:[  //类型
                 {
                     key:'待支付',

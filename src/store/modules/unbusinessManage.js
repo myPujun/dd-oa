@@ -20,6 +20,9 @@ const actions = {
     getUnBusinessPayConfirmPay({commit},params){   //业务支付申请支付确认
         return ajax.post(api.unBusinessPayConfirmPay ,params)
     },
+    getUnBusinessPayAuditObtain({commit},params){
+        return ajax.post(api)
+    }
 }
 
 export default {
