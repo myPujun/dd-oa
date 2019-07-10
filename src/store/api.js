@@ -115,7 +115,10 @@ const api = {
     get orderDetails(){ //查看订单详细信息
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_show'
     },
-	get orderDel(){ //查看订单详细信息
+    get orderCheck(){ //业务上级审批
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_check'
+    },
+	get orderDel(){ //删除订单
 	    return baseUrl+'/tools/dingtalk_ajax.ashx?action=order_delete'
 	},
 

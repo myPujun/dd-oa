@@ -23,11 +23,11 @@
 				            <h2 class="name">{{item.c_name}}</h2>
 							<div v-show="0 == item.o_isPush" class="lock-status">未推送</div>
 							<div v-show="1 == item.o_isPush" class="lock-status green">已推送</div>
-							<div v-show="0 == item.c_flag" class="lock-status">待审</div>
-							<div v-show="1 == item.c_flag" class="lock-status">未通过</div>
-							<div v-show="2 == item.c_flag" class="lock-status green">通过</div>
-							<div v-show="0 == item.o_lockStatus" class="lock-status green">未锁单</div>
-							<div v-show="1 == item.o_lockStatus" class="lock-status">已锁单</div>
+							<div v-show="0 == item.o_flag" class="lock-status">待审</div>
+							<div v-show="1 == item.o_flag" class="lock-status">未通过</div>
+							<div v-show="2 == item.o_flag" class="lock-status green">通过</div>
+							<div v-show="0 == item.o_lockStatus" class="lock-status">未锁单</div>
+							<div v-show="1 == item.o_lockStatus" class="lock-status green">已锁单</div>
 				        </section>
 				        <section class="operation_icon flex">
 				            <span @click.prevent.stop="editOrder(item.o_id)"></span>

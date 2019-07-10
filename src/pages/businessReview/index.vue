@@ -14,7 +14,7 @@
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-				<router-link tag="li" to="/lookOrder" v-for="(item,index) in showOrderList" :key="index">
+				<router-link tag="li" :to="{path:'/businessOrder',query: {id:item.o_id}}" v-for="(item,index) in showOrderList" :key="index">
 				    <div class="company flex flex_a_c flex_s_b">
 				        <section class="flex flex_a_c">
 				            <img class="icon" v-show="0 == item.o_status" src="../../assets/img/audit.png" alt="">
@@ -23,15 +23,14 @@
 				            <h2 class="name">{{item.c_name}}</h2>
 							<div v-show="0 == item.o_isPush" class="lock-status">未推送</div>
 							<div v-show="1 == item.o_isPush" class="lock-status green">已推送</div>
-							<div v-show="0 == item.c_flag" class="lock-status">待审</div>
-							<div v-show="1 == item.c_flag" class="lock-status">未通过</div>
-							<div v-show="2 == item.c_flag" class="lock-status green">通过</div>
-							<div v-show="0 == item.o_lockStatus" class="lock-status green">未锁单</div>
-							<div v-show="1 == item.o_lockStatus" class="lock-status">已锁单</div>
+							<div v-show="0 == item.o_flag" class="lock-status">待审</div>
+							<div v-show="1 == item.o_flag" class="lock-status">未通过</div>
+							<div v-show="2 == item.o_flag" class="lock-status green">通过</div>
+							<div v-show="0 == item.o_lockStatus" class="lock-status ">未锁单</div>
+							<div v-show="1 == item.o_lockStatus" class="lock-status green">已锁单</div>
 				        </section>
 				        <section class="operation_icon flex">
-				            <span @click.prevent.stop="edit"></span>
-				            <span></span>
+							<router-link tag="span" :to="{path:'/businessOrder',query:{id:item.o_id}}"></router-link>
 				        </section>
 				    </div>
 				    <div class="message flex flex_a_c flex_s_b">
@@ -93,14 +92,13 @@ export default {
 		   searchData:{
 			   pageIndex:0,
 			   pageSize:10,
-			   flag:1,
+			   flag:0,
 			   type:'check',
 			   orderid:'',
 			   o_contractprice:'',
 			   o_status:'',
-			   o_dstatus:'',
-			   o_ispush:'',
-			   o_flag:'',
+			   o_ispush:'True',
+			   o_flag:'0',
 			   o_lockstatus:'',
 			   managerid:14     // TODO: 测试用，后面注意修改
 		   }
@@ -142,17 +140,13 @@ export default {
 			}
 		},
         changeTab(index){
-			var tmpFlag = 1
 			if(0 == index){
-				tmpFlag = 1
+				this.searchData.o_flag = 0
 			}
 			if(1 == index){
-				tmpFlag = 0
+				this.searchData.o_flag = 3
 			}
-			if(tmpFlag != this.searchData.flag){
-				this.searchData.flag = tmpFlag
-				this.newOrderList()
-			}
+			this.newOrderList()
         },
         changeActive(actives){
 			let _this = this
@@ -221,8 +215,8 @@ export default {
 				})
 			})
 		},
-        edit(){
-            this.$router.push({path:'/modifyOrder'})
+        edit(_id){
+            this.$router.push({path:'/businessOrder',query: {id:_id}})
         },
 		// 处理 时间
 		getListDate(_date){
@@ -280,4 +274,33 @@ export default {
 		text-align: center;
 	}
 	.lock-status.green{background-color:#55be17;}
+	
+	.customer_list{
+        .amount{
+            height: .65rem;
+            line-height: .65rem;
+            padding: 0 .3rem;
+            font-size: $size_28;
+            color: $gery_1;
+            font-weight: normal;
+            background-color: $gery_3;
+        }
+        .list{
+            .company{
+                .operation_icon{
+                    span{
+                        width: $size_30;
+                        height: $size_30;
+                        margin-left: .3rem;
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        background-size: cover;
+                    }
+                    span:nth-child(1){
+                        background-image: url('../../assets/img/auditting.png');
+                    }                    
+                }
+            }
+        }
+    }
 </style>
