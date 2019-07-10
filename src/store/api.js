@@ -212,6 +212,12 @@ const api = {
     },
     ///通知管理模块 end--------------------------------------------------------
 
+    ///业务统计分析 start--------------------------------------------------------
+    get achievementStatistic(){ //业绩统计
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=AchievementStatistic'
+    },
+    ///业务统计分析 end--------------------------------------------------------
+
     ///公共方法管理模块 start--------------------------------------------------------    
     get upLoadFile(){
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=UpLoadFile'

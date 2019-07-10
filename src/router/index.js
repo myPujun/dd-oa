@@ -36,11 +36,17 @@ import overpayManage from './overpayManage'
 import unauditManage from './unauditManage'
 //非业务支付申请
 import unbusinessManage from './unbusinessManage'
+//业绩统计
+import performanceStat from './performanceStat'
 
 let routes = [
     {
       path: '/',
       component: home
+    },
+    {
+      path:'/register',
+      component:register
     }
 ]
 
@@ -61,12 +67,10 @@ routes = routes.concat(
     overpayManage,
     unauditManage,
     unbusinessManage,
+    performanceStat,
     [{
       path: '*',
       redirect: '/'
-    },{
-      path:'/register',
-      component:register
     }]
 )
 

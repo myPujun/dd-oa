@@ -1,7 +1,7 @@
 <!-- tab切换 -->
 <template>
     <div>
-        <ul class="tab_list flex flex_s_a">
+        <ul class="tab_list flex flex_s_a" :class="tabClass">
             <li :class="{'active':activeIndex == index}" v-for="(item,index) in tabList" :key="index" @click="changeTab(index)">{{item}}</li>
         </ul>
     </div>
@@ -22,6 +22,10 @@ export default {
         tabIndex:{
             type:Number,
             default:0
+        },
+        tabClass:{
+            type:String,
+            default:''
         }
     },
     components: {},
@@ -42,6 +46,13 @@ export default {
     @import '../assets/css/var.scss';
     .tab_list{
         border-bottom: 1px solid $border_bottom_color;
+        &.fixed{
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color:#FFF;
+        }
         li{
             height: .75rem;
             line-height: .75rem;
