@@ -12,6 +12,7 @@ import unbusinessManage from './modules/unbusinessManage'
 import notAudit from './modules/notAudit'
 import expectPayAudit from './modules/expectPayAudit'
 import performanceStat from './modules/performanceStat'
+import message from './modules/message'
 
 Vue.use(Vuex)
 
@@ -27,6 +28,7 @@ export default new Vuex.Store({
         unbusinessManage,
         notAudit,
         expectPayAudit,
-        performanceStat
+        performanceStat,
+        message
     }
 })

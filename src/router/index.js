@@ -38,6 +38,8 @@ import unauditManage from './unauditManage'
 import unbusinessManage from './unbusinessManage'
 //业绩统计
 import performanceStat from './performanceStat'
+//个人消息
+import selfMessage from './message'
 
 let routes = [
     {
@@ -68,6 +70,7 @@ routes = routes.concat(
     unauditManage,
     unbusinessManage,
     performanceStat,
+    selfMessage,
     [{
       path: '*',
       redirect: '/'
