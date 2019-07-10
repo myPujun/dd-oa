@@ -8,10 +8,10 @@
                 <div class="icon"></div>
                 <ul class="list">
                     <li v-for="(item,index) in prizeList" :key="index" v-show="activeIndex == index">
-                        {{item.name}}
+                        {{item.me_title}}
                     </li>
                 </ul>
-                <span class="more">更多</span>
+                <router-link class="more" tag="span" :to="{path:'/messageList'}">更多</router-link>
             </div>
         </div>
         <div class="index_nav_list">
@@ -37,13 +37,8 @@ import {mapState,mapActions,mapMutations} from 'vuex'
 export default {
     data() {
         return {
-            prizeList:[
-                { name: '城轨采购网',src:'http://www.railunique.com'},
-                { name: '天津地铁电子采购平台',src:'http://www.railunique.com' },
-                { name: '南昌地铁',src:'http://www.railunique.com' },
-                { name: '南昌地铁',src:'http://www.railunique.com' },
-                { name: '兰州地铁招标信息',src:'http://www.railunique.com' },
-                { name: '西安公共资源交易中心',src:'http://www.railunique.com' }
+            prizeList:[ 
+                //{ name: '城轨采购网',src:'http://www.railunique.com'}
             ],
             activeIndex:0,
             navList:[],
@@ -60,6 +55,7 @@ export default {
     },
     created(){
         this.powers = this.powerList.map(item => item.urp_code)
+        this.getMessage(this.userInfo.id)
     },
     mounted() {
         //获取菜单列表
@@ -83,6 +79,21 @@ export default {
                 }
             }
             return false
+        },
+        ...mapActions([
+            'getMessageList',
+        ]),
+        getMessage(_id){
+            this.getMessageList({pageIndex:1,pageSize:10,managerid:_id,isRead:'False'}).then(res => {
+                if(res.data.msg){
+					this.ddSet.setToast({text:res.data.msg})
+					return
+				}
+				else{
+                    this.prizeList = res.data.list
+				}
+            })
+
         }
         // ...mapActions([
         //     'getUserId',
@@ -151,6 +162,8 @@ export default {
         background-color: #f1f1f1;
         border-radius: .08rem;
         margin: 0 auto;
+        background-image: url('../assets/img/bananer.png');
+        background-size:6.92rem 2.75rem;
     }
     .inform_list{
         display: flex;

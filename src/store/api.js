@@ -218,7 +218,20 @@ const api = {
     },
 	get delFile(){
 	    return baseUrl+'/tools/dingtalk_ajax.ashx?action=File_delete'
-	}
+    },
+	get selfmessage(){//个人消息列表
+	    return baseUrl+'/tools/dingtalk_ajax.ashx?action=self_message'
+    },
+	get selfmessageDetail(){//消息详情
+	    return baseUrl+'/tools/dingtalk_ajax.ashx?action=self_messageDetail'
+    },
+	get selfmessageDel(){//删除消息
+	    return baseUrl+'/tools/dingtalk_ajax.ashx?action=self_messageDel'
+    },
+	get selfmessageRead(){//读取消息
+	    return baseUrl+'/tools/dingtalk_ajax.ashx?action=self_messageRead'
+    }
+    
     ///公共方法管理模块 end-------------------------------------------------------- 
 }
 export {

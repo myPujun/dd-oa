@@ -11,6 +11,7 @@ import billManage from './modules/billManage'
 import unbusinessManage from './modules/unbusinessManage'
 import notAudit from './modules/notAudit'
 import expectPayAudit from './modules/expectPayAudit'
+import message from './modules/message'
 
 Vue.use(Vuex)
 
@@ -25,6 +26,7 @@ export default new Vuex.Store({
         billManage,
         unbusinessManage,
         notAudit,
-        expectPayAudit
+        expectPayAudit,
+        message
     }
 })

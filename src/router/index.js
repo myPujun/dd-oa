@@ -36,6 +36,8 @@ import overpayManage from './overpayManage'
 import unauditManage from './unauditManage'
 //非业务支付申请
 import unbusinessManage from './unbusinessManage'
+//个人消息
+import selfMessage from './message'
 
 let routes = [
     {
@@ -61,6 +63,7 @@ routes = routes.concat(
     overpayManage,
     unauditManage,
     unbusinessManage,
+    selfMessage,
     [{
       path: '*',
       redirect: '/'

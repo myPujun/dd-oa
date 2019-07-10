@@ -108,6 +108,26 @@ function setChooseInterval({defaultStart = 0,defaultEnd = 0} = {}){
         })
     })
 }
+//确认提示框
+function setConfirm(message='确定操作吗？'){
+    return new Promise(function(resolve, reject) {
+        dd.device.notification.confirm({
+            message,
+            title: "提示",
+            buttonLabels: ['确定', '取消'],
+            onSuccess : function(result) {
+                resolve(result) 
+                //onSuccess将在点击button之后回调
+                /*
+                {
+                    buttonIndex: 0 //被点击按钮的索引值，Number类型，从0开始
+                }
+                */
+            },
+            onFail : function(err) {}
+        })
+    })
+}
 export default {
     infoCode,
     setToast,
@@ -115,5 +135,6 @@ export default {
     setDatepicker,
     setChooseInterval,
     showLoad,
-    hideLoad
+    hideLoad,
+    setConfirm
 }
