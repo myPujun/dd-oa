@@ -98,18 +98,16 @@ export default {
             'getUnBusinessPayAudit'
         ]),
         submit(item){ //提交
-            // if(!this.typeName){
-            //     this.ddSet.setToast({text:'请选择审批类型'})
-            //     return
-            // }
             if(!this.flagName){
-                console.log(this.flagName)
-                this.ddSet.setToast({text:'请选择审批状态'})
+                //console.log(this.flagName)
+                this.ddSet.setToast({text:'请您选择审批状态'})
                 return
             }
             this.addData.uba_id = this.clientId
             this.addData.ctype = this.typeId
-            this.addData.cstatus = this.addData.cstatus
+            //console.log(this.addData.ctype)
+            this.addData.cstatus = this.flagId
+            //console.log(this.flagId)
             this.addData.managerid = 24 //测试ID
             this.ddSet.showLoad()
             this.getUnBusinessPayAudit(this.addData).then(res => {
@@ -127,22 +125,14 @@ export default {
         },
         chosen(item){
             let selectedKey,source
-            // if(item == 'type'){
-            //     source = this.typeList
-            //     selectedKey = this.typeName
-            // }else 
             if(item == 'flag'){
                 source = this.flag
                 selectedKey = this.flagName
             }
             this.ddSet.setChosen({source,selectedKey}).then(res => {
-                // if(item == 'type'){
-                //     this.$set(this,'typeName',res.key)
-                //     this.$set(this.addData,'ctype',res.value)
-                // }else 
                 if(item == 'flag'){
                     this.$set(this,'flagName',res.key)
-                    this.$set(this.addData,'cstatus',res.value)
+                    this.$set(this,'flagId',res.value)
                 }
             })
         },

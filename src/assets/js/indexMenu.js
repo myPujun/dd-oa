@@ -119,6 +119,11 @@ let list = [
                 link:'reportManage',
                 name:'业务统计'
             },
+            {
+                imgUrl:require('../img/nav_list/icon_statistics.png'),
+                link:'performanceStat',
+                name:'业绩统计'
+            },
         ]
     },
 ]

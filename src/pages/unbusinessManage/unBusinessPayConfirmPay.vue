@@ -76,15 +76,22 @@ export default {
         ]),
         submit(item){ //提交
             if(!this.statusName){
-                this.ddSet.setToast({text:'请选择付款类型'})
+                if(!this.methodid && !addData.uba_date){
+                    this.ddSet.setToast({text:'请选择实付日期'})
+                    return
+                }
+            }
+            else if(!this.addData.methodName){
+                this.ddSet.setToast({text:'请选择付款方式'})
                 return
             }
-            if(!this.addData.methodName){
-                this.ddSet.setToast({text:'请选择付款方式'})
+            else{
+                this.ddSet.setToast({text:'请选择支付状态或支付方式'})
                 return
             }
             this.addData.uba_id = this.clientId
             this.addData.managerid = this.userId //userID
+            console.log(this.addData.uba_payMethod)
             this.ddSet.showLoad()
             this.getUnBusinessPayConfirmPay(this.addData).then(res => {
                 this.ddSet.hideLoad()

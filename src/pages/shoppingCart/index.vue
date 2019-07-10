@@ -1,7 +1,6 @@
 <!-- 订单查询 -->
 <template>
     <div>
-		<!--  -->
         <tab-list :tabList="topTablist" @on-tab="changeTab"></tab-list>
         <label-search :list="labelData" :show="showLabel" @on-label="changeActive"></label-search>
 		<div class="search_box flex flex_a_c flex_j_c" v-show="showSearchBox">
