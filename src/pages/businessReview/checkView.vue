@@ -2,18 +2,10 @@
 <template>
     <div class="body_gery">
         <ul class="form_list form_list_noborder">
-            <li class="flex flex_a_c flex_s_b">
-			    <label class="title"><span>审批类型</span></label>
-			    <input type="text" readonly :value="addData.type_text">
-			</li>
             <li class="flex flex_a_c flex_s_b" @click="changeFlag">
                 <label class="title"><span>审批状态</span></label>
-                <input type="text" readonly :value="addData.status_text">
+                <input type="text" readonly :value="addData.o_flagText">
 			    <div class="icon_right arrows_right"></div>
-            </li>
-            <li class="li_auto flex">
-                <label class="title"><span>审批备注</span></label>
-                <textarea v-model="addData.rpremark"></textarea>
             </li>
         </ul>
         <top-nav :title='"审批预付款"' :text='"保存"' @rightClick="submit" ></top-nav>
@@ -26,9 +18,11 @@ export default {
     name:"",
     data() {
         return {
-            addData:{},
+            addData:{
+                orderID:'',
+                managerid:24   // TODO:测试当前登录人ID
+                },            
             type:'',
-            rpid:0,
             flagList:[  //审批状态
                 {
                     key:'待审批',
@@ -46,45 +40,28 @@ export default {
         };
     },
     components: {},
-    computed: {...mapState(['addOrders'])},
-    created(){
-        let {type,rp_id} = this.$route.query
-        this.type = type
-        this.rpid=rp_id
-        if(type == 'check'){
-            let params = {
-                rp_id,
-                type,
-                managerid:29
-            }
-            this.getReceiptDetails(params).then(res => {
-                console.log(res.data)
-                this.addData = res.data
-                this.addData.type_text=this.addData.typeText
-                this.addData.ctype=this.addData.type
-                this.addData.rpremark = this.addData.remark
-                this.addData.status_text = this.addData.flagText
-                this.addData.status = this.addData.flag
-            })
-        }
+    computed: {},
+    created(){ 
+        let oid= this.$route.query.id
+        this.addData.orderID = oid
+        this.getOneOrderData()   
     },
     mounted() {
-       
     },
     methods: {
         ...mapActions([
-            'getReceiptDetails',
-            'getPayAudit'
+            'getOrderDetails',
+            'checkOrder'
         ]),
         submit(item){ //提交
-            if(!this.addData.status){
+            if(!this.addData.o_flag){
                 this.ddSet.setToast({text:'请选择审批状态'})
                 return
             }
-            this.addData.managerid = 29 //测试ID
+            this.addData.managerid = 24 //测试ID
             this.ddSet.showLoad()
             console.log(this.addData)
-            this.getPayAudit(this.addData).then(res => {
+            this.checkOrder(this.addData).then(res => {
                 this.ddSet.hideLoad()
                 if(res.data.status){
                     this.ddSet.setToast({text:'审核成功'}).then(res => {
@@ -97,12 +74,26 @@ export default {
                 this.ddSet.hideLoad()
             })
         },
+        getOneOrderData(){
+            let _this = this
+			this.getOrderDetails({orderID:_this.addData.orderID}).then(res => {
+				if(!res.data){
+					return;
+				}
+                let tmpData = res.data;
+				for (var key in tmpData) { 
+					if('string' == typeof tmpData[key]){
+						_this.$set(_this.addData,key,tmpData[key])
+					}
+				}
+			})
+		},
         changeFlag(){
             let _this = this
                 let source =_this.flagList,selectedKey = _this.addData.status_text          
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
-                    _this.$set(_this.addData,'status',res.value)
-                    _this.$set(_this.addData,'status_text',res.key)
+                    _this.$set(_this.addData,'o_flag',res.value)
+                    _this.$set(_this.addData,'o_flagText',res.key)
                 })
         }
     },

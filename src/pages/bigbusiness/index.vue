@@ -1,9 +1,9 @@
-<!-- 特大业务查询 -->
+<!-- 订单查询 -->
 <template>
     <div>
 		<!--  -->
-        <tab-list :tabList="topTablist" @on-tab="changeTab"></tab-list>
-        <label-search :list="labelData" :show="showLabel" @on-label="changeActive"></label-search>
+        <!-- <tab-list :tabList="topTablist" @on-tab="changeTab"></tab-list>-->
+        <label-search :list="labelData" :show="showLabel" @on-label="changeActive"></label-search> 
 		<div class="search_box flex flex_a_c flex_j_c" v-show="showSearchBox">
 		   <input type="text" v-model="searchData.orderid" @input="changeSearch" placeholder="搜索订单号">
 		</div>
@@ -14,7 +14,7 @@
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-				<router-link tag="li" to="/lookOrder" v-for="(item,index) in showOrderList" :key="index">
+				<router-link tag="li" :to="{ path: '/lookOrder',query: { id: item.o_id } }" v-for="(item,index) in showOrderList" :key="index">
 				    <div class="company flex flex_a_c flex_s_b">
 				        <section class="flex flex_a_c">
 				            <img class="icon" v-show="0 == item.o_status" src="../../assets/img/audit.png" alt="">
@@ -23,15 +23,15 @@
 				            <h2 class="name">{{item.c_name}}</h2>
 							<div v-show="0 == item.o_isPush" class="lock-status">未推送</div>
 							<div v-show="1 == item.o_isPush" class="lock-status green">已推送</div>
-							<div v-show="0 == item.c_flag" class="lock-status">待审</div>
-							<div v-show="1 == item.c_flag" class="lock-status">未通过</div>
-							<div v-show="2 == item.c_flag" class="lock-status green">通过</div>
-							<div v-show="0 == item.o_lockStatus" class="lock-status green">未锁单</div>
-							<div v-show="1 == item.o_lockStatus" class="lock-status">已锁单</div>
+							<div v-show="0 == item.o_flag" class="lock-status">待审</div>
+							<div v-show="1 == item.o_flag" class="lock-status">未通过</div>
+							<div v-show="2 == item.o_flag" class="lock-status green">通过</div>
+							<div v-show="0 == item.o_lockStatus" class="lock-status">未锁单</div>
+							<div v-show="1 == item.o_lockStatus" class="lock-status green">已锁单</div>
 				        </section>
 				        <section class="operation_icon flex">
-				            <span @click.prevent.stop="edit"></span>
-				            <span></span>
+				            <span @click.prevent.stop="editOrder(item.o_id)"></span>
+				            <span @click.prevent.stop="delListOrder(item.o_id)"></span>
 				        </section>
 				    </div>
 				    <div class="message flex flex_a_c flex_s_b">
@@ -64,7 +64,7 @@ export default {
     name:"",
     data() {
        return {
-           topTablist:['待审批','已审批'],
+           topTablist:['我的订单','全公司的'],
            showLabel:false,
            showSearchBox:false,
 		   labelData:[
@@ -93,7 +93,7 @@ export default {
 		   searchData:{
 			   pageIndex:0,
 			   pageSize:10,
-			   flag:1,
+			   flag:0,
 			   type:'',
 			   orderid:'',
 			   o_contractprice:'100万以上',
@@ -124,14 +124,15 @@ export default {
     },
     methods: {
 		...mapActions([
-		    'getAllCustomer',
+		    'getAllcustomer',
 		    'getContractprices',
 		    'getContactsbycid',
 		    'getPushstatus',
 		    'getFstatus',
 		    'getDstatus',
 			'getLockStatus',
-			'getOrderList'
+			'getOrderList',
+			'delOrder'
 		]),
 		showSearchBoxChange(){
 			this.showSearchBox = !this.showSearchBox;
@@ -141,19 +142,19 @@ export default {
 				this.newOrderList()
 			}
 		},
-        changeTab(index){
-			var tmpFlag = 1
-			if(0 == index){
-				tmpFlag = 1
-			}
-			if(1 == index){
-				tmpFlag = 0
-			}
-			if(tmpFlag != this.searchData.flag){
-				this.searchData.flag = tmpFlag
-				this.newOrderList()
-			}
-        },
+        // changeTab(index){
+		// 	var tmpFlag = 1
+		// 	if(0 == index){
+		// 		tmpFlag = 1
+		// 	}
+		// 	if(1 == index){
+		// 		tmpFlag = 0
+		// 	}
+		// 	if(tmpFlag != this.searchData.flag){
+		// 		this.searchData.flag = tmpFlag
+		// 		this.newOrderList()
+		// 	}
+        // },
         changeActive(actives){
 			let _this = this
             this.showLabel = false
@@ -221,9 +222,48 @@ export default {
 				})
 			})
 		},
-        edit(){
-            this.$router.push({path:'/modifyOrder'})
+        editOrder(_id){
+            this.$router.push({path:'/modifyOrder', query: { id: _id }})
         },
+		delListOrder(_id){
+			let _this = this;
+			dd.device.notification.confirm({
+				message: "确认删除《"+_id+"》订单吗",
+				title: "提示",
+				buttonLabels: ['确认', '取消'],
+				onSuccess : function(result) {
+					//onSuccess将在点击button之后回调
+					/*
+					{
+						buttonIndex: 0 //被点击按钮的索引值，Number类型，从0开始
+					}
+					*/
+				   if(0 == result.buttonIndex){
+					   dd.device.notification.showPreloader({})
+					   _this.delOrder({
+						   orderID:_id,
+						   managerid:_this.searchData.managerid
+					   }).then((res) => {
+						   dd.device.notification.hidePreloader({})
+						   if (res.data.status) {
+							   dd.device.notification.toast({
+							   	text: '成功删除订单'
+							   })
+							   _this.showOrderList = _this.showOrderList.filter(function(item){
+								   return item.o_id != _id
+							   })
+						   }
+						   else{
+							   dd.device.notification.toast({
+							   	text: res.data.msg
+							   })
+						   }
+					   })
+				   }
+				},
+				onFail : function(err) {}
+			});
+		},
 		// 处理 时间
 		getListDate(_date){
 			if(!_date){
@@ -281,3 +321,4 @@ export default {
 	}
 	.lock-status.green{background-color:#55be17;}
 </style>
+

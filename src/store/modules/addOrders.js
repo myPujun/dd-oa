@@ -62,6 +62,10 @@ const actions = {
 	getOrderDetails({commit},params){
 		return ajax.post(api.orderDetails,params)
 	},
+	// 业务上级审批
+	checkOrder({commit},params){
+		return ajax.post(api.orderCheck,params)
+	},
 	// 删除订单
 	delOrder({commit},params){
 		return ajax.post(api.orderDel,params)
