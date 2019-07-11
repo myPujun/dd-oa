@@ -1,6 +1,10 @@
 import {api} from '../api'
 import ajax from '../ajax'
 
+let state = {
+    paymentModes:[]
+}
+
 const actions = {
     getUnBusinessPayList({commit},params){   //非业务支付申请分页数据列表
         return ajax.post(api.unBusinessPayList ,params)
@@ -31,6 +35,14 @@ const actions = {
     },
 }
 
+const mutations = {
+    //付款方式列表
+    setPaymentModes:(state,res) => {
+        state.paymentModes = res
+    }
+}
+
 export default {
-    actions
+    actions,
+    mutations
 }

@@ -1,4 +1,4 @@
-<!-- 非业务支付申请 -->
+<!-- 非业务支付审批 -->
 <template>
     <div>
 		<div class="search_box flex flex_a_c flex_j_c">
@@ -7,7 +7,7 @@
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-                <router-link tag="li" :to="{path:'/unBusinessPayEdit',query: {uba_id:item.uba_id,type:'EDIT'}}" v-for="(item,index) in showUnBusinessPayList" :key="index">
+                <router-link tag="li" :to="{path:'/unbusinessDetails',query: {id:item.uba_id}}" v-for="(item,index) in showUnBusinessPayList" :key="index">
 				    <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <img class="icon" v-show="0 == item.uba_flag1" src="../../assets/img/audit.png" alt="">
@@ -23,11 +23,10 @@
                             <div v-show="false == item.uba_isConfirm" class="lock-status">未支付</div>
                             <div v-show="true == item.uba_isConfirm" class="lock-status green">已支付</div>
                         </section>
-				        <section class="operation_icon flex">
-				            <!-- <span @click.prevent.stop="edit(item.uba_id)"></span> -->
-							<span></span>
+				        <!-- <section class="operation_icon flex">
+				            <span @click.prevent.stop="edit(item.uba_id)"></span>
 				            <span></span>
-				        </section>
+				        </section> -->
 				    </div>
 				    <div class="message flex flex_a_c flex_s_b">
 				        <div class="message_list flex">
@@ -41,7 +40,7 @@
 				点击加载更多
 			</div>
         </div>
-        <top-nav title="非业务支付申请" text='新增' @rightClick="add"></top-nav>
+        <top-nav title="非业务支付审批" text='新增' @rightClick="add"></top-nav>
     </div>
 </template>
 

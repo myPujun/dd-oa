@@ -4,17 +4,17 @@
         <ul class="form_list form_list_noborder">
             <li class="flex flex_a_c" @click="chosenStatus">
                 <label class="title"><span>支付状态</span></label>
-                <input type="text" readonly :value="statusName" placeholder="请选择支付状态">
+                <input type="text" :value="statusName" placeholder="请选择支付状态" readonly>
                 <div class="icon_right arrows_right"></div>
             </li>
-            <li class="flex flex_a_c flex_s_b" v-if="statusName == '已支付'" @click="selectDate">
+            <li class="flex flex_a_c flex_s_b" v-if="this.addData.uba_isConfirm" @click="selectDate">
                 <label class="title"><span>实付日期</span></label>
-                <input type="text" readonly v-model="addData.uba_date" placeholder="请选择日期">
+                <input type="text" v-model="addData.uba_date" placeholder="请选择日期" readonly>
                 <div class="icon_right time"></div>
             </li>
             <li class="flex flex_a_c"  @click="getMethodList">
                 <label class="title"><span class="must">付款方式</span></label>
-                <input type="text" readonly :value="addData.methodName" placeholder="请选择付款方式">
+                <input type="text" :value="this.addData.uba_payMethod" placeholder="请选择付款方式" readonly>
                 <div class="icon_right arrows_right"></div>
             </li>
         </ul>
@@ -24,6 +24,8 @@
 
 <script>
 import {mapActions,mapState} from 'vuex'
+import * as dd from 'dingtalk-jsapi'
+import {formatDate} from '../../assets/js/date.js'
 export default {
     name:"",
     data() {
@@ -31,6 +33,10 @@ export default {
             addData:{},
             clientId:0,
             statusList:[  //类型
+                {
+                    key:'未选择',
+                    value:''
+                },
                 {
                     key:'待支付',
                     value:false
@@ -41,7 +47,6 @@ export default {
                 },
             ],
             statusName:'',
-            methodid:0,
             methodName:'',
             then:0,
         };
@@ -49,38 +54,30 @@ export default {
     components: {},
     computed: {
         ...mapState({
-            userId:state => state.user.userInfo.id,
-            paymentModes:state => state.unbusinessManage.paymentModes
+            userId:state => state.user.userInfo.id
         })
     },
     created(){
-        //获取付款方式列表
-        this.getMethod({managerid:this.userId}).then(res => {
-            let paymentModes = []
-            res.data.map((item,index) => {
-                let obj = {
-                    key:item.value,
-                    value:item.key
-                }
-                paymentModes.push(obj)
-            })
-            this.$store.commit('setPaymentModes',paymentModes)
-            console.log(this.paymentModes)
-            let {id} = this.$route.query
-            let params = {
-                uba_id:id
+        let {id} = this.$route.query
+        let params = {
+            uba_id:id
+        }
+        // 初始化数据
+        this.getUnBusinessPayDetails(params).then(res => {
+            this.addData = res.data
+            this.addData.uba_payMethod=this.addData.uba_payMethod
+            this.clientId = id
+            if(this.addData.uba_isConfirm) {
+                this.statusName = this.statusList[2].key
+            }else if(!this.addData.uba_isConfirm) {
+                this.statusName = this.statusList[1].key
+            }else{
+                this.statusName = this.statusList[0].key
             }
-            // 初始化数据
-            this.getUnBusinessPayDetails(params).then(res => {
-                this.addData = res.data
-                this.clientId = id
-                this.statusName = this.addData.uba_isConfirm?'已支付':'待支付'
-                this.methodid=this.addData.uba_payMethod
-            })
         })
     },
     mounted() {
-        
+
     },
     methods: {
         ...mapActions([
@@ -89,23 +86,17 @@ export default {
             'getUnBusinessPayConfirmPay'
         ]),
         submit(item){ //提交
-            if(!this.statusName){
-                if(!this.methodid && !addData.uba_date){
-                    this.ddSet.setToast({text:'请选择实付日期'})
-                    return
-                }
-            }
-            else if(!this.addData.methodName){
-                this.ddSet.setToast({text:'请选择付款方式'})
+            if(!this.statusName && !this.addData.uba_payMethod){
+                this.ddSet.setToast({text:'请选择支付状态或支付方式'})
                 return
             }
-            else{
-                this.ddSet.setToast({text:'请选择支付状态或支付方式'})
+            else if(this.addData.uba_isConfirm && !this.addData.uba_date){
+                this.ddSet.setToast({text:'请选择实付日期'})
                 return
             }
             this.addData.uba_id = this.clientId
             this.addData.managerid = this.userId //userID
-            console.log(this.addData.uba_payMethod)
+            //console.log(this.addData.uba_payMethod)
             this.ddSet.showLoad()
             this.getUnBusinessPayConfirmPay(this.addData).then(res => {
                 this.ddSet.hideLoad()
@@ -125,15 +116,26 @@ export default {
                 selectedKey = this.statusName
             this.ddSet.setChosen({source,selectedKey}).then(res => {
                 this.$set(this,'statusName',res.key)
-                this.$set(this.addData,'uba_isConfirm',res.value == 'true'?true:false)
+                //this.$set(this.addData,'uba_isConfirm',res.value == 'true'?true:false)
+                this.$set(this.addData,'uba_isConfirm',res.value)
             })
         },               
         getMethodList(){   //付款方式
             let _this = this
-            let selectedKey = _this.addData.uba_payMethod,source = this.paymentModes
-            _this.ddSet.setChosen({source,selectedKey}).then(res => {
-                _this.$set(_this.addData,'uba_payMethod',res.value)
-                _this.$set(_this.addData,'methodName',res.key)
+            this.getMethod({managerid:this.userId}).then(res => {
+                let source = []
+                let selectedKey = _this.addData.uba_payMethod
+                res.data.map((item,index) => {
+                    let obj = {
+                        key:item.value,
+                        value:item.key
+                    }
+                	source.push(obj)
+                })
+                _this.ddSet.setChosen({source,selectedKey}).then(res => {
+                    _this.$set(_this.addData,'uba_payMethod',res.value)
+                    _this.$set(_this.addData,'uba_payMethod_text',res.key)
+                })
             })
         },
         selectDate(){ //活动日期

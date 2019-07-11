@@ -36,6 +36,8 @@ import overpayManage from './overpayManage'
 import unauditManage from './unauditManage'
 //非业务支付申请
 import unbusinessManage from './unbusinessManage'
+//非业务支付审核
+import unbusinessAudit from './unbusinessAudit'
 //业绩统计
 import performanceStat from './performanceStat'
 //个人消息
@@ -69,6 +71,7 @@ routes = routes.concat(
     overpayManage,
     unauditManage,
     unbusinessManage,
+    unbusinessAudit,
     performanceStat,
     selfMessage,
     [{
