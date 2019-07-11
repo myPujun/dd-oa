@@ -111,6 +111,7 @@
             <router-link tag="li" :to="{path:'/adviceOfPayment',query:{oID:formData.orderID,type:'add'}}" style="background-color:#008265;">付款通知</router-link>
             <router-link tag="li" to="/addInvoice" style="background-color:#d32c00;">发票申请</router-link>
         </ul>
+		<top-nav title='查看订单'></top-nav>
     </div>
 </template>
 
@@ -177,11 +178,7 @@ export default {
     components: {choose},
     computed: {...mapState(['addOrders'])},
     created(){
-		this.ddSet.setTitleRight({title:'查看订单'}).then(res => {
-            if(res){
-
-            }
-        })
+	
     },
     mounted() {
 		orderId = this.$route.query.id;

@@ -26,7 +26,7 @@
             </li><li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>附件</span></label>
 				<div class="icon_right accessory">
-					<input type="file" name="lfile" multiple="multiple" ref="FileUp" @change="upFile($event)">
+					<input type="file" name="lfile" multiple="multiple" ref="FileUp" @change="upFile()">
 				</div>
             </li>
 			<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files">
@@ -124,8 +124,8 @@ export default {
                         //上传附件                                      
                         if(this.fileData.length > 0){
                             var data = new FormData();
-                            Object.values(_this.fileData).map((item,index) => { 
-                                data.append("file",item)                
+                            Object.keys(this.fileData).map((item,index)=>{
+                                data.append("file",this.fileData[index])                
                             }) 
                             data.append("type",2)
                             data.append("keyID",res.data.rpd_id)
@@ -178,13 +178,10 @@ export default {
         },
         upFile(e){
             let _this = this
-            this.fileData = e.target.files
-            var data = new FormData();
-            console.log('1:'+this.fileData)
-            Object.values(this.fileData).map((item,index) => { 
-            data.append("file",item)
+            _this.fileData = _this.$refs.FileUp.files
+            Object.keys(_this.fileData).map((item,index)=>{
                 _this['files'].push({
-                    f_fileName:item.name,
+                    f_fileName:_this.fileData[index].name,
                     f_id:0
                 })
             }) 
