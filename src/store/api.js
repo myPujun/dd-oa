@@ -183,6 +183,9 @@ const api = {
     get payConfirm(){ //预付款确认支付
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=pay_confirm'
     },
+    get addReceiptPayDetail(){ //添加收付款明细
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=add_receiptpayDetail'
+    },
     ///订单管理模块 end--------------------------------------------------------
 
     ///财务管理模块 start------------------------------------------------------

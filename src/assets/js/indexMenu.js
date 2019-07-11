@@ -114,11 +114,11 @@ let list = [
     {
         title:'业务统计分析',
         list:[
-            {
-                imgUrl:require('../img/nav_list/icon_statistics.png'),
-                link:'reportManage',
-                name:'业务统计'
-            },
+            // {
+            //     imgUrl:require('../img/nav_list/icon_statistics.png'),
+            //     link:'reportManage',
+            //     name:'业务统计'
+            // },
             {
                 imgUrl:require('../img/nav_list/icon_statistics.png'),
                 link:'performanceStat',

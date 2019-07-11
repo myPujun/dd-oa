@@ -86,7 +86,7 @@
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>一类活动文件</span></label>
 				<div class="icon_right accessory" v-if="formData.o_lockStatus == 'False'">
-					<input type="file" @change="upFile($event,'1')">
+					<input type="file" multiple="multiple" @change="upFile($event,'1')">
 				</div>
             </li>
 			<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files1">
@@ -100,7 +100,7 @@
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>二类活动文件</span></label>
                 <div class="icon_right accessory" v-if="formData.o_lockStatus == 'False'">
-					<input type="file" @change="upFile($event,'2')">
+					<input type="file" multiple="multiple" @change="upFile($event,'2')">
 				</div>
             </li>
 			<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files2">
@@ -469,10 +469,12 @@ export default {
 				})
 				return
 			}
-            let file = e.target.files[0]
+            let file = e.target.files
 			var data = new FormData();
 			data.append("file",file)
-			data.append("fileName",file.name)
+			Object.values(e.target.files).map((item,index) => { 
+				data.append("file",item)                
+			}) 
 			data.append("type",1)
 			data.append("keyID",orderId)
 			data.append("fileType",_type)

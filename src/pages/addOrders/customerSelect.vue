@@ -12,16 +12,16 @@
                         <section class="flex flex_a_c">
                             <img class="icon" :src="isIocn[item.c_flag]" alt="">
                             <h2 class="name">{{item.c_name}}</h2>
-                            <input type="button" :class="{blue:item.c_isUse}" :value="item.c_isUse?'启用': '禁用'">
+                            <!-- <input type="button" :class="{blue:item.c_isUse}" :value="item.c_isUse?'启用': '禁用'"> -->
                         </section>
                     </div>
-                    <div class="message flex flex_a_c flex_s_b">
+                    <!-- <div class="message flex flex_a_c flex_s_b">
                         <div class="message_list flex">
                             <span v-show="item.c_num">{{item.c_num}}</span>
                             <span>{{item.co_name}}</span>
                             <span>{{item.co_number}}</span>
                         </div>
-                    </div>
+                    </div> -->
                 </li>
             </ul>
         </div>
@@ -278,7 +278,7 @@ export default {
     }
 	.list li{
 		position: relative;
-		padding: 15px 0;
+		//padding: 15px 0;
 		font-size: .28rem;
 		color: #333;
 		padding-right: .6rem;
