@@ -49,24 +49,38 @@ export default {
     components: {},
     computed: {
         ...mapState({
-            userId:state => state.user.userInfo.id
+            userId:state => state.user.userInfo.id,
+            paymentModes:state => state.unbusinessManage.paymentModes
         })
     },
     created(){
-        let {id} = this.$route.query
-        let params = {
-            uba_id:id
-        }
-        // 初始化数据
-        this.getUnBusinessPayDetails(params).then(res => {
-            this.addData = res.data
-            this.clientId = id
-            this.statusName = this.addData.uba_isConfirm?'已支付':'待支付'
-            this.methodid=this.addData.uba_payMethod
+        //获取付款方式列表
+        this.getMethod({managerid:this.userId}).then(res => {
+            let paymentModes = []
+            res.data.map((item,index) => {
+                let obj = {
+                    key:item.value,
+                    value:item.key
+                }
+                paymentModes.push(obj)
+            })
+            this.$store.commit('setPaymentModes',paymentModes)
+            console.log(this.paymentModes)
+            let {id} = this.$route.query
+            let params = {
+                uba_id:id
+            }
+            // 初始化数据
+            this.getUnBusinessPayDetails(params).then(res => {
+                this.addData = res.data
+                this.clientId = id
+                this.statusName = this.addData.uba_isConfirm?'已支付':'待支付'
+                this.methodid=this.addData.uba_payMethod
+            })
         })
     },
     mounted() {
-
+        
     },
     methods: {
         ...mapActions([
@@ -116,20 +130,10 @@ export default {
         },               
         getMethodList(){   //付款方式
             let _this = this
-            this.getMethod({managerid:14}).then(res => {
-                let source = []
-                let selectedKey = _this.addData.uba_payMethod
-                res.data.map((item,index) => {
-                    let obj = {
-                        key:item.value,
-                        value:item.key
-                    }
-                	source.push(obj)
-                })
-                _this.ddSet.setChosen({source,selectedKey}).then(res => {
-                    _this.$set(_this.addData,'uba_payMethod',res.value)
-                    _this.$set(_this.addData,'methodName',res.key)
-                })
+            let selectedKey = _this.addData.uba_payMethod,source = this.paymentModes
+            _this.ddSet.setChosen({source,selectedKey}).then(res => {
+                _this.$set(_this.addData,'uba_payMethod',res.value)
+                _this.$set(_this.addData,'methodName',res.key)
             })
         },
         selectDate(){ //活动日期
