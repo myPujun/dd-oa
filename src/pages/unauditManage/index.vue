@@ -58,7 +58,6 @@ import {
 	mapActions,
 	mapState
 } from 'vuex'
-import * as dd from 'dingtalk-jsapi'
 
 export default {
     name:"",
@@ -160,9 +159,10 @@ export default {
 		orderList(){
 			let _this = this
             _this.searchData.pageIndex++
-            _this.searchData.managerid=this.userInfo.id
+			_this.searchData.managerid=this.userInfo.id
+            _this.ddSet.showLoad()
 			this.getOrderList(this.searchData).then(function(res){
-				console.log(res.data)
+                _this.ddSet.hideLoad()
 				if(res.data.msg){
 					_this.ddSet.setToast({text:res.data.msg})
 					return
@@ -171,7 +171,6 @@ export default {
 					_this.showOrderList = res.data.list;
 					_this.recordTotal = res.data.pageTotal
 					_this.pageTotal = Math.ceil(_this.recordTotal / _this.searchData.pageSize)
-					console.log(_this.pageTotal)
 				}
 				else{
 					_this.showOrderList = _this.showOrderList.concat(res.data.list);
@@ -216,42 +215,26 @@ export default {
         },
 		delListOrder(_id){
 			let _this = this;
-			dd.device.notification.confirm({
-				message: "确认删除《"+_id+"》订单吗",
-				title: "提示",
-				buttonLabels: ['确认', '取消'],
-				onSuccess : function(result) {
-					//onSuccess将在点击button之后回调
-					/*
-					{
-						buttonIndex: 0 //被点击按钮的索引值，Number类型，从0开始
-					}
-					*/
-				   if(0 == result.buttonIndex){
-					   dd.device.notification.showPreloader({})
-					   _this.delOrder({
-						   orderID:_id,
-						   managerid:_this.searchData.managerid
-					   }).then((res) => {
-						   dd.device.notification.hidePreloader({})
-						   if (res.data.status) {
-							   dd.device.notification.toast({
-							   	text: '成功删除订单'
-							   })
-							   _this.showOrderList = _this.showOrderList.filter(function(item){
-								   return item.o_id != _id
-							   })
-						   }
-						   else{
-							   dd.device.notification.toast({
-							   	text: res.data.msg
-							   })
-						   }
-					   })
-				   }
-				},
-				onFail : function(err) {}
-			});
+			_this.ddSet.setConfirm('确认删除《"+_id+"》订单吗？').then(res=>{
+				if(0 == result.buttonIndex){
+                    _this.ddSet.showLoad()
+					_this.delOrder({
+						orderID:_id,
+						managerid:_this.searchData.managerid
+					}).then((res) => {
+                        _this.ddSet.hideLoad()
+						if (res.data.status) {
+							_this.ddSet.setToast({text:'成功删除订单'})
+							_this.showOrderList = _this.showOrderList.filter(function(item){
+								return item.o_id != _id
+							})
+						}
+						else{
+							_this.ddSet.setToast({text:res.data.msg})
+						}
+					})
+				}
+			})
 		},
 		// 处理 时间
 		getListDate(_date){

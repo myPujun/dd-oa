@@ -45,6 +45,18 @@
                 <label class="title"><span>备注</span></label>
                 <textarea v-model="addData.uba_remark" placeholder="请输入备注"></textarea>
             </li>
+            </li><li class="flex flex_a_c flex_s_b">
+                <label class="title"><span>附件</span></label>
+				<div class="icon_right accessory">
+					<input type="file" multiple="multiple" ref="FileUp" @change="upFile($event)">
+				</div>
+            </li>
+			<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files">
+				<a :href="'/' + f.f_filePath">{{f.f_fileName}}</a>
+				<span>{{f.f_size}}K</span>
+			    <div class="icon_right delete"  
+				@click="delOrderFile(f.f_id,f.f_fileName)"></div>
+			</li>
         </ul>
         <top-nav :title='type == "add" ? "添加非业务支付信息":"编辑非业务支付信息"' :text='"保存"' @rightClick="submit"></top-nav>
     </div>
@@ -55,7 +67,6 @@ import {
 	mapActions,
 	mapState
 } from 'vuex'
-import * as dd from 'dingtalk-jsapi'
 import {formatDate} from '../../assets/js/date.js'
 
 export default {
@@ -68,6 +79,8 @@ export default {
             paytype:0,
             payfunction:0,
             oID:'',
+           files:[],
+           fileData:''
         };
     },
     filters:{
@@ -77,7 +90,10 @@ export default {
         }
     },
     components: {},
-    computed: { },
+    computed: {...mapState(            
+            {
+            userInfo: state => state.user.userInfo
+        }) },
     created(){
         let {type,oID,paytype,payfunction} = this.$route.query
         this.type = type
@@ -92,7 +108,9 @@ export default {
             'getUnBusinessNature',
             'getUnBusinessPayFunction',
             'getUnBusinessPayDetails',
-            'getUnBusinessPayAdd'
+            'getUnBusinessPayAdd',
+            'getUpLoadFile',
+            'delFile'
         ]),
         submit(item){ //提交
             //console.log(this.addData.uba_type)
@@ -113,14 +131,38 @@ export default {
                 return
             }
             //this.addData.uba_oid = this.oID
-            this.addData.managerid = 24 //测试ID
+            this.addData.managerid = this.userInfo.id //测试ID
             this.ddSet.showLoad()
+            let _this=this
             this.getUnBusinessPayAdd(this.addData).then(res => {
-                this.ddSet.hideLoad()
                 if(res.data.status){
-                    this.ddSet.setToast({text:'新增信息成功'}).then(res => {
-                        this.$router.go(-1)
-                    })
+                    //上传附件                                      
+                    if(this.fileData.length > 0){
+                        var data = new FormData();
+                        Object.keys(this.fileData).map((item,index)=>{
+                            data.append("file",this.fileData[index])                
+                        }) 
+                        data.append("type",2)
+                        data.append("keyID",res.data.uba_id)
+                        data.append("fileType",2)
+                        data.append("managerid",_this.addData.managerid)
+                        this.getUpLoadFile(data).then(res => {
+                            this.ddSet.hideLoad()
+                            if(res.data.status){
+                                this.ddSet.setToast({text:'新增信息成功'}).then(res => {
+                                    this.$router.go(-1)
+                                })
+                            }
+                            else{
+                                this.ddSet.setToast({text:res.data.msg})
+                            }
+                        })
+                    }
+                    else{
+                        this.ddSet.setToast({text:'新增信息成功'}).then(res => {
+                            this.$router.go(-1)
+                        })
+                    }
                 }else{
                     this.ddSet.setToast({text:res.data.msg})
                 }
@@ -172,7 +214,50 @@ export default {
                     _this.$set(_this.addData,'uba_function_text',res.key)
                 })
             })
-        }
+        },
+        upFile(e){
+            let _this = this
+            _this.fileData = _this.$refs.FileUp.files
+            Object.keys(_this.fileData).map((item,index)=>{
+                _this['files'].push({
+                    f_fileName:_this.fileData[index].name,
+                    f_id:0
+                })
+            })     
+        },
+		delOrderFile(_fid,_fileName){
+            let _this = this;
+            this.ddSet.setConfirm('确定要删除《'+_fileName+'》文件吗？').then(res=>{
+                if(0 == res.buttonIndex){
+                    this.ddSet.showLoad()
+                    if(_fid){
+                        _this.delFile({
+					   	fileID:_fid,
+					   	type:2,
+					   	managerid:_this.addData.managerid
+                        }).then(res => {
+                            this.ddSet.hideLoad()
+                            if(1 == res.data.status){
+                                this.ddSet.setToast({text:'删除文件成功'})
+                                _this['files'] = _this['files'].filter(function(item){
+                                    return item.f_id != _fid
+                                })
+                            }
+                            else{
+                                this.ddSet.setToast({text:res.data.msg})
+                            }
+                        }).catch(err => {
+                            this.ddSet.hideLoad()
+                        })
+                    }
+                    else{
+                        _this['files'] = _this['files'].filter(function(item){
+                            return item.f_id != _fid
+                        })
+                    }
+                }
+            }) 			
+		}
     },
     beforeDestroy(){
         
