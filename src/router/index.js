@@ -26,6 +26,8 @@ import expectPayAudit from './expectPayAudit'
 import receipt from './receipt'
 //付款明细
 import pay from './pay'
+//发票审核
+import invoiceAudit from './invoiceAudit'
 //发票通知
 import billManage from './billManage'
 //未收款订单
@@ -66,6 +68,7 @@ routes = routes.concat(
     expectPayAudit,
     receipt,
     pay,
+    invoiceAudit,
     billManage,
     unpaidManage,
     overpayManage,

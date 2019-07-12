@@ -3,7 +3,7 @@ import unbusinessManage from '../pages/unbusinessManage/index'
 
 //新增非业务支付申请
 import UnBusinessPayAdd from '../pages/unbusinessManage/UnBusinessPayAdd'
-//修改业务支付申请
+//修改非业务支付申请
 import unBusinessPayEdit from '../pages/unbusinessManage/unBusinessPayEdit'
 
 

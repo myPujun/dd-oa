@@ -26,10 +26,10 @@
             </li><li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>附件</span></label>
 				<div class="icon_right accessory">
-					<input type="file" name="lfile" multiple="multiple" ref="FileUp" @change="upFile()">
+					<input type="file" multiple="multiple" ref="FileUp" @change="upFile()">
 				</div>
             </li>
-			<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files">
+			<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files" :key="index">
 				<a :href="'/' + f.f_filePath">{{f.f_fileName}}</a>
 				<span>{{f.f_size}}K</span>
 			    <div class="icon_right delete"  
@@ -37,7 +37,6 @@
 			</li>
         </ul>
         <top-nav :title='type == "add" ? "添加付款明细":"查看付款明细"' :text='"保存"' @rightClick="submit"  ></top-nav>
-        <input type="button" value="测试" @click="submit($event)" >
     </div>
 </template>
 <script>
@@ -114,44 +113,45 @@ export default {
             this.addData.rpd_type=false
             this.addData.rpd_cid=this.clientId
             this.addData.managerid = this.userInfo.id //测试ID
-            console.log(this.addData)
             this.ddSet.showLoad()
             if(this.type == 'add'){
                 let _this=this
-                this.getAddReceiptPayDetail(this.addData).then(res => {
-                    this.ddSet.hideLoad()
+                this.getAddReceiptPayDetail(_this.addData).then(res => {
                     if(res.data.status){
                         //上传附件                                      
-                        if(this.fileData.length > 0){
+                        if(_this.fileData.length > 0){
                             var data = new FormData();
-                            Object.keys(this.fileData).map((item,index)=>{
-                                data.append("file",this.fileData[index])                
+                            Object.keys(_this.fileData).map((item,index)=>{
+                                data.append("file",_this.fileData[index])                
                             }) 
                             data.append("type",2)
                             data.append("keyID",res.data.rpd_id)
                             data.append("fileType",1)
                             data.append("managerid",_this.addData.managerid)
-                            this.getUpLoadFile(data).then(res => {
-                                if(1 == res.data.status){
-                                    this.ddSet.setToast({text:'添加成功'}).then(res => {
-                                        this.$router.go(-1)
+                            this.getUpLoadFile(data).then(res => {                                
+                                _this.ddSet.hideLoad()
+                                if(res.data.status){
+                                    _this.ddSet.setToast({text:'添加成功'}).then(res => {
+                                        _this.$router.go(-1)
                                     })
                                 }
                                 else{
-                                    this.ddSet.setToast({text:res.data.msg})
+                                    _this.ddSet.setToast({text:res.data.msg})
                                 }
                             })
                         }
                         else{
-                            this.ddSet.setToast({text:'添加成功'}).then(res => {
-                                this.$router.go(-1)
+                            _this.ddSet.hideLoad()
+                            _this.ddSet.setToast({text:'添加成功'}).then(res => {
+                                _this.$router.go(-1)
                             })
                         }
-                    }else{
-                        this.ddSet.setToast({text:res.data.msg})
+                    }else{                         
+                        _this.ddSet.hideLoad()
+                        _this.ddSet.setToast({text:res.data.msg})
                     }
                 }).catch(err => {
-                    this.ddSet.hideLoad()
+                    _this.ddSet.hideLoad()
                 })
             }
         },
@@ -205,27 +205,29 @@ export default {
             let _this = this;
             this.ddSet.setConfirm('确定要删除《'+_fileName+'》文件吗？').then(res=>{
                 if(0 == res.buttonIndex){
-                    this.ddSet.showLoad()
+                    _this.ddSet.showLoad()
                     if(_fid){
                         _this.delFile({
 					   	fileID:_fid,
 					   	type:2,
 					   	managerid:_this.addData.managerid
                         }).then(res => {
+                            _this.ddSet.hideLoad()
                             if(1 == res.data.status){
-                                this.ddSet.setToast({text:'删除文件成功'})
+                                _this.ddSet.setToast({text:'删除文件成功'})
                                 _this['files'] = _this['files'].filter(function(item){
                                     return item.f_id != _fid
                                 })
                             }
                             else{
-                                this.ddSet.setToast({text:res.data.msg})
+                                _this.ddSet.setToast({text:res.data.msg})
                             }
                         }).catch(err => {
-                            this.ddSet.hideLoad()
+                            _this.ddSet.hideLoad()
                         })
                     }
                     else{
+                        _this.ddSet.hideLoad()
                         _this['files'] = _this['files'].filter(function(item){
                             return item.f_id != _fid
                         })

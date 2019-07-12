@@ -1,4 +1,4 @@
-<!-- 查看发票通知详细信息 -->
+<!-- 查看发票详细信息 -->
 <template>
     <div class="body_gery" v-if="isDatails">
         <ul class="form_list">
@@ -67,6 +67,11 @@
                 {{datails.inv_remark}}
             </li>
         </ul>
+        <ul class="looK_button_list c_flex">
+            <router-link tag="li" :to="{path:'/invoiceCheck',query: {id:datails.inv_id}}" style="background-color:#3395fa;">审批</router-link>
+            <router-link tag="li" :to="{path:'/invoiceConfirm',query: {id:datails.inv_id}}" style="background-color:#47a21f;">开票</router-link>
+        </ul>
+        <top-nav title="非业务支付详细信息"></top-nav>
     </div>
 </template>
 
@@ -108,6 +113,27 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-    
+    .hint{
+        padding: .3rem;
+        font-size: .24rem;
+        color: #fc0214;
+        line-height: .4rem;
+    }
+    .looK_button_list{
+        li{
+            outline: none;
+            background: none;
+            border: none;
+            width: 6.9rem;
+            height: .8rem;
+            line-height: .8rem;
+            text-align: center;
+            color: #FFF;
+            font-size: .36rem;
+            margin: 0 auto;
+            border-radius: 4px;
+            margin-bottom: .2rem;
+        }
+    }
 </style>
 

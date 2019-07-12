@@ -1,34 +1,38 @@
-<!-- 非业务支付审批 -->
+<!-- 发票审核列表首页 -->
 <template>
     <div>
-		<tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
+        <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
 		<div class="search_box flex flex_a_c flex_j_c">
-		   <input type="text" v-model="searchData.keywords" @input="changeSearch" placeholder="模糊搜索订单号或支付用途">
+		   <input type="text" v-model="searchData.keywords" @input="changeSearch" placeholder="模糊搜索订单号或购方名称">
 		</div>
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-                <router-link tag="li" :to="{path:'/unbusinessDetails',query: {id:item.uba_id}}" v-for="(item,index) in showUnBusinessPayList" :key="index">
+                <router-link tag="li" :to="{path:'/invoiceDetails',query: {id:item.inv_id}}" v-for="(item,index) in showUnBusinessPayList" :key="index">
 				    <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <img class="icon" v-show="0 == item.uba_flag1" src="../../assets/img/audit.png" alt="">
-                            <img class="icon" v-show="1 == item.uba_flag1" src="../../assets/img/audit_no.png" alt="">
-                            <img class="icon" v-show="2 == item.uba_flag1" src="../../assets/img/audit_yes.png" alt="">
-                            <img class="icon" v-show="0 == item.uba_flag2" src="../../assets/img/audit.png" alt="">
-                            <img class="icon" v-show="1 == item.uba_flag2" src="../../assets/img/audit_no.png" alt="">
-                            <img class="icon" v-show="2 == item.uba_flag2" src="../../assets/img/audit_yes.png" alt="">
-                            <img class="icon" v-show="0 == item.uba_flag3" src="../../assets/img/audit.png" alt="">
-                            <img class="icon" v-show="1 == item.uba_flag3" src="../../assets/img/audit_no.png" alt="">
-                            <img class="icon" v-show="2 == item.uba_flag3" src="../../assets/img/audit_yes.png" alt="">
-                            <h2 class="name">{{item.uba_function}}</h2>
-                            <div v-show="false == item.uba_isConfirm" class="lock-status">未支付</div>
-                            <div v-show="true == item.uba_isConfirm" class="lock-status green">已支付</div>
+                            <img class="icon" v-show="0 == item.inv_flag1" src="../../assets/img/audit.png" alt="">
+                            <img class="icon" v-show="1 == item.inv_flag1" src="../../assets/img/audit_no.png" alt="">
+                            <img class="icon" v-show="2 == item.inv_flag1" src="../../assets/img/audit_yes.png" alt="">
+                            <img class="icon" v-show="0 == item.inv_flag2" src="../../assets/img/audit.png" alt="">
+                            <img class="icon" v-show="1 == item.inv_flag2" src="../../assets/img/audit_no.png" alt="">
+                            <img class="icon" v-show="2 == item.inv_flag2" src="../../assets/img/audit_yes.png" alt="">
+                            <img class="icon" v-show="0 == item.inv_flag3" src="../../assets/img/audit.png" alt="">
+                            <img class="icon" v-show="1 == item.inv_flag3" src="../../assets/img/audit_no.png" alt="">
+                            <img class="icon" v-show="2 == item.inv_flag3" src="../../assets/img/audit_yes.png" alt="">
+                            <h2 class="name">{{item.c_name}}</h2>
+                            <div v-show="false == item.inv_isConfirm" class="lock-status">未开票</div>
+                            <div v-show="true == item.inv_isConfirm" class="lock-status green">已开票</div>
                         </section>
+				        <!--<section class="operation_icon flex">
+				            <span @click.prevent.stop="edit(item.inv_id)"></span> 
+							<span></span>
+				        </section>-->
 				    </div>
 				    <div class="message flex flex_a_c flex_s_b">
 				        <div class="message_list flex">
-				            <span v-if="item.uba_oid">{{item.uba_oid}}</span>
-				            <span>{{item.uba_type}}</span>
+				            <span>{{item.inv_oid}}</span>
+				            <span>{{item.inv_overMoney}}</span>
 				        </div>
 				    </div>
 				</router-link>
@@ -37,7 +41,7 @@
 				点击加载更多
 			</div>
         </div>
-        <top-nav title="非业务支付审批"></top-nav>
+        <top-nav title="发票审核"></top-nav>
     </div>
 </template>
 
@@ -48,23 +52,21 @@ import * as dd from 'dingtalk-jsapi'
 import audit from '../../assets/img/audit.png'
 import audit_no from '../../assets/img/audit_no.png'
 import audit_yes from '../../assets/img/audit_yes.png'
-
 export default {
     name:"",
     data() {
        return {
-           topTabList:['待审核','已审核'],  
-		   showUnBusinessPayList:[],
-		   pageTotal:9,
-		   recordTotal:9,
-		   searchData:{
-			   	pageIndex:0,
-			   	pageSize:10,
-			   	keywords:'',
-				type:'check',
-				flag:0,
-			   	managerid:14     // TODO: 测试用，后面注意修改
-		   	}
+            topTabList:['待审批','已审批'], 
+		    showUnBusinessPayList:[],
+		    pageTotal:9,
+		    recordTotal:9,
+		    searchData:{
+                pageIndex:0,
+                pageSize:10,
+                keywords:'',
+                inv_flag:0,
+                managerid:24     // TODO: 测试用，后面注意修改
+            }
        };
     },
     components: {
@@ -74,27 +76,27 @@ export default {
     created(){
     },
     mounted() {
-		this.newUnBusinessPayList()
+		this.newInvoiceList()
     },
     methods: {
 		...mapActions([
-			'getUnBusinessPayList'
+			'getInvoiceList'
 		]),	
         changeTab(index){
-			this.searchData.flag = index
-			this.newUnBusinessPayList()
+            this.searchData.inv_flag = index
+            this.newInvoiceList()
         },
 		loadNextPage(){
-			this.UnBusinessPayList()
+			this.getInvoiceList()
 		},
 		changeSearch(){
-		    this.newUnBusinessPayList()
+		    this.newInvoiceList()
 		},
-		UnBusinessPayList(){
+		InvoiceList(){
 			let _this = this
 			_this.searchData.pageIndex++
-			this.getUnBusinessPayList(this.searchData).then(function(res){
-				console.log(res.data)
+			this.getInvoiceList(this.searchData).then(function(res){
+				//console.log(res.data)
 				if(res.data.msg){
 					_this.ddSet.setToast({text:res.data.msg})
 					return
@@ -110,10 +112,10 @@ export default {
 				}
 			})
 		},
-		newUnBusinessPayList(){
+		newInvoiceList(){
 			let _this = this
 			_this.searchData.pageIndex = 0;
-			_this.UnBusinessPayList()
+			_this.InvoiceList()
 		}
     },
 }
@@ -164,4 +166,3 @@ export default {
 	}
 	.lock-status.green{background-color:#55be17;}
 </style>
-

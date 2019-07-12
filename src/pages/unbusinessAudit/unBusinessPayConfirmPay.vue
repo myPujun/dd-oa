@@ -18,7 +18,7 @@
                 <div class="icon_right arrows_right"></div>
             </li>
         </ul>
-        <top-nav title="非业务支付确认支付" text="保存" @rightClick="submit"></top-nav>
+        <top-nav title="确认支付操作" text="保存" @rightClick="submit"></top-nav>
     </div>
 </template>
 

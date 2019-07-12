@@ -59,7 +59,7 @@ let list = [
             },
             {
                 imgUrl:require('../img/nav_list/icon_finance_3.png'),
-                link:'',
+                link:'invoiceAudit',
                 name:'发票审核',
                 code:['0603','0402']
             },

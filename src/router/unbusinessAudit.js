@@ -4,9 +4,9 @@ import unbusinessAudit from '../pages/unbusinessAudit/index'
 
 //非业务支付详情
 import unbusinessDetails from '../pages/unbusinessAudit/unbusinessDetails'
-//业务支付审批
+//非业务支付审批
 import unBusinessPayAudit from '../pages/unbusinessAudit/unBusinessPayAudit'
-//业务支付确认
+//非业务支付确认
 import unBusinessPayConfirmPay from '../pages/unbusinessAudit/unBusinessPayConfirmPay'
 
 const routes = [    

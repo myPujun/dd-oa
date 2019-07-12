@@ -118,7 +118,7 @@ export default {
 			let _this = this
 			_this.searchData.pageIndex++
 			this.getUnBusinessPayList(this.searchData).then(function(res){
-				console.log(res.data)
+				//console.log(res.data)
 				if(res.data.msg){
 					_this.ddSet.setToast({text:res.data.msg})
 					return
