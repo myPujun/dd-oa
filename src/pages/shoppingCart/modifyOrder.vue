@@ -111,6 +111,12 @@
             文件类型：gif,jpg,jpeg,png,bmp,rar,zip,doc,xls,txt,docx,xlsx
         </div>
 		<choose :show.sync="showChoose" :type="chooseType" :list="chooseList" @on-affirm="activeChoose"></choose>
+		<ul class="looK_button_list c_flex">
+            <router-link tag="li" :to="{path:'/UnBusinessPayAdd',query:{oID:formData.orderID,paytype:0,payfunction:0,type:'add'}}" style="background-color:#3395fa;">非业务申请</router-link>
+            <router-link tag="li" :to="{path:'/adviceOfReceipt',query:{oID:formData.orderID,type:'add'}}" style="background-color:#47a21f;">收款通知</router-link>
+            <router-link tag="li" :to="{path:'/adviceOfPayment',query:{oID:formData.orderID,type:'add'}}" style="background-color:#008265;">付款通知</router-link>
+            <router-link tag="li" :to="{path:'/addInvoice',query:{oID:formData.orderID,type:'add'}}" style="background-color:#d32c00;">发票申请</router-link>
+        </ul>
 		<top-nav title="编辑订单" text="保存" @rightClick="submit"></top-nav>
     </div>
 </template>
@@ -146,7 +152,7 @@ export default {
 				employee3:'',
 				employee4:'',
 				o_isPush:'',
-				managerid:14   // TODO:测试当前登录人ID
+				managerid:0   // TODO:测试当前登录人ID
 			},
             clientList:[],
             clientName:'请选择',
@@ -175,7 +181,12 @@ export default {
         };
     },
     components: {choose},
-    computed: {...mapState(['addOrders'])},
+	computed: {	
+        ...mapState({
+			selectClientArray:status=>status.addOrders.selectClientArray,
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){
 		/*
         this.ddSet.setTitleRight({title:'修改订单',text:'保存'}).then(res => {
@@ -190,7 +201,7 @@ export default {
 		console.log(orderId)
 		this.formData.orderID = orderId;
 		this.getOneOrderData()
-		this.clientCallBack(this.addOrders.selectClientArray)
+		this.clientCallBack(this.selectClientArray)
     },
     methods: {
         ...mapActions([
@@ -619,6 +630,21 @@ export default {
         color: #fc0214;
         line-height: .4rem;
     }
-    
+    .looK_button_list{
+        li{
+            outline: none;
+            background: none;
+            border: none;
+            width: 6.9rem;
+            height: .8rem;
+            line-height: .8rem;
+            text-align: center;
+            color: #FFF;
+            font-size: .36rem;
+            margin: 0 auto;
+            border-radius: 4px;
+            margin-bottom: .2rem;
+        }
+    }
 </style>
 

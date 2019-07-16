@@ -13,7 +13,8 @@
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-				<router-link tag="li" :to="{ path: '/lookOrder',query: { id: item.o_id } }" v-for="(item,index) in showOrderList" :key="index">
+				<!-- <router-link tag="li" :to="{ path: '/lookOrder',query: { id: item.o_id } }" v-for="(item,index) in showOrderList" :key="index"> -->
+				<li v-for="(item,index) in showOrderList" :key="index">
 				    <div class="company flex flex_a_c flex_s_b">
 				        <section class="flex flex_a_c">
 				            <img class="icon" v-show="0 == item.o_status" src="../../assets/img/audit.png" alt="">
@@ -41,7 +42,8 @@
 				            <span>{{getListDate(item.o_sdate)}}/{{getListDate(item.o_edate)}}</span>
 				        </div>
 				    </div>
-				</router-link>
+				</li>
+				<!-- </router-link> -->
             </ul>
 			<top-nav title="订单查询"></top-nav>
 			<div class="loadmore" @click="loadNextPage" v-show="pageTotal > searchData.pageIndex">
@@ -233,22 +235,22 @@ export default {
         },
 		delListOrder(_id){
 			let _this = this;
-			this.ddSet.setConfirm('确定要删除《'+_id+'》文件吗？').then(res=>{
-				if(0 == result.buttonIndex){
-					this.ddSet.showLoad()
+			_this.ddSet.setConfirm('确定要删除《'+_id+'》订单吗？').then(res=>{
+				if(0 == res.buttonIndex){
+					_this.ddSet.showLoad()
 					_this.delOrder({
 						orderID:_id,
 						managerid:_this.searchData.managerid
 					}).then((res) => {
-						this.ddSet.hideLoad()
+						_this.ddSet.hideLoad()
 						if (res.data.status) {
-							this.ddSet.setToast({text:'成功删除订单'})
+							_this.ddSet.setToast({text:'成功删除订单'})
 							_this.showOrderList = _this.showOrderList.filter(function(item){
 								return item.o_id != _id
 							})
 						}
 						else{
-							this.ddSet.setToast({text:res.data.msg})
+							_this.ddSet.setToast({text:res.data.msg})
 						}
 					})
 				}

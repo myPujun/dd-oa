@@ -8,31 +8,27 @@
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-                <router-link tag="li" :to="{path:'/invoiceDetails',query: {id:item.inv_id}}" v-for="(item,index) in showUnBusinessPayList" :key="index">
+                <router-link tag="li" :to="{path:'/invoiceDetails',query: {id:item.inv_id,type:'check'}}" v-for="(item,index) in showUnBusinessPayList" :key="index">
 				    <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <img class="icon" v-show="0 == item.inv_flag1" src="../../assets/img/audit.png" alt="">
-                            <img class="icon" v-show="1 == item.inv_flag1" src="../../assets/img/audit_no.png" alt="">
-                            <img class="icon" v-show="2 == item.inv_flag1" src="../../assets/img/audit_yes.png" alt="">
-                            <img class="icon" v-show="0 == item.inv_flag2" src="../../assets/img/audit.png" alt="">
-                            <img class="icon" v-show="1 == item.inv_flag2" src="../../assets/img/audit_no.png" alt="">
-                            <img class="icon" v-show="2 == item.inv_flag2" src="../../assets/img/audit_yes.png" alt="">
-                            <img class="icon" v-show="0 == item.inv_flag3" src="../../assets/img/audit.png" alt="">
-                            <img class="icon" v-show="1 == item.inv_flag3" src="../../assets/img/audit_no.png" alt="">
-                            <img class="icon" v-show="2 == item.inv_flag3" src="../../assets/img/audit_yes.png" alt="">
+                            <div v-if='checkType===1'>
+                                <img class="icon" v-show="uArea=='HQ' || uArea==item.inv_farea" :src="isIocn[item.inv_flag1]" alt="11">
+                                <img class="icon" v-show="uArea=='HQ' || uArea==item.inv_darea" :src="isIocn[item.inv_flag2]" alt="22">
+                            </div>
+                            <div v-if='checkType===2'>
+                                <img class="icon" :src="isIocn[item.inv_flag3]" alt="33">
+                            </div>
                             <h2 class="name">{{item.c_name}}</h2>
-                            <div v-show="false == item.inv_isConfirm" class="lock-status">未开票</div>
-                            <div v-show="true == item.inv_isConfirm" class="lock-status green">已开票</div>
+                            <input type="button" :class="{blue:item.inv_isConfirm}" :value="item.inv_isConfirm?'已开票':'未开票'" class="blueq">
                         </section>
-				        <!--<section class="operation_icon flex">
-				            <span @click.prevent.stop="edit(item.inv_id)"></span> 
-							<span></span>
-				        </section>-->
+				        <section class="operation_icon flex">
+                            <router-link tag="span" :to="{path:'/invoiceDetails',query:{id:item.inv_id,type:'check'}}"></router-link>
+                        </section>
 				    </div>
 				    <div class="message flex flex_a_c flex_s_b">
 				        <div class="message_list flex">
 				            <span>{{item.inv_oid}}</span>
-				            <span>{{item.inv_overMoney}}</span>
+				            <span>{{item.inv_money}}</span>
 				        </div>
 				    </div>
 				</router-link>
@@ -47,7 +43,7 @@
 
 <script>
 import tabList from '../../components/tab.vue'
-import {mapActions} from 'vuex'
+import {mapActions,mapState} from 'vuex'
 import * as dd from 'dingtalk-jsapi'
 import audit from '../../assets/img/audit.png'
 import audit_no from '../../assets/img/audit_no.png'
@@ -57,22 +53,29 @@ export default {
     data() {
        return {
             topTabList:['待审批','已审批'], 
+            isIocn:[audit,audit_no,audit_yes],
 		    showUnBusinessPayList:[],
+            checkType:0,
+            uArea:'',
 		    pageTotal:9,
-		    recordTotal:9,
+            recordTotal:9,
 		    searchData:{
                 pageIndex:0,
                 pageSize:10,
                 keywords:'',
                 inv_flag:0,
-                managerid:24     // TODO: 测试用，后面注意修改
+                managerid:0     // TODO: 测试用，后面注意修改
             }
        };
     },
     components: {
         tabList
     },
-    computed: {},
+    computed: {        
+        ...mapState({
+            userInfo: state => state.user.userInfo
+        })    
+    },
     created(){
     },
     mounted() {
@@ -94,7 +97,9 @@ export default {
 		},
 		InvoiceList(){
 			let _this = this
-			_this.searchData.pageIndex++
+            _this.searchData.pageIndex++
+            _this.searchData.managerid = this.userInfo.id
+            _this.uArea = this.userInfo.area
 			this.getInvoiceList(this.searchData).then(function(res){
 				//console.log(res.data)
 				if(res.data.msg){
@@ -105,7 +110,8 @@ export default {
 					_this.showUnBusinessPayList = res.data.list;
 					_this.recordTotal = res.data.pageTotal
 					_this.pageTotal = Math.ceil(_this.recordTotal / _this.searchData.pageSize)
-					console.log(_this.pageTotal)
+                    _this.checkType = res.data.checkType
+                    _this.uArea = res.data.userArea
 				}
 				else{
 					_this.showUnBusinessPayList = _this.showUnBusinessPayList.concat(res.data.list);
@@ -165,4 +171,98 @@ export default {
 		text-align: center;
 	}
 	.lock-status.green{background-color:#55be17;}
+    .customer_list{
+        .amount{
+            height: .65rem;
+            line-height: .65rem;
+            padding: 0 .3rem;
+            font-size: $size_28;
+            color: $gery_1;
+            font-weight: normal;
+            background-color: $gery_3;
+        }
+        .list{
+            .company{
+                padding: 0 .3rem;
+                height: .65rem;
+                .icon{
+                    width:$size_30;
+                    height: $size_30;
+                    background-color: $gery_3;
+                    margin-right: $size_20;
+                }
+                .name{
+                    color: $blue_1;
+                    font-size: $size_24;
+                }
+                .isExpect{
+                    font-size: $size_20;
+                    margin-left: .1rem;
+                    color:green;
+                }
+                input{
+                    width: .86rem;
+                    height: .36rem;
+                    line-height: .36rem;
+                    margin-left: .1rem;
+                    font-size: $size_20;
+                    color: #FFF;
+                    border-radius: .04rem;
+                    background-color: $gery_2;
+                }
+                .blue{
+                    background-color: $blue_1;
+                }
+                .operation_icon{
+                    span{
+                        width: $size_30;
+                        height: $size_30;
+                        margin-left: .3rem;
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        background-size: cover;
+                    }
+                    span:nth-child(1){
+                        background-image: url('../../assets/img/auditting.png');
+                    }                    
+                }
+            }
+            .message{
+                padding: 0 .3rem;
+                height: .65rem;
+                background-color: $gery_3;
+                .icon{
+                    width: $size_30;
+                    height: $size_30;
+                    background-color: $blue_1;
+                }
+                .message_list{
+                    display: flex;
+                    span{
+                        height: .36rem;
+                        font-size: $size_20;
+                        min-width: 1.22rem;
+                        border-radius: 2px;
+                        text-align: center;
+                        line-height: .36rem;
+                        margin-right: .2rem;
+                    }
+                    span:nth-child(1){
+                        background-color: $blue_1;
+                        color: #FFF;
+                        padding: 0 .2rem;
+                    }
+                    span:nth-child(2){
+                        background-color: #fff4e9;
+                        color: #e1bc94;
+                    }
+                    span:nth-child(3){
+                        background-color: #e3f6f0;
+                        color: #72a795;
+                        width: 1.8rem;
+                    }
+                }
+            }
+        }
+    }
 </style>

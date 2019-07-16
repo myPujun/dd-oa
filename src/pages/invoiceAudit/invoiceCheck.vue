@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapActions,mapState } from 'vuex'
 export default {
     name:"",
     data() {
@@ -67,12 +67,16 @@ export default {
         };
     },
     components: {},
-    computed: {},
+    computed: {
+        ...mapState({
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){
         let {id} = this.$route.query
         let params = {
             invid:id,
-            managerid:24
+            managerid:this.userInfo.id
         }
         // 初始化数据
         this.getInvoiceAuditObtain(params).then(res => {
@@ -109,7 +113,7 @@ export default {
             //console.log(this.addData.ctype)
             this.addData.cstatus = this.flagId
             //console.log(this.flagId)
-            this.addData.managerid = 24 //测试ID
+            this.addData.managerid = this.userInfo.id //测试ID
             this.ddSet.showLoad()
             this.getInvoiceAudit(this.addData).then(res => {
                 this.ddSet.hideLoad()

@@ -5,7 +5,7 @@
             <img src="../assets/img/logo.png" alt="">
         </div>
         <div class="from">
-            <input type="text" v-model="fromData.username" placeholder="请输入手机号">
+            <input type="text" v-model="fromData.username" placeholder="请输入员工账号">
             <input type="password" v-model="fromData.password" placeholder="请输入密码">
             <input class="from_btn" type="button" value="登录" @click="submit">
         </div>

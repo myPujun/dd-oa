@@ -43,7 +43,11 @@ export default {
         };
     },
     components: {},
-    computed: {...mapState(['addOrders'])},
+    computed: {
+        ...mapState({
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){
         let {type,rp_id} = this.$route.query
         this.type = type
@@ -52,7 +56,7 @@ export default {
             let params = {
                 rp_id,
                 type,
-                managerid:29
+                managerid:this.userInfo.id
             }
             this.getReceiptDetails(params).then(res => {
                 console.log(res.data)

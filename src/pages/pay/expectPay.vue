@@ -42,7 +42,7 @@
 
 <script>
 import tabList from '../../components/tab.vue'
-import {mapActions} from 'vuex'
+import {mapActions,mapState} from 'vuex'
 import {formatDate} from '../../assets/js/date.js'
 
 import audit from '../../assets/img/audit.png'
@@ -63,7 +63,7 @@ export default {
                 pageSize:10,
                 keywords:'',
                 isExpect:'True',
-                managerid:14
+                managerid:0
 		   }
        };
     },
@@ -76,7 +76,11 @@ export default {
     components: {
         tabList,
     },
-    computed: {},
+    computed: {        
+        ...mapState({
+            userInfo: state => state.user.userInfo
+        })    
+    },
     created(){},
     mounted() {        
         this.newpayList()
@@ -92,6 +96,7 @@ export default {
         payList(){
             let _this = this
             _this.searchData.pageIndex++
+            _this.searchData.managerid = this.userInfo.id
             this.getPaytList(_this.searchData).then(res => {
                 if(res.data.msg){
 					_this.ddSet.setToast({text:res.data.msg})

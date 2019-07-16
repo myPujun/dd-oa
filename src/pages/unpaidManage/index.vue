@@ -217,7 +217,7 @@ export default {
 		delListOrder(_id){
 			let _this = this;
 			_this.ddSet.setConfirm('确认删除《"+_id+"》订单吗？').then(res=>{
-				if(0 == result.buttonIndex){
+				if(0 == res.buttonIndex){
 					_this.ddSet.showLoad()
 					_this.delOrder({
 						orderID:_id,

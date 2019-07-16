@@ -82,7 +82,7 @@
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>一类活动文件</span></label>
             </li>
-    		<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files1">
+    		<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files1" :key="index">
     			<a :href="'/' + f.f_filePath">{{f.f_fileName}}</a>
     			<span>{{f.f_size}}K</span>
     		</li>
@@ -91,7 +91,7 @@
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>二类活动文件</span></label>
             </li>
-    		<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files2">
+    		<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files2" :key="index">
     			<a :href="'/' + f.f_filePath">{{f.f_fileName}}</a>
     			<span>{{f.f_size}}K</span>
     		</li>
@@ -142,7 +142,7 @@ export default {
 				employee3:'',
 				employee4:'',
 				o_isPush:'',
-				managerid:14   // TODO:测试当前登录人ID
+				managerid:0   // TODO:测试当前登录人ID
 			},
             clientList:[],
             clientName:'请选择',

@@ -147,6 +147,9 @@ const api = {
     get unBusinessPayEdit(){ //修改业务支付申请
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_edit'
     }, 
+    get unBusinessPayDel(){ //删除业务支付申请
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_del'
+    }, 
     get unBusinessPayAuditBind(){ //绑定非业务支付审批类型
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_auditBind'
     },  

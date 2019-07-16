@@ -8,7 +8,7 @@
             </li>
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>客户</span></label>
-                {{datails.inv_cid}}
+                {{datails.c_name}}
             </li>
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>购买方名称</span></label>
@@ -48,7 +48,7 @@
             </li>
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>开票区域</span></label>
-                {{datails.inv_darea}}
+                {{datails.de_subname}}
             </li>
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>收票人名称</span></label>

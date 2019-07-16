@@ -8,7 +8,7 @@
             </li>
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>内容</span></label>
-                {{addData.me_content}}
+                <div class="content">{{addData.me_content}}</div>
             </li>
         </ul>
         <top-nav :title='"查看消息"' :text='"删除"' @rightClick="submit" ></top-nav>
@@ -55,22 +55,22 @@ export default {
         ]),
         submit(item){ //提交
             let _this = this;
-            this.ddSet.setConfirm('确定要删除消息吗？').then(res=>{
+            _this.ddSet.setConfirm('确定要删除消息吗？').then(res=>{
                 if(0 == res.buttonIndex){
-                    this.ddSet.showLoad()
+                    _this.ddSet.showLoad()
                     _this.deteleMessage({
-                        me_id:_id
-                    }).then((res) => {
-                        this.ddSet.hideLoad()
-                        if(res.data.status){
-                            this.ddSet.setToast({text:'删除成功'}).then(res => {
-                                this.$router.go(-1)
-                            })
-                        }else{
-                            this.ddSet.setToast({text:res.data.msg})
-                        }
+                            me_id:_this.me_id
+                        }).then((res) => {
+                            _this.ddSet.hideLoad()
+                            if(res.data.status){
+                                _this.ddSet.setToast({text:'删除成功'}).then(res => {
+                                    _this.$router.go(-1)
+                                })
+                            }else{
+                                _this.ddSet.setToast({text:res.data.msg})
+                            }
                     }).catch(err => {
-                        this.ddSet.hideLoad()
+                        _this.ddSet.hideLoad()
                     })
                 }
             })            
@@ -85,6 +85,9 @@ export default {
 <style scoped lang="scss">
     .flex_s_b{
         line-height: 0.4rem
+    }
+    .content{
+        padding: 20px 0
     }
 </style>
 

@@ -46,7 +46,11 @@ export default {
         };
     },
     components: {},
-    computed: {...mapState(['addOrders'])},
+    computed: {
+        ...mapState({
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){
         let {type,rp_id} = this.$route.query
         this.type = type
@@ -55,7 +59,7 @@ export default {
             let params = {
                 rp_id,
                 type,
-                managerid:29
+                managerid:this.userInfo.id
             }
             this.getReceiptDetails(params).then(res => {
                 console.log(res.data)
@@ -81,7 +85,7 @@ export default {
                 this.ddSet.setToast({text:'请选择审批状态'})
                 return
             }
-            this.addData.managerid = 29 //测试ID
+            this.addData.managerid = this.userInfo.id //测试ID
             this.ddSet.showLoad()
             console.log(this.addData)
             this.getPayAudit(this.addData).then(res => {

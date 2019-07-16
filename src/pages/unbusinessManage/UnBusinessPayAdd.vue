@@ -45,17 +45,16 @@
                 <label class="title"><span>备注</span></label>
                 <textarea v-model="addData.uba_remark" placeholder="请输入备注"></textarea>
             </li>
-            </li><li class="flex flex_a_c flex_s_b">
+            <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>附件</span></label>
 				<div class="icon_right accessory">
 					<input type="file" multiple="multiple" ref="FileUp" @change="upFile($event)">
 				</div>
             </li>
-			<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files">
-				<a :href="'/' + f.f_filePath">{{f.f_fileName}}</a>
-				<span>{{f.f_size}}K</span>
-			    <div class="icon_right delete"  
-				@click="delOrderFile(f.f_id,f.f_fileName)"></div>
+			<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files" :key="index">
+				<a :href="'/' + f.pp_filePath">{{f.pp_fileName}}</a>
+				<span>{{f.pp_size}}K</span>
+			    <div class="icon_right delete"	@click="delPFile(f.pp_id,f.pp_fileName)"></div>
 			</li>
         </ul>
         <top-nav :title='type == "add" ? "添加非业务支付信息":"编辑非业务支付信息"' :text='"保存"' @rightClick="submit"></top-nav>
@@ -90,10 +89,12 @@ export default {
         }
     },
     components: {},
-    computed: {...mapState(            
+    computed: {
+        ...mapState(            
             {
             userInfo: state => state.user.userInfo
-        }) },
+        }) 
+    },
     created(){
         let {type,oID,paytype,payfunction} = this.$route.query
         this.type = type
@@ -113,31 +114,31 @@ export default {
             'delFile'
         ]),
         submit(item){ //提交
+            let _this = this
             //console.log(this.addData.uba_type)
-            if(!this.addData.uba_type_text){
-                this.ddSet.setToast({text:'支付类别不能为空'})
+            if(!_this.addData.uba_type_text){
+                _this.ddSet.setToast({text:'支付类别不能为空'})
                 return
             }
-            if(!this.addData.uba_function){
-                this.ddSet.setToast({text:'支付用途不能为空'})
+            if(!_this.addData.uba_function){
+                _this.ddSet.setToast({text:'支付用途不能为空'})
                 return
             }
-            if(!this.addData.uba_money){
-                this.ddSet.setToast({text:'请填写金额'})
+            if(!_this.addData.uba_money){
+                _this.ddSet.setToast({text:'请填写金额'})
                 return
             }
-            if(!this.addData.uba_foreDate){
-                this.ddSet.setToast({text:'预付日期不能为空'})
+            if(!_this.addData.uba_foreDate){
+                _this.ddSet.setToast({text:'预付日期不能为空'})
                 return
             }
             //this.addData.uba_oid = this.oID
-            this.addData.managerid = this.userInfo.id //测试ID
-            this.ddSet.showLoad()
-            let _this=this
-            this.getUnBusinessPayAdd(this.addData).then(res => {
+            _this.addData.managerid = _this.userInfo.id //测试ID
+            _this.ddSet.showLoad()
+            this.getUnBusinessPayAdd(_this.addData).then(res => {
                 if(res.data.status){
                     //上传附件                                      
-                    if(this.fileData.length > 0){
+                    if(_this.fileData.length > 0){
                         var data = new FormData();
                         Object.keys(this.fileData).map((item,index)=>{
                             data.append("file",this.fileData[index])                
@@ -146,28 +147,30 @@ export default {
                         data.append("keyID",res.data.uba_id)
                         data.append("fileType",2)
                         data.append("managerid",_this.addData.managerid)
-                        this.getUpLoadFile(data).then(res => {
-                            this.ddSet.hideLoad()
+                        _this.getUpLoadFile(data).then(res => {
+                            _this.ddSet.hideLoad()
                             if(res.data.status){
-                                this.ddSet.setToast({text:'新增信息成功'}).then(res => {
-                                    this.$router.go(-1)
+                                _this.ddSet.setToast({text:'新增信息成功'}).then(res => {
+                                    _this.$router.go(-1)
                                 })
                             }
                             else{
-                                this.ddSet.setToast({text:res.data.msg})
+                                _this.ddSet.setToast({text:res.data.msg})
                             }
                         })
                     }
                     else{
-                        this.ddSet.setToast({text:'新增信息成功'}).then(res => {
-                            this.$router.go(-1)
+                        _this.ddSet.hideLoad()
+                        _this.ddSet.setToast({text:'新增信息成功'}).then(res => {
+                            _this.$router.go(-1)
                         })
                     }
                 }else{
-                    this.ddSet.setToast({text:res.data.msg})
+                    _this.ddSet.hideLoad()
+                    _this.ddSet.setToast({text:res.data.msg})
                 }
             }).catch(err => {
-                this.ddSet.hideLoad()
+                _this.ddSet.hideLoad()
             })
         },
         selectDate(){ //活动日期
@@ -220,39 +223,40 @@ export default {
             _this.fileData = _this.$refs.FileUp.files
             Object.keys(_this.fileData).map((item,index)=>{
                 _this['files'].push({
-                    f_fileName:_this.fileData[index].name,
-                    f_id:0
+                    pp_fileName:_this.fileData[index].name,
+                    pp_id:0
                 })
             })     
         },
-		delOrderFile(_fid,_fileName){
+		delPFile(_fid,_fileName){
             let _this = this;
-            this.ddSet.setConfirm('确定要删除《'+_fileName+'》文件吗？').then(res=>{
+            _this.ddSet.setConfirm('确定要删除《'+_fileName+'》文件吗？').then(res=>{
                 if(0 == res.buttonIndex){
-                    this.ddSet.showLoad()
+                    _this.ddSet.showLoad()
                     if(_fid){
                         _this.delFile({
 					   	fileID:_fid,
 					   	type:2,
 					   	managerid:_this.addData.managerid
                         }).then(res => {
-                            this.ddSet.hideLoad()
+                            _this.ddSet.hideLoad()
                             if(1 == res.data.status){
-                                this.ddSet.setToast({text:'删除文件成功'})
+                                _this.ddSet.setToast({text:'删除文件成功'})
                                 _this['files'] = _this['files'].filter(function(item){
-                                    return item.f_id != _fid
+                                    return item.pp_id != _fid
                                 })
                             }
                             else{
-                                this.ddSet.setToast({text:res.data.msg})
+                                _this.ddSet.setToast({text:res.data.msg})
                             }
                         }).catch(err => {
-                            this.ddSet.hideLoad()
+                            _this.ddSet.hideLoad()
                         })
                     }
                     else{
+                        _this.ddSet.hideLoad()
                         _this['files'] = _this['files'].filter(function(item){
-                            return item.f_id != _fid
+                            return item.pp_id != _fid
                         })
                     }
                 }

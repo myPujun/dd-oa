@@ -55,6 +55,7 @@ export default {
         })
     },
     created(){
+        console.log(this.userInfo.id)
         this.powers = this.powerList.map(item => item.urp_code)
         this.getMessage(this.userInfo.id)
     },

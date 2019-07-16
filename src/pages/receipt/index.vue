@@ -41,7 +41,7 @@
 
 <script>
 import tabList from '../../components/tab.vue'
-import {mapActions} from 'vuex'
+import {mapActions,mapState} from 'vuex'
 import {formatDate} from '../../assets/js/date.js'
 
 export default {
@@ -58,7 +58,7 @@ export default {
                 pageSize:999,
                 keywords:'',
                 rp_isconfirm:0,
-                managerid:14
+                managerid:0
 		   }
        };
     },
@@ -71,7 +71,10 @@ export default {
     components: {
         tabList,
     },
-    computed: {},
+    computed: {...mapState({
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){},
     mounted() {        
         this.newreceiptList()
@@ -94,6 +97,7 @@ export default {
         receiptList(){
             let _this = this
             _this.searchData.pageIndex++
+            _this.searchData.managerid = this.userInfo.id
             this.getReceiptList(_this.searchData).then(res => {
                 if(res.data.msg){
 					_this.ddSet.setToast({text:res.data.msg})
