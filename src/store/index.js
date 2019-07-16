@@ -7,7 +7,7 @@ import test from './modules/test'
 import addOrders from './modules/addOrders'
 import receipt from './modules/receipt'
 import pay from './modules/pay'
-import billManage from './modules/billManage'
+import InvoiceManage from './modules/InvoiceManage'
 import unbusinessManage from './modules/unbusinessManage'
 import notAudit from './modules/notAudit'
 import expectPayAudit from './modules/expectPayAudit'
@@ -24,7 +24,7 @@ export default new Vuex.Store({
         pay,
         test,
         addOrders,
-        billManage,
+        InvoiceManage,
         unbusinessManage,
         notAudit,
         expectPayAudit,

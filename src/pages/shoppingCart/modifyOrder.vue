@@ -6,10 +6,6 @@
                 <label class="title"><span>订单号</span></label>
                 <h3 class="hint_1">{{formData.orderID}}</h3>
             </li>
-            <li class="flex flex_a_c flex_s_b">
-                <label class="title"><span>下单人</span></label>
-                <input type="text" :value="loginName" readonly>
-            </li>
             <li class="flex flex_a_c flex_s_b" @click="changeClient">
                 <label class="title"><span class="must">客户</span></label>
                 <input type="text" :value="clientName" readonly>
@@ -43,7 +39,7 @@
                 <div class="icon_right time"></div>
             </li>
             <li class="flex flex_a_c flex_s_b" @click="cahgeArea">
-                <label class="title"><span>活动归属地</span></label>
+                <label class="title"><span>归属地</span></label>
                 <input type="text" :value="placeText" readonly>
                 <div class="icon_right arrows_right"></div>
             </li>
@@ -89,7 +85,7 @@
 					<input type="file" multiple="multiple" @change="upFile($event,'1')">
 				</div>
             </li>
-			<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files1">
+			<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files1" :key="index">
 				<a :href="'/' + f.f_filePath">{{f.f_fileName}}</a>
 				<span>{{f.f_size}}K</span>
 			    <div class="icon_right delete" v-if="formData.o_lockStatus == 'False'" 
@@ -103,7 +99,7 @@
 					<input type="file" multiple="multiple" @change="upFile($event,'2')">
 				</div>
             </li>
-			<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files2">
+			<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files2" :key="index">
 				<a :href="'/' + f.f_filePath">{{f.f_fileName}}</a>
 				<span>{{f.f_size}}K</span>
 			    <div class="icon_right delete" v-if="formData.o_lockStatus == 'False'" 
@@ -115,6 +111,12 @@
             文件类型：gif,jpg,jpeg,png,bmp,rar,zip,doc,xls,txt,docx,xlsx
         </div>
 		<choose :show.sync="showChoose" :type="chooseType" :list="chooseList" @on-affirm="activeChoose"></choose>
+		<ul class="looK_button_list c_flex">
+            <router-link tag="li" :to="{path:'/UnBusinessPayAdd',query:{oID:formData.orderID,paytype:0,payfunction:0,type:'add'}}" style="background-color:#3395fa;">非业务申请</router-link>
+            <router-link tag="li" :to="{path:'/adviceOfReceipt',query:{oID:formData.orderID,type:'add'}}" style="background-color:#47a21f;">收款通知</router-link>
+            <router-link tag="li" :to="{path:'/adviceOfPayment',query:{oID:formData.orderID,type:'add'}}" style="background-color:#008265;">付款通知</router-link>
+            <router-link tag="li" :to="{path:'/addInvoice',query:{oID:formData.orderID,type:'add'}}" style="background-color:#d32c00;">发票申请</router-link>
+        </ul>
 		<top-nav title="编辑订单" text="保存" @rightClick="submit"></top-nav>
     </div>
 </template>
@@ -125,7 +127,6 @@
 		mapState
 	} from 'vuex'
 	import choose from '@/components/choose.vue'
-	import * as dd from 'dingtalk-jsapi'
 	import dayjs from 'dayjs'
 	
 	let orderId = '';
@@ -151,7 +152,7 @@ export default {
 				employee3:'',
 				employee4:'',
 				o_isPush:'',
-				managerid:14   // TODO:测试当前登录人ID
+				managerid:0   // TODO:测试当前登录人ID
 			},
             clientList:[],
             clientName:'请选择',
@@ -180,7 +181,12 @@ export default {
         };
     },
     components: {choose},
-    computed: {...mapState(['addOrders'])},
+	computed: {	
+        ...mapState({
+			selectClientArray:status=>status.addOrders.selectClientArray,
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){
 		/*
         this.ddSet.setTitleRight({title:'修改订单',text:'保存'}).then(res => {
@@ -195,7 +201,7 @@ export default {
 		console.log(orderId)
 		this.formData.orderID = orderId;
 		this.getOneOrderData()
-		this.clientCallBack(this.addOrders.selectClientArray)
+		this.clientCallBack(this.selectClientArray)
     },
     methods: {
         ...mapActions([
@@ -308,9 +314,7 @@ export default {
     		let _this = this
     		// 判断必填
     		if('True' == _this.formData.o_lockStatus){
-				dd.device.notification.toast({
-					text: '已锁单，不能再编辑订单信息'
-				})
+				this.ddSet.setToast({text:'已锁单，不能再编辑订单信息'})
 				return
 			}
     		
@@ -318,14 +322,10 @@ export default {
 			console.log(this.formData)
     		_this.submitOrder(this.formData).then(function(res){
     			if(res.data.status){
-    				dd.device.notification.toast({
-    					text: '编辑订单成功'
-    				})
+					_this.ddSet.setToast({text:'编辑订单成功'})
     			}
     			else{
-    				dd.device.notification.toast({
-    					text: res.data.msg
-    				})
+					_this.ddSet.setToast({text: res.data.msg})
     			}
     		})
         },
@@ -339,17 +339,10 @@ export default {
     	},
         activeChoose(items){
     		let _this = this
-    		console.log(items)
-    		if(items.length < 1){
-    			dd.device.notification.toast({
-    				text: '请正确选择', //提示信息
-    				onSuccess : function(result) {
-    					/*{}*/
-    				},
-    				onFail : function(err) {}
-    			})
-    			return;
-    		}
+    		// if(items.length < 1){
+			// 	this.ddSet.setToast({text:'请正确选择'})
+    		// 	return;
+    		// }
             if('place' == _this.chooseEl){
     			let tmpTexts = [];
     			let tmpPlaces = [];
@@ -409,13 +402,7 @@ export default {
     		}
     		
     		if(tmpPlaces.length < 1){
-    			dd.device.notification.toast({
-    				text: '请先选择活动归属地', //提示信息
-    				onSuccess : function(result) {
-    					/*{}*/
-    				},
-    				onFail : function(err) {}
-    			})
+				this.ddSet.setToast({text:'请先选择活动归属地'})
     			return
     		}
     		
@@ -464,9 +451,7 @@ export default {
         upFile(e,_type){
 			let _this = this;
 			if(e.target.files.length < 1){
-				dd.device.notification.toast({
-					text: '请选择文件'
-				})
+				this.ddSet.setToast({text:'请选择文件'})
 				return
 			}
             let file = e.target.files
@@ -489,52 +474,44 @@ export default {
 					})
 				}
 				else{
-					dd.device.notification.toast({
-						text: res.data.msg
-					})
+					_this.ddSet.setToast({text: res.data.msg})
 				}
             })
         },
 		delOrderFile(_type,_fid,_fileName){
 			let _this = this;
-			dd.device.notification.confirm({
-				message: "确认删除《"+_fileName+"》文件吗",
-				title: "提示",
-				buttonLabels: ['确认', '取消'],
-				onSuccess : function(result) {
-				   if(0 == result.buttonIndex){
-					   dd.device.notification.showPreloader({})
-					   _this.delFile({
-					   	fileID:_fid,
-					   	type:1,
-					   	managerid:_this.formData.managerid
-					   }).then(res => {
-					   	if(1 == res.data.status){
-							dd.device.notification.toast({
-								text: '删除文件成功'
-							})
-					   		_this['files' + _type] = _this['files' + _type].filter(function(item){
-					   			return item.f_id != _fid
-					   		})
-					   	}
-						else{
-							dd.device.notification.toast({
-								text: res.data.msg
+			this.ddSet.setConfirm('确定要删除《'+_fileName+'》文件吗？').then(res=>{
+				if(0 == result.buttonIndex){
+					this.ddSet.showLoad()
+					_this.delFile({
+					fileID:_fid,
+					type:1,
+					managerid:_this.formData.managerid
+					}).then(res => {
+						_this.ddSet.hideLoad()
+						if(1 == res.data.status){
+							_this.ddSet.setToast({text:'删除文件成功'})
+							_this['files' + _type] = _this['files' + _type].filter(function(item){
+								return item.f_id != _fid
 							})
 						}
-					   })
-				   }
+						else{
+							_this.ddSet.setToast({text: res.data.msg})
+						}
+					}).catch(err => {
+						_this.ddSet.hideLoad()
+					})
 				}
-			});
+
+			})
 		},
         changeClient(){ //选择客户
     		let _this = this;
     		// _this.clientName = '123123'
     		// return;
-    		this.$router.push({ path: '/addOrders/customerSelect', query: { selected_id: _this.clientId }})
+    		_this.$router.push({ path: '/addOrders/customerSelect', query: { selected_id: _this.clientId }})
         },
     	clientCallBack:function(_selectData){
-    		console.log(_selectData)
     		if(_selectData.length){
     			this.clientName = _selectData[0].name;
     			this.clientId = _selectData[0].id;
@@ -584,24 +561,6 @@ export default {
                 })
             })
         },
-    	/*
-        changeDstatus(){    //接单状态
-    		let _this = this;
-            this.getDstatus().then(res => {
-                let source = []
-                res.data.map((item,index) => {
-                    let obj = {
-                        key:item.value,
-                        value:item.key
-                    }
-    				source.push(obj)
-                })
-                _this.ddSet.setChosen({source}).then(res => {
-                    _this.$set(_this.formData,'o_status',res.type)
-                })
-            })
-        },
-    	*/
         changeCost(){   //合同造价
             let _this = this
             this.getContractprices({ddkey:'dingzreafyvgzklylomj'}).then(res => {
@@ -611,41 +570,26 @@ export default {
                 })
             })
         },
-      selectRangeDate(){ //活动日期
-    		let _this = this
-    		dd.biz.calendar.chooseInterval({
-    			defaultStart:_this.defaultStart,
-    			defaultEnd:_this.defaultEnd,
-    			onSuccess : function(result) {
-    				//onSuccess将在点击确定之后回调
-    				/*{
-    					start: 1514908800000,
-    					end: 1514995200000,
-    					timezone:8
-    				}
-    				*/
-    			   var sdate = dayjs(result.start).format('YYYY-MM-DD');
-    			   var edate = dayjs(result.end).format('YYYY-MM-DD');
-    			   _this.date_range = sdate + '至' + edate;
-    			   _this.$set(_this.formData,'o_sdate',sdate)
-    			   _this.$set(_this.formData,'o_edate',edate)
-    			},
-    			onFail : function(err) {}
-    		})
+	  selectRangeDate(){ //活动日期
+	  		let _this = this
+            _this.ddSet.setChooseInterval({}).then(res => {
+                var sdate = dayjs(res.start).format('YYYY-MM-DD');
+                var edate = dayjs(res.end).format('YYYY-MM-DD');
+                _this.date_range = sdate + '至' + edate;
+                _this.$set(_this.formData,'o_sdate',sdate)
+                _this.$set(_this.formData,'o_edate',edate)
+            })  
         },
     	selectLinkMan(){
     		let _this = this
     		if(_this.clientId < 1){
-    			dd.device.notification.toast({
-    				text: '请先选择客户'
-    			})
+				this.ddSet.setToast({text:'请先选择客户'})
     			return
     		}
     		_this.getContactsbycid({c_id:_this.clientId}).then(res => {
     			_this.chooseType = 1;
     			_this.chooseEl = 'link_man';
     			let source = []
-    			console.log(res)
     		    res.data.map((item,index) => {
     				if(!item.name){
     				    _this.$set(item,'name',item.co_name)
@@ -655,7 +599,6 @@ export default {
     				}
     				source.push(item)
     		    })
-    			console.log(source)
     			_this.chooseList = source;
     		    _this.showChoose = true
     		})
@@ -687,6 +630,21 @@ export default {
         color: #fc0214;
         line-height: .4rem;
     }
-    
+    .looK_button_list{
+        li{
+            outline: none;
+            background: none;
+            border: none;
+            width: 6.9rem;
+            height: .8rem;
+            line-height: .8rem;
+            text-align: center;
+            color: #FFF;
+            font-size: .36rem;
+            margin: 0 auto;
+            border-radius: 4px;
+            margin-bottom: .2rem;
+        }
+    }
 </style>
 

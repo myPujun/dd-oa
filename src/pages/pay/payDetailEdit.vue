@@ -48,7 +48,12 @@ export default {
         };
     },
     components: {},
-    computed: {...mapState(['addOrders'])},
+    computed: {        
+        ...mapState({
+            selectClientArray:status => status.addOrders.selectClientArray,
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){
         let {type,rpd_id} = this.$route.query
         this.type = type
@@ -70,7 +75,7 @@ export default {
         }
     },
     mounted() {
-        this.clientCallBack(this.addOrders.selectClientArray)
+        this.clientCallBack(this.selectClientArray)
     },
     methods: {
         ...mapActions([
@@ -100,7 +105,7 @@ export default {
             this.addData.rpid=this.rpid
             this.addData.rptype='True'
             this.addData.rpcid=this.clientId
-            this.addData.managerid = 14 //测试ID
+            this.addData.managerid = this.userInfo.id //测试ID
             this.ddSet.showLoad()
             console.log(this.addData)
             if(this.type == 'add'){

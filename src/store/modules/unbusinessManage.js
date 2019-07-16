@@ -18,6 +18,9 @@ const actions = {
     getUnBusinessPayEdit({commit},params){   //修改业务支付申请
         return ajax.post(api.unBusinessPayEdit ,params)
     },
+    getUnBusinessPayDel({commit},params){   //删除业务支付申请
+        return ajax.post(api.unBusinessPayDel ,params)
+    },
     getUnBusinessPayAuditObtain({commit},params){ //初始化非业务支付审批数据
         return ajax.post(api.unBusinessPayAuditBind ,params)
     },

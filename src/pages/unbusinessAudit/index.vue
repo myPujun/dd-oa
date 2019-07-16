@@ -1,150 +1,134 @@
-<!-- 客户管理首页 -->
+<!-- 非业务支付审批 -->
 <template>
     <div>
-        <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
-        <div class="search_box flex flex_a_c flex_j_c">
-           <input type="text" v-model="searchData.keywords" @input="changeSearch" placeholder="搜索客户名称">
-        </div>
+		<tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
+		<div class="search_box flex flex_a_c flex_j_c">
+		   <input type="text" v-model="searchData.keywords" @input="changeSearch" placeholder="模糊搜索订单号或支付用途">
+		</div>
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-                <router-link tag="li" :to="{path:'/receiptDetails',query: {rp_id:item.rp_id,type:'EDIT'}}" v-for="(item,index) in showReceiptList" :key="index">
-                    <div class="company flex flex_a_c flex_s_b">
+                <router-link tag="li" :to="{path:'/unbusinessDetails',query: {id:item.uba_id,type:'check'}}" v-for="(item,index) in showUnBusinessPayList" :key="index">
+				    <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <!-- <img class="icon" alt=""> -->
-                            <h2 class="name">{{item.c_name}}</h2>
-                            <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
-                            <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span>
+							<div v-if='checkType===1'>
+                                <img class="icon" :src="isIocn[item.uba_flag1]" alt="11">
+                            </div>
+                            <div v-else-if='checkType===2'>
+                                <img class="icon" :src="isIocn[item.uba_flag2]" alt="22">
+                            </div>
+                            <div v-else>
+                                <img class="icon" :src="isIocn[item.uba_flag3]" alt="33">
+                            </div>
+                            <h2 class="name">{{item.uba_function}}</h2>
+							<input type="button" :class="{blue:item.uba_isConfirm}" :value="item.uba_isConfirm?'已支付': '未支付'">
                         </section>
-                        <!-- <section class="operation_icon flex">
-                            <span @click.stop="goPage('receiptDetails',item.rp_id)"></span>
-                            <span></span>
-                        </section> -->
-                    </div>
-                    <div class="message flex flex_a_c flex_s_b">
-                        <div class="message_list flex">
-                            <span>{{item.rp_foredate | formatDate}}</span>
-                            <span>{{item.rp_money}}</span>
-                            <span v-show="item.pm_name">{{item.pm_name}}</span>
-                            <span v-show="item.rp_date">{{item.rp_date | formatDate}}</span>
-                        </div>
-                    </div>
-                </router-link>
+						<section class="operation_icon flex">
+                            <router-link tag="span" :to="{path:'/unbusinessDetails',query:{id:item.uba_id,type:'check'}}"></router-link>
+                        </section>
+				    </div>
+				    <div class="message flex flex_a_c flex_s_b">
+				        <div class="message_list flex">
+				            <span v-show="item.uba_oid">{{item.uba_oid}}</span>
+				            <span>{{item.uba_money}}</span>
+				        </div>
+				    </div>
+				</router-link>
             </ul>
-            <div class="loadmore" @click="loadNextPage" v-show="pageTotal > searchData.pageIndex">
+			<div class="loadmore" @click="loadNextPage" v-show="pageTotal > searchData.pageIndex">
 				点击加载更多
 			</div>
         </div>
-        <top-nav title="收款通知" ></top-nav>
+        <top-nav title="非业务支付审批"></top-nav>
     </div>
 </template>
 
 <script>
 import tabList from '../../components/tab.vue'
 import {mapActions,mapState} from 'vuex'
-import {formatDate} from '../../assets/js/date.js'
+import audit from '../../assets/img/audit.png'
+import audit_no from '../../assets/img/audit_no.png'
+import audit_yes from '../../assets/img/audit_yes.png'
 
 export default {
     name:"",
     data() {
        return {
-           topTabList:['未收款','已收款'],
-           showReceiptList:[],
-           list:[],
-           pageTotal:9,
+           topTabList:['待审核','已审核'],  
+           isIocn:[audit,audit_no,audit_yes],
+		   showUnBusinessPayList:[],
+           checkType:0,
+		   pageTotal:9,
 		   recordTotal:9,
 		   searchData:{
-			    pageIndex:1,
-                pageSize:999,
-                keywords:'',
-                rp_isconfirm:0,
-                managerid:0
-		   }
+			   	pageIndex:0,
+			   	pageSize:10,
+			   	keywords:'',
+				type:'check',
+				flag:0,
+			   	managerid:0     // TODO: 测试用，后面注意修改
+		   	}
        };
     },
-    filters:{
-        formatDate(time){
-            let date = new Date(time)
-            return formatDate(date,'yyyy-MM-dd')
-        }
-    },
     components: {
-        tabList,
+        tabList
     },
-    computed: {...mapState({
+    computed: {		
+        ...mapState({
             userInfo: state => state.user.userInfo
         })
+	},
+    created(){
     },
-    created(){},
-    mounted() {        
-        this.newreceiptList()
+    mounted() {
+		this.newUnBusinessPayList()
     },
     methods: {
-        ...mapActions([
-            'getReceiptList'
-        ]),
-        receiptDetails(){
-            this.$router.push({path:'/receiptDetails',query:{type:'add'}})
+		...mapActions([
+			'getUnBusinessPayList'
+		]),	
+        changeTab(index){
+			this.searchData.flag = index
+			this.newUnBusinessPayList()
         },
-        goPage(item,params){
-            if(item == 'receiptDetails'){
-                this.$router.push({path:`/${item}`,query:{rp_id:params,type:'EDIT'}})
-            }
-        },
-        loadNextPage(){
-			this.receiptList()
+		loadNextPage(){
+			this.UnBusinessPayList()
 		},
-        receiptList(){
-            let _this = this
-            _this.searchData.pageIndex++
-            _this.searchData.managerid = this.userInfo.id
-            this.getReceiptList(_this.searchData).then(res => {
-                if(res.data.msg){
+		changeSearch(){
+		    this.newUnBusinessPayList()
+		},
+		UnBusinessPayList(){
+			let _this = this
+			_this.searchData.pageIndex++
+			_this.searchData.managerid = _this.userInfo.id
+			this.getUnBusinessPayList(this.searchData).then(function(res){
+				console.log(res.data)
+				if(res.data.msg){
 					_this.ddSet.setToast({text:res.data.msg})
 					return
 				}
 				if(_this.searchData.pageIndex < 2){
-					_this.showReceiptList = res.data.list;
+					_this.showUnBusinessPayList = res.data.list;
 					_this.recordTotal = res.data.pageTotal
 					_this.pageTotal = Math.ceil(_this.recordTotal / _this.searchData.pageSize)
+                    _this.checkType = res.data.checkType
 				}
 				else{
-					_this.showReceiptList = _this.showReceiptList.concat(res.data.list);
+					_this.showUnBusinessPayList = _this.showUnBusinessPayList.concat(res.data.list);
 				}
-            })
-        },
-		newreceiptList(){
+			})
+		},
+		newUnBusinessPayList(){
 			let _this = this
 			_this.searchData.pageIndex = 0;
-			_this.receiptList()
-		},
-        changeSearch(){
-            this.newreceiptList()
-        },
-        changeTab(index) {
-            this.searchData.rp_isconfirm = index
-				this.newreceiptList()
-        }
+			_this.UnBusinessPayList()
+		}
     },
 }
 </script>
 
 <style scoped lang="scss">
 @import '../../assets/css/var.scss';
-    .tab_list{
-        border-bottom: 1px solid $border_bottom_color;
-        li{
-            height: .75rem;
-            line-height: .75rem;
-            color:$fontSizeColor;
-            font-size: $size_30;
-        }
-        .active{
-            color:$blue_1;
-            font-weight: bold;
-            border-bottom: 2px solid $blue_1;
-        }
-    }
     .search_box{
         height: .88rem;
         input{
@@ -160,7 +144,34 @@ export default {
             background-position:.1rem;
         }
     }
-    .customer_list{
+    .menu_list{
+        padding: .22rem 0;
+        .menu_top{
+            flex: 1;
+            font-size: .28rem;
+            text-align: center;
+            line-height: .35rem;
+            color: $fontSizeColor;
+            &:first-child{
+                border-right: 1px solid #efefef;
+            }
+        }
+        
+    }
+	.loadmore{text-align:center;padding:25px;font-size:.3rem;color:#888;background-color: #ededed}
+	.lock-status{
+		width: .86rem;
+		height: .36rem;
+		line-height: .36rem;
+		margin-left: .1rem;
+		font-size: 0.2rem;
+		color: #FFF;
+		border-radius: .04rem;
+		background-color: #a6a6a6;
+		text-align: center;
+	}
+	.lock-status.green{background-color:#55be17;}
+	.customer_list{
         .amount{
             height: .65rem;
             line-height: .65rem;
@@ -212,12 +223,8 @@ export default {
                         background-size: cover;
                     }
                     span:nth-child(1){
-                        background-image: url('../../assets/img/redact_1.png');
-                    }
-                    span:nth-child(2){
-                        background-image: url('../../assets/img/delete.png');
-                        background-size: .25rem .3rem;
-                    }
+                        background-image: url('../../assets/img/auditting.png');
+                    }                    
                 }
             }
             .message{
@@ -259,5 +266,4 @@ export default {
         }
     }
 </style>
-
 

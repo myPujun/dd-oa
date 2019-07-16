@@ -7,7 +7,7 @@
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-                <router-link tag="li" :to="{path:'/unbusinessDetails',query: {id:item.uba_id}}" v-for="(item,index) in showUnBusinessPayList" :key="index">
+				<li v-for="(item,index) in showUnBusinessPayList" :key="index">
 				    <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <img class="icon" v-show="0 == item.uba_flag1" src="../../assets/img/audit.png" alt="">
@@ -23,24 +23,24 @@
                             <div v-show="false == item.uba_isConfirm" class="lock-status">未支付</div>
                             <div v-show="true == item.uba_isConfirm" class="lock-status green">已支付</div>
                         </section>
-				        <section class="operation_icon flex">
+						<section class="operation_icon flex">
 				            <span @click.prevent.stop="edit(item.uba_id)"></span>
-				            <span></span>
+				            <span @click.prevent.stop="del(item.uba_id)"></span>
 				        </section>
 				    </div>
 				    <div class="message flex flex_a_c flex_s_b">
 				        <div class="message_list flex">
-				            <span>{{item.uba_oid}}</span>
-				            <span>{{item.uba_type}}</span>
+				            <span v-show="item.uba_oid">{{item.uba_oid}}</span>
+				            <span>{{item.uba_money}}</span>
 				        </div>
 				    </div>
-				</router-link>
+				</li>
             </ul>
 			<div class="loadmore" @click="loadNextPage" v-show="pageTotal > searchData.pageIndex">
 				点击加载更多
 			</div>
         </div>
-        <top-nav title="非业务支付" text='新增' @rightClick="add"></top-nav>
+        <top-nav title="非业务支付申请" text='新增' @rightClick="add"></top-nav>
     </div>
 </template>
 
@@ -66,14 +66,19 @@ export default {
 			   keywords:'',
 			//    uba_flag:0,
 			//    uba_isConfirm:'',
-			   managerid:14     // TODO: 测试用，后面注意修改
+			   managerid:0     // TODO: 测试用，后面注意修改
 		   }
        };
     },
     components: {
         // tabList
     },
-    computed: {},
+    computed: {
+		...mapState(            
+            {
+            userInfo: state => state.user.userInfo
+        })     
+	},
     created(){
     },
     mounted() {
@@ -81,7 +86,8 @@ export default {
     },
     methods: {
 		...mapActions([
-			'getUnBusinessPayList'
+			'getUnBusinessPayList',
+			'getUnBusinessPayDel'
 		]),	
         // changeTab(index){
         //     if(index == 0){
@@ -116,8 +122,11 @@ export default {
 		UnBusinessPayList(){
 			let _this = this
 			_this.searchData.pageIndex++
-			this.getUnBusinessPayList(this.searchData).then(function(res){
-				console.log(res.data)
+			_this.searchData.managerid = _this.userInfo.id
+			_this.ddSet.showLoad()
+			_this.getUnBusinessPayList(_this.searchData).then(function(res){
+				_this.ddSet.hideLoad()
+				//console.log(res.data)
 				if(res.data.msg){
 					_this.ddSet.setToast({text:res.data.msg})
 					return
@@ -126,7 +135,6 @@ export default {
 					_this.showUnBusinessPayList = res.data.list;
 					_this.recordTotal = res.data.pageTotal
 					_this.pageTotal = Math.ceil(_this.recordTotal / _this.searchData.pageSize)
-					console.log(_this.pageTotal)
 				}
 				else{
 					_this.showUnBusinessPayList = _this.showUnBusinessPayList.concat(res.data.list);
@@ -143,7 +151,30 @@ export default {
         },	
         edit(params){
             this.$router.push({path:'/unBusinessPayEdit',query:{uba_id:params,type:'EDIT'}})
-        }
+        },
+		del(_id){
+			let _this = this;
+			_this.ddSet.setConfirm('确定要删除吗？').then(res=>{
+				if(0 == res.buttonIndex){
+					_this.ddSet.showLoad()
+					_this.getUnBusinessPayDel({
+						uba_id:_id,
+						managerid:_this.searchData.managerid
+					}).then((res) => {
+						_this.ddSet.hideLoad()
+						if (res.data.status) {
+							_this.ddSet.setToast({text:'删除成功'})
+							_this.showUnBusinessPayList = _this.showUnBusinessPayList.filter(function(item){
+								return item.uba_id != _id
+							})
+						}
+						else{
+							_this.ddSet.setToast({text:res.data.msg})
+						}
+					})
+				}
+			})
+		}
     },
 }
 </script>

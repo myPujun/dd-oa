@@ -5,11 +5,7 @@
             <li class="flex flex_a_c">
                 <label class="title"><span>订单号</span></label>
                 <h3 class="hint_1">{{formData.orderID}}</h3>
-            </li>
-            <li class="flex flex_a_c flex_s_b">
-                <label class="title"><span>下单人</span></label>
-                <input type="text" :value="loginName" readonly>
-            </li>
+            </li>			
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span class="must">客户</span></label>
                 <input type="text" :value="clientName" readonly>
@@ -43,7 +39,7 @@
                 <div class="icon_right time"></div>
             </li>
             <li class="flex flex_a_c flex_s_b">
-                <label class="title"><span>活动归属地</span></label>
+                <label class="title"><span>归属地</span></label>
                 <input type="text" :value="placeText" readonly>
                 <div class="icon_right arrows_right"></div>
             </li>
@@ -86,7 +82,7 @@
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>一类活动文件</span></label>
             </li>
-    		<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files1">
+    		<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files1" :key="index">
     			<a :href="'/' + f.f_filePath">{{f.f_fileName}}</a>
     			<span>{{f.f_size}}K</span>
     		</li>
@@ -95,7 +91,7 @@
             <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>二类活动文件</span></label>
             </li>
-    		<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files2">
+    		<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files2" :key="index">
     			<a :href="'/' + f.f_filePath">{{f.f_fileName}}</a>
     			<span>{{f.f_size}}K</span>
     		</li>
@@ -109,7 +105,7 @@
             <router-link tag="li" :to="{path:'/UnBusinessPayAdd',query:{oID:formData.orderID,paytype:0,payfunction:0,type:'add'}}" style="background-color:#3395fa;">非业务申请</router-link>
             <router-link tag="li" :to="{path:'/adviceOfReceipt',query:{oID:formData.orderID,type:'add'}}" style="background-color:#47a21f;">收款通知</router-link>
             <router-link tag="li" :to="{path:'/adviceOfPayment',query:{oID:formData.orderID,type:'add'}}" style="background-color:#008265;">付款通知</router-link>
-            <router-link tag="li" to="/addInvoice" style="background-color:#d32c00;">发票申请</router-link>
+            <router-link tag="li" :to="{path:'/addInvoice',query:{oID:formData.orderID,type:'add'}}" style="background-color:#d32c00;">发票申请</router-link>
         </ul>
 		<top-nav title='查看订单'></top-nav>
     </div>
@@ -121,7 +117,6 @@
 		mapState
 	} from 'vuex'
 	import choose from '@/components/choose.vue'
-	import * as dd from 'dingtalk-jsapi'
 	import dayjs from 'dayjs'
 	
 	let orderId = '';
@@ -147,7 +142,7 @@ export default {
 				employee3:'',
 				employee4:'',
 				o_isPush:'',
-				managerid:14   // TODO:测试当前登录人ID
+				managerid:0   // TODO:测试当前登录人ID
 			},
             clientList:[],
             clientName:'请选择',
@@ -181,9 +176,8 @@ export default {
 	
     },
     mounted() {
-		orderId = this.$route.query.id;
-		console.log(orderId)
-		this.formData.orderID = orderId;
+		orderId = this.$route.query.id
+		this.formData.orderID = orderId
 		this.getOneOrderData()
 		this.clientCallBack(this.addOrders.selectClientArray)
     },
@@ -290,8 +284,6 @@ export default {
 				
 				_this.files1 = tmpData['files1']
 				_this.files2 = tmpData['files2']
-				
-				console.log(_this.formData)
 			})
 		},
     	claerEmployee(){ // 清空人员
@@ -304,17 +296,10 @@ export default {
     	},
         activeChoose(items){
     		let _this = this
-    		console.log(items)
-    		if(items.length < 1){
-    			dd.device.notification.toast({
-    				text: '请正确选择', //提示信息
-    				onSuccess : function(result) {
-    					/*{}*/
-    				},
-    				onFail : function(err) {}
-    			})
-    			return;
-    		}
+    		// if(items.length < 1){
+			// 	_this.ddSet.setToast({text:'请正确选择'})
+    		// 	return;
+    		// }
             if('place' == _this.chooseEl){
     			let tmpTexts = [];
     			let tmpPlaces = [];

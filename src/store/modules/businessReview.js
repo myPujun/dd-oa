@@ -5,7 +5,7 @@ const actions = {
     getBillList({commit},params){   //开票通知分页列表
         return ajax.post(api.billList,params)
     },
-    getBillDetails({commit},params){    //开票通知详情
+    getinvoiceDetails({commit},params){    //开票通知详情
         return ajax.post(api.invoiceDetails,params)
     }
 }

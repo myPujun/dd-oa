@@ -22,17 +22,20 @@
                 <label class="title"><span>收款内容</span></label>
                 <textarea v-model="addData.rpdcontent"></textarea>
             </li>
-            <li class="li_auto flex">
-                <label class="title"><span>文件</span></label>
-                <textarea v-model="addData.rpcontent" ></textarea>
+            <li class="flex flex_a_c flex_s_b">
+                <label class="title"><span>附件</span></label>
             </li>
+    		<li class="flex flex_a_c flex_s_b" v-for="(f,index) in files" :key="index">
+    			<a :href="'/' + f.pp_fileName">{{f.pp_fileName}}</a>
+    			<span>{{f.pp_size}}K</span>
+    		</li>
             <li class="flex flex_a_c flex_s_b">
 			    <label class="title"><span>审批类型</span></label>
 			    <input type="text" readonly :value="addData.type_text">
 			</li>
             <li class="flex flex_a_c flex_s_b" @click="changeFlag">
                 <label class="title"><span>审批状态</span></label>
-                <input type="text" readonly :value="addData.status_text">
+                <input type="text" readonly :value="status_text">
 			    <div class="icon_right arrows_right"></div>
             </li>
             <li class="li_auto flex">
@@ -54,6 +57,9 @@ export default {
             clientName:'',  
             type:'',
             rpdid:0,
+            files:[],
+            status:0,
+            status_text:'待审批',
             typeList:[  //审批类型
                 {
                     key:'部门审批',
@@ -85,31 +91,34 @@ export default {
         };
     },
     components: {},
-    computed: {},
+    computed: {
+        ...mapState({
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){
-        let {type,rpd_id} = this.$route.query
-        this.type = type
-        this.rpdid=rpd_id
+        let _this = this
+        let {type,rpd_id} = _this.$route.query
+        _this.type = type
+        _this.rpdid=rpd_id
         if(type == 'Check'){
             let params = {
                 rpd_id:rpd_id,
                 type:'check',
-                managerid:29
+                managerid:_this.userInfo.id
             }
             this.getPayDetailEdit(params).then(res => {
                 console.log(res.data)
-                this.addData = res.data
-                this.clientName=this.addData.c_name
-                this.addData.rpdoid = this.addData.rpd_oid
-                this.addData.rpdmoney=this.addData.rpd_money
-                this.addData.rpdforedate = this.addData.rpd_foredate
-                this.addData.rpdcontent = this.addData.rpd_content
-                this.addData.rpdremark = this.addData.remark                
-                this.addData.type_text = this.typeList[this.addData.type-1].key
-                this.addData.status_text = this.flagList[this.addData.flag].key
-
-                this.addData.rpdid=this.addData.rpd_id
-                this.addData.status = this.addData.flag
+                _this.addData = res.data
+                _this.clientName=_this.addData.c_name
+                _this.addData.rpdoid = _this.addData.rpd_oid
+                _this.addData.rpdmoney=_this.addData.rpd_money
+                _this.addData.rpdforedate = _this.addData.rpd_foredate
+                _this.addData.rpdcontent = _this.addData.rpd_content
+                _this.addData.rpdremark = _this.addData.remark                
+                _this.addData.type_text = _this.typeList[_this.addData.type-1].key
+                _this.status_text = _this.flagList[_this.addData.flag].key
+                _this.files = _this.addData.albumlist
             })
         }
     },
@@ -121,35 +130,39 @@ export default {
             'payDetailAudit'
         ]),
         submit(item){ //提交
-            if(!this.addData.flag){
-                this.ddSet.setToast({text:'请选择审批状态'})
+            let _this = this
+            if(!_this.status){
+                _this.ddSet.setToast({text:'请选择审批状态'})
                 return
             }
-            this.addData.managerid = 29 //测试ID
-            this.ddSet.showLoad()
-            if(this.type == 'Check'){
-                console.log(this.addData)
-                this.payDetailAudit(this.addData).then(res => {
-                    this.ddSet.hideLoad()
+            _this.addData.managerid = _this.userInfo.id //测试ID
+            _this.addData.rpdid=_this.addData.rpd_id
+            _this.addData.status = _this.status
+            _this.addData.remark = _this.addData.rpdremark
+            _this.ddSet.showLoad()
+            console.log(_this.addData)
+            if(_this.type == 'Check'){
+                _this.payDetailAudit(_this.addData).then(res => {
+                    _this.ddSet.hideLoad()
                     if(res.data.status){
-                        this.ddSet.setToast({text:'审核成功'}).then(res => {
-                            this.$router.go(-1)
+                        _this.ddSet.setToast({text:'审核成功'}).then(res => {
+                            _this.$router.go(-1)
                         })
                     }else{
-                        this.ddSet.setToast({text:res.data.msg})
+                        _this.ddSet.setToast({text:res.data.msg})
                     }
                 }).catch(err => {
-                    this.ddSet.hideLoad()
+                    _this.ddSet.hideLoad()
                 })
             }
         },
         changeFlag(){
             let _this = this
-                let source =_this.flagList,selectedKey = _this.addData.status          
+                let source =_this.flagList,selectedKey = _this.status_text          
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
-                    _this.$set(_this.addData,'status',res.value)
-                    _this.$set(_this.addData,'status_text',res.key)
-                    console.log(_this.addData.status_text)
+                    console.log(res.value)
+                    _this.$set(_this,'status',res.value)
+                    _this.$set(_this,'status_text',res.key)
                 })
         }
     },

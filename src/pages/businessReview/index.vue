@@ -14,7 +14,7 @@
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
             <ul class="list">
-				<router-link tag="li" :to="{path:'/businessOrder',query: {id:item.o_id}}" v-for="(item,index) in showOrderList" :key="index">
+				<li v-for="(item,index) in showOrderList" :key="index">
 				    <div class="company flex flex_a_c flex_s_b">
 				        <section class="flex flex_a_c">
 				            <img class="icon" v-show="0 == item.o_status" src="../../assets/img/audit.png" alt="">
@@ -41,12 +41,13 @@
 				            <span>{{getListDate(item.o_sdate)}}/{{getListDate(item.o_edate)}}</span>
 				        </div>
 				    </div>
-				</router-link>
+				</li>
             </ul>
 			<div class="loadmore" @click="loadNextPage" v-show="pageTotal > searchData.pageIndex">
 				点击加载更多
 			</div>
         </div>
+		<top-nav title="业务审批"></top-nav>
     </div>
 </template>
 
@@ -100,7 +101,7 @@ export default {
 			   o_ispush:'True',
 			   o_flag:'0',
 			   o_lockstatus:'',
-			   managerid:14     // TODO: 测试用，后面注意修改
+			   managerid:0     // TODO: 测试用，后面注意修改
 		   }
        };
     },
@@ -108,7 +109,11 @@ export default {
         tabList,
         labelSearch
     },
-    computed: {},
+    computed: {	
+        ...mapState({
+            userInfo: state => state.user.userInfo
+		})
+	},
     created(){
         // this.ddSet.setTitleRight({title:'订单查询'}).then(res => {
         //     if(res){
@@ -165,8 +170,8 @@ export default {
 		orderList(){
 			let _this = this
 			_this.searchData.pageIndex++
+			_this.searchData.managerid = _this.userInfo.id
 			this.getOrderList(this.searchData).then(function(res){
-				console.log(res.data)
 				if(res.data.msg){
 					_this.ddSet.setToast({text:res.data.msg})
 					return
@@ -175,7 +180,6 @@ export default {
 					_this.showOrderList = res.data.list;
 					_this.recordTotal = res.data.pageTotal
 					_this.pageTotal = Math.ceil(_this.recordTotal / _this.searchData.pageSize)
-					console.log(_this.pageTotal)
 				}
 				else{
 					_this.showOrderList = _this.showOrderList.concat(res.data.list);

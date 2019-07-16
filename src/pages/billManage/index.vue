@@ -31,7 +31,7 @@
 
 <script>
 import tabList from '../../components/tab.vue'
-import {mapActions} from 'vuex'
+import {mapActions,mapState} from 'vuex'
 
 export default {
     name:"",
@@ -46,7 +46,12 @@ export default {
     components: {
         tabList,
     },
-    computed: {},
+    computed: {        
+        ...mapState({
+            userInfo: state => state.user.userInfo
+        })
+    
+    },
     created(){},
     mounted() {        
         this.BillList()
@@ -61,7 +66,7 @@ export default {
                 pageSize:999,
                 keywords:this.searchText,
                 inv_isConfirm,
-                managerid:1
+                managerid:this.userInfo.id
             }
             this.getBillList(params).then(res => {
                 this.list = res.data.list

@@ -4,11 +4,11 @@
         <ul class="form_list form_list_noborder">
             <li class="flex flex_a_c flex_s_b" @click="changeFlag">
                 <label class="title"><span>审批状态</span></label>
-                <input type="text" readonly :value="addData.o_flagText">
+                <input type="text" readonly :value="o_flagText">
 			    <div class="icon_right arrows_right"></div>
             </li>
         </ul>
-        <top-nav :title='"审批预付款"' :text='"保存"' @rightClick="submit" ></top-nav>
+        <top-nav :title='"审批订单"' :text='"保存"' @rightClick="submit" ></top-nav>
     </div>
 </template>
 
@@ -20,9 +20,11 @@ export default {
         return {
             addData:{
                 orderID:'',
-                managerid:24   // TODO:测试当前登录人ID
+                managerid:0   // TODO:测试当前登录人ID
                 },            
             type:'',
+            o_flag:0,
+            o_flagText:'待审批',
             flagList:[  //审批状态
                 {
                     key:'待审批',
@@ -40,7 +42,11 @@ export default {
         };
     },
     components: {},
-    computed: {},
+    computed: {	
+        ...mapState({
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){ 
         let oid= this.$route.query.id
         this.addData.orderID = oid
@@ -54,29 +60,31 @@ export default {
             'checkOrder'
         ]),
         submit(item){ //提交
-            if(!this.addData.o_flag){
-                this.ddSet.setToast({text:'请选择审批状态'})
+            let _this = this
+            if(!_this.o_flag){
+                _this.ddSet.setToast({text:'请选择审批状态'})
                 return
             }
-            this.addData.managerid = 24 //测试ID
-            this.ddSet.showLoad()
-            console.log(this.addData)
-            this.checkOrder(this.addData).then(res => {
-                this.ddSet.hideLoad()
+            _this.addData.o_flag = _this.o_flag
+            _this.addData.managerid = _this.userInfo.id //测试ID
+            _this.ddSet.showLoad()
+            console.log(_this.addData)
+            _this.checkOrder(_this.addData).then(res => {
+                _this.ddSet.hideLoad()
                 if(res.data.status){
-                    this.ddSet.setToast({text:'审核成功'}).then(res => {
-                        this.$router.go(-1)
+                    _this.ddSet.setToast({text:'审核成功'}).then(res => {
+                        _this.$router.go(-1)
                     })
                 }else{
-                    this.ddSet.setToast({text:res.data.msg})
+                    _this.ddSet.setToast({text:res.data.msg})
                 }
             }).catch(err => {
-                this.ddSet.hideLoad()
+                _this.ddSet.hideLoad()
             })
         },
         getOneOrderData(){
             let _this = this
-			this.getOrderDetails({orderID:_this.addData.orderID}).then(res => {
+			_this.getOrderDetails({orderID:_this.addData.orderID}).then(res => {
 				if(!res.data){
 					return;
 				}
@@ -85,15 +93,16 @@ export default {
 					if('string' == typeof tmpData[key]){
 						_this.$set(_this.addData,key,tmpData[key])
 					}
-				}
+                }
+                _this.o_flagText = res.data.o_flagText
 			})
 		},
         changeFlag(){
             let _this = this
-                let source =_this.flagList,selectedKey = _this.addData.status_text          
+                let source =_this.flagList,selectedKey = _this.o_flagText          
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
-                    _this.$set(_this.addData,'o_flag',res.value)
-                    _this.$set(_this.addData,'o_flagText',res.key)
+                    _this.$set(_this,'o_flag',res.value)
+                    _this.$set(_this,'o_flagText',res.key)
                 })
         }
     },

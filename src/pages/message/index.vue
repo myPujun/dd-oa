@@ -11,13 +11,9 @@
                 <router-link tag="li" :to="{path:'/messageDetails',query: {me_id:item.me_id,isRead:item.me_isRead}}" v-for="(item,index) in showMessageList" :key="index">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
-                            <!-- <img class="icon" alt=""> -->
                             <h2 class="name">{{item.me_title}}</h2>
-                            <!-- <input type="button" :class="{blue:item.rp_isConfirm}" :value="item.rp_isConfirm?'已收款':'未收款'" class="blueq">
-                            <span class="isExpect">{{item.rp_isExpect?'[预]':''}}</span> -->
                         </section>
                         <section class="operation_icon flex">
-                            <!-- <span @click.stop="goPage('receiptDetails',item.rp_id)"></span> -->
                             <span  @click.prevent.stop="delmessage(item.me_id)"></span>
                         </section>
                     </div>
@@ -34,7 +30,6 @@
 <script>
 import tabList from '../../components/tab.vue'
 import {mapActions,mapState} from 'vuex'
-import {formatDate} from '../../assets/js/date.js'
 
 export default {
     name:"",
@@ -48,7 +43,7 @@ export default {
            
 		   searchData:{
 			    pageIndex:1,
-                pageSize:999,
+                pageSize:10,
                 keywords:'',
                 isRead:0,
                 managerid:0
@@ -74,14 +69,6 @@ export default {
             'getMessageList',
             'deteleMessage'
         ]),
-        receiptDetails(){
-            this.$router.push({path:'/receiptDetails',query:{type:'add'}})
-        },
-        goPage(item,params){
-            if(item == 'receiptDetails'){
-                this.$router.push({path:`/${item}`,query:{rp_id:params,type:'EDIT'}})
-            }
-        },
         loadNextPage(){
 			this.messageList()
 		},
@@ -118,22 +105,21 @@ export default {
         },
         delmessage(_id){
             let _this = this;
-            this.ddSet.setConfirm('确定要删除消息吗？').then(res=>{
+            _this.ddSet.setConfirm('确定要删除消息吗？').then(res=>{
                 if(0 == res.buttonIndex){
-                    this.ddSet.showLoad()
+                    _this.ddSet.showLoad()
                     _this.deteleMessage({
                         me_id:_id
                     }).then((res) => {
-                        this.ddSet.hideLoad()
-                        if (res.data.status) {
-                            this.ddSet.setToast({text:'删除成功'}).then(res => {
-                                _this.showMessageList = _this.showMessageList.filter(function(item){
-                                    return item.me_id != _id
-                                })
-                            })                            
+                        _this.ddSet.hideLoad()
+                        if (res.data.status) { 
+                            _this.ddSet.setToast({text:'删除成功'})
+							_this.showMessageList = _this.showMessageList.filter(function(item){
+								return item.me_id != _id
+							})                         
                         }
                         else{
-                            this.ddSet.setToast({text:res.data.msg})
+                            _this.ddSet.setToast({text:res.data.msg})
                         }
                     })
                 }
@@ -159,6 +145,7 @@ export default {
             border-bottom: 2px solid $blue_1;
         }
     }
+    .loadmore{text-align:center;padding:25px;font-size:.3rem;color:#888;background-color: #ededed}
     .search_box{
         height: .88rem;
         input{

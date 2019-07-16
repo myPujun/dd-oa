@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapActions,mapState} from 'vuex'
 export default {
     name:"",
     data() {
@@ -95,7 +95,11 @@ export default {
         };
     },
     components: {},
-    computed: {},
+    computed: {
+        ...mapState({
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){
         let {type,c_id} = this.$route.query
         this.type = type
@@ -137,7 +141,7 @@ export default {
                 this.ddSet.setToast({text:'主要联系号码不能为空'})
                 return
             }
-            this.addData.managerid = 14 //测试ID
+            this.addData.managerid = this.userInfo.id //测试ID
             this.ddSet.showLoad()
             if(this.type == 'add'){
                 this.getAddClient(this.addData).then(res => {

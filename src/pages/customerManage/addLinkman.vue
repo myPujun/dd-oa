@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapActions,mapState} from 'vuex'
 export default {
     name:"",
     data() {
@@ -28,7 +28,11 @@ export default {
        };
     },
     components: {},
-    computed: {},
+    computed: {
+        ...mapState({
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){
         let {datails,type,msg} = this.$route.query
         this.datails = datails
@@ -66,7 +70,7 @@ export default {
             let params = {
                 co_name,
                 co_number,
-                managerid:14    //测试ID
+                managerid:this.userInfo.id    //测试ID
             }
             this.ddSet.showLoad()
             if(this.type == 'add'){

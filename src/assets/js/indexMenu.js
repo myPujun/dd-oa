@@ -3,11 +3,11 @@ let list = [
     {
         title:'业务管理',
         list:[
-            {
-                imgUrl:'',
-                link:'test',
-                name:'测试管理'
-            },
+            // {
+            //     imgUrl:'',
+            //     link:'test',
+            //     name:'测试管理'
+            // },
             {
                 imgUrl:require('../img/nav_list/icon_client.png'),
                 link:'customerManage',
@@ -53,13 +53,13 @@ let list = [
             },
             {
                 imgUrl:require('../img/nav_list/icon_finance_2.png'),
-                link:'',
+                link:'unbusinessAudit',
                 name:'非业务支付审核',
                 code:['0603','0402','0601']
             },
             {
                 imgUrl:require('../img/nav_list/icon_finance_3.png'),
-                link:'',
+                link:'invoiceAudit',
                 name:'发票审核',
                 code:['0603','0402']
             },

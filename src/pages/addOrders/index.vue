@@ -71,53 +71,21 @@
 			</li>
 			<li class="flex flex_a_c flex_s_b" @click="changeFstatus">
 			    <label class="title"><span>订单状态</span></label>
-			    <input type="text" readonly :value="formData.o_status_text">
+			    <input type="text" readonly :value="o_status_text">
 			    <div class="icon_right arrows_right"></div>
 			</li>
 			<li class="flex flex_a_c flex_s_b" @click="changePushstatus">
 			    <label class="title"><span>推送状态</span></label>
-				<input type="text" readonly :value="formData.o_isPush_text">
+				<input type="text" readonly :value="o_isPush_text">
 			    <div class="icon_right arrows_right"></div>
 			</li>
-			<!--
-            <li class="flex flex_a_c flex_s_b">
-                <label class="title"><span>锁单状态</span></label>
-                <input type="text" placeholder="未锁">
-            </li>
-            <li class="flex flex_a_c flex_s_b">
-                <label class="title"><span>上级审批</span></label>
-                <input type="text" placeholder="待审批">
-            </li>
-			-->
             <li class="li_auto flex">
                 <label class="title"><span>备注</span></label>
                 <textarea v-model="formData.o_remarks" placeholder="请输入备注"></textarea>
             </li>
         </ul>
-		<!-- 
-        <ul class="form_list">
-            <li class="flex flex_a_c flex_s_b">
-                <label class="title"><span>一类活动文件</span></label>
-                <div class="icon_right accessory">
-                    <input type="file" @change="upFile">
-                </div>
-            </li>
-        </ul>
-		
-        <ul class="form_list">
-            <li class="flex flex_a_c flex_s_b">
-                <label class="title"><span>二类活动文件</span></label>
-                <div class="icon_right accessory"></div>
-            </li>
-        </ul>
-        <div class="hint">
-            部分人员可查看，文件大小限制：51200KB</br> 
-            文件类型：gif,jpg,jpeg,png,bmp,rar,zip,doc,xls,txt,docx,xlsx
-        </div>
-		 -->
         <choose :show.sync="showChoose" :type="chooseType" :list="chooseList" @on-affirm="activeChoose"></choose>
         <top-nav title="新增订单" text="保存" @rightClick="submit"></top-nav>
-		<button @click="submit">保存</button>
     </div>
 </template>
 
@@ -127,7 +95,6 @@ import {
 	mapState
 } from 'vuex'
 import choose from '../../components/choose.vue'
-import * as dd from 'dingtalk-jsapi'
 import dayjs from 'dayjs'
 
 export default {
@@ -145,14 +112,16 @@ export default {
 				o_content:'',
 				o_contractcontent:'',
 				o_remarks:'',
-				fstatus:0,
 				employee1:'',
 				employee2:'',
 				employee3:'',
 				employee4:'',
-				o_isPush:'',
-				managerid:14   // TODO:测试当前登录人ID
+				managerid:0   // TODO:测试当前登录人ID
 			},
+            fstatus:0,
+            o_status_text:'待定',
+            o_isPush:'False',
+            o_isPush_text:'未推送',
             clientList:[],
             clientName:'请选择',
 			clientId:0,
@@ -176,12 +145,18 @@ export default {
         };
     },
     components: {choose},
-    computed: {...mapState(['addOrders'])},
+    computed: {
+        ...mapState(            
+            {
+            selectClientArray:state => state.addOrders.selectClientArray,
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){
        
     },
     mounted() {
-		this.clientCallBack(this.addOrders.selectClientArray)
+		this.clientCallBack(this.selectClientArray)
     },
     methods: {
         ...mapActions([
@@ -196,53 +171,50 @@ export default {
             'getEmployeebyarea',
 			'submitOrder'
         ]),
-        submit(){   //提交
+        submit(){   //提交        
 			let _this = this
 			// 判断必填
 			if(!this.clientId){
                 this.ddSet.setToast({text:'请选择客户'})
                 return
             }
-            if(!_this.formData.o_contractprice){
+            if(!this.formData.o_contractprice){
                 this.ddSet.setToast({text:'请选择合同造价'})
                 return
             }
-            if(!_this.formData.o_content){
+            if(!this.formData.o_content){
                 this.ddSet.setToast({text:'请输入活动名称'})
                 return
             }
-            if(!_this.formData.o_address){
+            if(!this.formData.o_address){
                 this.ddSet.setToast({text:'请输入活动地点'})
                 return
             }
-            if(!_this.date_range){
+            if(!this.date_range){
                 this.ddSet.setToast({text:'请选择活动日期'})
                 return
             }
-            if(!_this.formData.o_place){
+            if(!this.formData.o_place){
                 this.ddSet.setToast({text:'请选择活动归属地'})
                 return
             }
-            if(!_this.formData.fstatus){
-                _this.formData.fstatus='0'
-            }
-            if(!_this.formData.o_isPush){
-                _this.formData.o_isPush='False'
-            }
+            this.formData.fstatus=this.fstatus
+            this.formData.o_isPush=this.o_isPush
 
-            dd.device.notification.showPreloader()
-			this.formData.c_id = this.clientId;
+            this.formData.c_id = this.clientId;
+            this.formData.managerid=this.userInfo.id
+            this.ddSet.showLoad()
 			_this.submitOrder(this.formData).then(function(res){
-				dd.device.notification.hidePreloader()
+                _this.ddSet.hideLoad()
 				if(res.data.status){
-					dd.device.notification.toast({
-						text: '新增订单成功'
-					})
+                    _this.ddSet.setToast({text:'新增订单成功，正在跳转...'}).then(res => {
+                        //this.$router.go(-1)
+                        //成功后跳转订单列表
+                        _this.$router.push('./shoppingCart')
+                    })
 				}
-				else{
-					dd.device.notification.toast({
-						text: res.data.msg
-					})
+				else{                    
+                    _this.ddSet.setToast({text:res.data.msg})
 				}
 			})
         },
@@ -256,15 +228,8 @@ export default {
 		},
         activeChoose(items){
 			let _this = this
-			console.log(items)
 			if(items.length < 1){
-				dd.device.notification.toast({
-					text: '请正确选择', //提示信息
-					onSuccess : function(result) {
-						/*{}*/
-					},
-					onFail : function(err) {}
-				})
+                _this.ddSet.setToast({text:'请正确选择'})
 				return;
 			}
             if('place' == _this.chooseEl){
@@ -321,13 +286,7 @@ export default {
 			}
 			
 			if(tmpPlaces.length < 1){
-				dd.device.notification.toast({
-					text: '请先选择活动归属地', //提示信息
-					onSuccess : function(result) {
-						/*{}*/
-					},
-					onFail : function(err) {}
-				})
+                _this.ddSet.setToast({text:'请先选择活动归属地'})
 				return
 			}
 			
@@ -373,30 +332,13 @@ export default {
 				_this.showChoose = true
             })
         },
-        upFile(e){
-            let file = e.target.files[0]
-            let params = {
-                DelFilePath:'',
-                name:'测试',
-                byteFile:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAARCAEsASwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDcooorgPYCmnrS0UAgooopDCiiigAooooAQdaWikoFYdSE8c0gNNZuMA//AFqYWGnnmiiikWgooooGFKOaSgcfjQIdRRRQAUUUUAFFFNbgfWgQ3rz60UUVJaCiiigAooooAKKKKACkFLRQA4HIpaYDg06mImoooqjMQ0Uh/nS0gQUUUlAxaKaWUdTTfMHbmgLMkpD71CXPY4+lIevPNMfKSmQe9MMh7ACm0UFKIZJ700nkEcU6mt0HsaBpIcr564zT6hpyvjg0rA0SUUAjGRRQIKKKKAFHP4UtNHX606gkKKKKBhTX9KWmNndSYIKKKKRQUUUUAFFFFABRRRQAUUUUAFAYiiigCYNnpSnpxUf6UzzTkjpj9asz5SamlwO9REnOTk0UFco8yZ6D86buPc/lSUUDsgooooGFFFFABRRRQAUjdPpS0Hnj1FADKKKKRQKcdP8A9dSKwPt9ajo/TFAmiaimK/Y0/rz1oJClHNJSjrQIWiiigQh96ZTn+7TaTGgooopFBRRRQAUUUUAFFFIaAFophcetNMntigdmSUm8DuPzqIknqc0lMfKTu2cgdqjPU07tTe5q2JIcretOqOlU44NILD6KKKBBRRRQAUUUUAFFFFABRRRQAw/yNFDDn60UupSCiiigApVbHFJRQFkSggj/ADxS1CDjp2p6tnrwaCLEo6UUg96WgkY/WkoJ5NFJlBRRSE8c8fjSGLSU0uBTDIaY7EpOPamlxURJPWloGojjITTCSeppaKCrIKKKKACmF8HFKxwOOtMoGWqZ3NOpvc1bM0LRRRSGCnHB6fyp9MoVvXn+lAmh9FHuKKBBRRRQAUUUUAFFFFADW65pKVugPpSUhhRRRQMKKKKACiiigByvjrz/AEqTdlc1DTGc5wCRQJx7EpOOTxSGQemah75Jz+NLSsNIeGdzhASfYZprAg4YEH361uaGkf2YsMFyeap+LJY7a3t5eBI0m36jBP8AhW3svducn1m1TlsZ1LUUL+YgYd6lrHY7U7hRRRQAUUUUAFIfelpjnsKBjWOTRRRQVYs00AkkKpOP0px4Bq9ojf6YVPRlrWK5nY5qk+SPMjPIIPII+tLU/iqb7Nc2vpIGH5Y/xqrG25AfWiceVk0qvtI3H0g54GevYdaKsacu6+iHv/Sp"
-            }
-            this.getUpLoadFile(params).then(res => {
-
-            })
-            // console.log(Object.values(e.target.files))
-            // Object.values(e.target.files).map((item,index) => {
-            //     console.log(item.name)
-            // })
-            
-        },
         changeClient(){ //选择客户
 			let _this = this;
 			// _this.clientName = '123123'
 			// return;
-			this.$router.push({ path: '/addOrders/customerSelect', query: { selected_id: _this.clientId }})
+			_this.$router.push({ path: '/addOrders/customerSelect', query: { selected_id: _this.clientId }})
         },
 		clientCallBack:function(_selectData){
-			console.log(_selectData)
 			if(_selectData.length){
 				this.clientName = _selectData[0].name;
 				this.clientId = _selectData[0].id;
@@ -415,8 +357,7 @@ export default {
 		changePushstatus(){
             let _this = this
             this.getPushstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
-                console.log(res)
-                let source = [],selectedKey = '未推送'
+                let source = [],selectedKey = _this.o_isPush_text
                 res.data.map((item,index) => {
                     let obj = {
                         key:item.value,
@@ -424,17 +365,16 @@ export default {
                     }
                 	source.push(obj)
                 })
-                console.log(source)
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
-                    _this.$set(_this.formData,'o_isPush',res.value)
-                    _this.$set(_this.formData,'o_isPush_text',res.key)
+                    _this.$set(_this,'o_isPush',res.value)
+                    _this.$set(_this,'o_isPush_text',res.key)
                 })
             })
         },
         changeFstatus(){
             let _this = this
             this.getFstatus({ddkey:'dingzreafyvgzklylomj'}).then(res => {
-                let source = [],selectedKey = '待定'
+                let source = [],selectedKey = _this.o_status_text
                 res.data.map((item,index) => {
                     let obj = {
                         key:item.value,
@@ -443,8 +383,8 @@ export default {
                 	source.push(obj)
                 })
                 _this.ddSet.setChosen({source,selectedKey}).then(res => {
-                    _this.$set(_this.formData,'fstatus',res.value)
-                    _this.$set(_this.formData,'o_status_text',res.key)
+                    _this.$set(_this,'fstatus',res.value)
+                    _this.$set(_this,'o_status_text',res.key)
                 })
             })
         },        
@@ -460,59 +400,33 @@ export default {
         },
       selectRangeDate(){ //活动日期
             let _this = this
-            // _this.ddSet.setChooseInterval({}).then(res => {
-            //        console.log(res)
-            //        var sdate = dayjs(res.start).format('YYYY-MM-DD');
-			// 	   var edate = dayjs(res.end).format('YYYY-MM-DD');
-            //        console.log(sdate)
-            //        console.log(edate)
-			// 	   _this.date_range = sdate + '至' + edate;
-			// 	   _this.$set(_this.formData,'o_sdate',sdate)
-			// 	   _this.$set(_this.formData,'o_edate',edate)
-            //     })   
-			dd.biz.calendar.chooseInterval({
-				defaultStart:dayjs().valueOf(),
-				defaultEnd:dayjs().add(1, 'day').valueOf(),
-				onSuccess : function(result) {
-					//onSuccess将在点击确定之后回调
-					/*{
-						start: 1514908800000,
-						end: 1514995200000,
-						timezone:8
-					}
-					*/
-				   var sdate = dayjs(result.start).format('YYYY-MM-DD');
-				   var edate = dayjs(result.end).format('YYYY-MM-DD');
-				   _this.date_range = sdate + '至' + edate;
-				   _this.$set(_this.formData,'o_sdate',sdate)
-				   _this.$set(_this.formData,'o_edate',edate)
-				},
-				onFail : function(err) {}
-			})
+            _this.ddSet.setChooseInterval({}).then(res => {
+                var sdate = dayjs(res.start).format('YYYY-MM-DD');
+                var edate = dayjs(res.end).format('YYYY-MM-DD');
+                _this.date_range = sdate + '至' + edate;
+                _this.$set(_this.formData,'o_sdate',sdate)
+                _this.$set(_this.formData,'o_edate',edate)
+            })  
         },
 		selectLinkMan(){
 			let _this = this
 			if(_this.clientId < 1){
-				dd.device.notification.toast({
-					text: '请先选择客户'
-				})
+                _this.ddSet.setToast({text:'请先选择客户'})
 				return
 			}
 			_this.getContactsbycid({c_id:_this.clientId}).then(res => {
 				_this.chooseType = 1;
 				_this.chooseEl = 'link_man';
 				let source = []
-				console.log(res)
 			    res.data.map((item,index) => {
 					if(!item.name){
 					    _this.$set(item,'name',item.co_name)
 					}
-					if(this.formData.co_id == item.co_id ){
+					if(_this.formData.co_id == item.co_id ){
 						_this.$set(item,'isChecked',true)
 					}
 					source.push(item)
 			    })
-				console.log(source)
 				_this.chooseList = source;
 			    _this.showChoose = true
 			})

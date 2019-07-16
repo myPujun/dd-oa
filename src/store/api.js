@@ -73,6 +73,18 @@ const api = {
     get methodData(){   //获取收付方式数据
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=method_data'
     },
+    get serviceType(){   //获取应税劳务数据
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_servicetype'
+    },
+    get serviceName(){   //获取服务名称数据
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_servicename'
+    },
+    get sentMethod(){   //获取送票方式数据
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_sentmethod'
+    },
+    get invoiceArea(){   //获取开票区域数据
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_invoicearea'
+    },
     ///数据初始化 end--------------------------------------------------------
 
 
@@ -135,6 +147,9 @@ const api = {
     get unBusinessPayEdit(){ //修改业务支付申请
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_edit'
     }, 
+    get unBusinessPayDel(){ //删除业务支付申请
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_del'
+    }, 
     get unBusinessPayAuditBind(){ //绑定非业务支付审批类型
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=unbusinesspay_auditBind'
     },  
@@ -162,6 +177,9 @@ const api = {
     },
     get invoiceAdd(){ //新增发票申请
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=invoice_add'
+    },
+    get invoiceAuditObtain(){ //初始化发票审批数据绑定
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=invoice_auditBind'
     },
     get invoiceAudit(){ //审批发票申请
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=invoice_audit'

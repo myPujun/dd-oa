@@ -37,7 +37,7 @@
 
 <script>
 import tabList from '../../components/tab.vue'
-import {mapActions} from 'vuex'
+import {mapActions,mapState} from 'vuex'
 
 import audit from '../../assets/img/audit.png'
 import audit_no from '../../assets/img/audit_no.png'
@@ -62,7 +62,9 @@ export default {
         tabList,
     },
     computed: {
-		
+        ...mapState({
+            userInfo: state => state.user.userInfo
+        })    
 	},
     created(){
 
@@ -135,10 +137,10 @@ export default {
         customerList({type = 1} = {}){
             let params = {
                 pageIndex:1,
-                pageSize:999,
+                pageSize:10,
                 keywords:this.searchText,
                 type,
-                managerid:14
+                managerid:this.userInfo.id
             }
             this.getCustomerList(params).then(res => {
                 this.list = res.data.list
