@@ -4,8 +4,8 @@
         <tab-list tabClass="fixed" :tabList="topTablist" @on-tab="changeTab"></tab-list>
         <label-search :list="labelData" :show="showLabel" @on-label="changeActive"></label-search>
 		<div class="search_box flex flex_s_b flex_a_c" v-show="showSearchBox">
-		   开始月份<span @click="changeTime('start')">{{startTime}}</span>
-		   结束月份<span @click="changeTime('end')">{{endTime}}</span>
+		   开始月份<span @click="changeTime">{{startTime}}</span>
+		   结束月份<span @click="changeTime">{{endTime}}</span>
 		</div>
         <div class="menu_list flex flex_s_a">
             <div class="menu_top" @click="showSearchBoxChange">搜索</div>
@@ -164,6 +164,7 @@ export default {
             this.ddSet.setChooseInterval().then(res => {
                 this.endTime = this.formatDate(res.end)
                 this.startTime =this.formatDate(res.start)
+                this.achievementStatisticList()
             })
         },
         formatDate(data) {
@@ -207,8 +208,8 @@ export default {
             let managerid = this.userId
             let params = {
                 type:this.tabIndex,
-                sMonth:this.startTime,
-                eMonth:this.endTime,
+                sMonth:this.startTime.slice(0,7),
+                eMonth:this.endTime.slice(0,7),
                 status:this.status,
                 isRemove:this.isRemove,
                 isCust:this.isCust,
@@ -216,8 +217,10 @@ export default {
                 pageSize:10, 
                 managerid
             }
+            this.ddSet.showLoad()
             this.getAchievementStatistic(params).then(res => {
-                if(!res.data.status){
+                this.ddSet.hideLoad()
+                if(res.data.msg){
                     this.ddSet.setToast({text:res.data.msg})
                 }else{
                     this.list = res.data.list
@@ -259,6 +262,7 @@ export default {
         color: #333;
         padding:0 .3rem;
         border-bottom: 1px solid #f1f1f1;
+        background-color: #FFF;
         span{
             color: #666;
             height: .8rem;
@@ -267,6 +271,7 @@ export default {
     }
     .menu_list{
         padding: .22rem 0;
+        background-color:#FFF;
         .menu_top{
             flex: 1;
             font-size: .28rem;
