@@ -43,6 +43,10 @@
                 {{datails.inv_money}}
             </li>
             <li class="flex flex_a_c flex_s_b">
+                <label class="title"><span>申请时超开</span></label>
+                {{datails.inv_overMoney}}
+            </li>
+            <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>送票方式</span></label>
                 {{datails.inv_sentWay}}
             </li>

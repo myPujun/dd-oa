@@ -43,6 +43,10 @@
                 {{datails.inv_money}}
             </li>
             <li class="flex flex_a_c flex_s_b">
+                <label class="title"><span>申请时超开</span></label>
+                {{datails.inv_overMoney}}
+            </li>
+            <li class="flex flex_a_c flex_s_b">
                 <label class="title"><span>送票方式</span></label>
                 {{datails.inv_sentWay}}
             </li>
@@ -66,18 +70,17 @@
                 <label class="title"><span>备注</span></label>
                 {{datails.inv_remark}}
             </li>
-            <li class="flex flex_a_c flex_s_b" @click="changeType">
-			    <label class="title"><span>审批类型</span></label>
+            <li class="flex flex_a_c flex_s_b">
+			    <label class="title newTitle"><span>审批类型</span></label>
 			    <input type="text" readonly :value="type_text">
-			    <div class="icon_right arrows_right"></div>
 			</li>
             <li class="flex flex_a_c flex_s_b" @click="changeFlag">
-                <label class="title"><span>审批状态</span></label>
+                <label class="title newTitle"><span>审批状态</span></label>
                 <input type="text" readonly :value="status_text">
 			    <div class="icon_right arrows_right"></div>
             </li>
             <li class="li_auto flex">
-                <label class="title"><span>审批备注</span></label>
+                <label class="title newTitle"><span>审批备注</span></label>
                 <textarea v-model="datails.remark"></textarea>
             </li>
         </ul>
@@ -150,16 +153,25 @@ export default {
             _this.datails = res.data
             _this.isDatails = true
             if(_this.datails.type==1){
-                _this.typeList=[{key:'申请区域审批',value:'1'},{key:'开票区域审批',value:'2'}]
-                _this.type=1
-                _this.type_text='申请区域审批'
-                _this.status=_this.datails.inv_flag1
-                _this.status_text = _this.flagList[_this.datails.inv_flag1].key
-                _this.datails.remark = _this.datails.inv_checkRemark1
-
+                //_this.typeList=[{key:'申请区域审批',value:'1'},{key:'开票区域审批',value:'2'}]
+                
+                if(_this.datails.inv_flag2==2){
+                    _this.type=2
+                    _this.type_text='开票区域审批'
+                    _this.status=_this.datails.inv_flag2
+                    _this.status_text = _this.flagList[_this.datails.inv_flag2].key
+                    _this.datails.remark = _this.datails.inv_checkRemark2
+                }
+                else{
+                    _this.type=1
+                    _this.type_text='申请区域审批'
+                    _this.status=_this.datails.inv_flag1
+                    _this.status_text = _this.flagList[_this.datails.inv_flag1].key
+                    _this.datails.remark = _this.datails.inv_checkRemark1
+                }
             }
             if(_this.datails.type==2){
-                _this.typeList=[{key:'申请区域审批',value:'1'}]
+                //_this.typeList=[{key:'申请区域审批',value:'1'}]
                 _this.type=1
                 _this.type_text='申请区域审批'
                 _this.status=_this.datails.inv_flag1
@@ -167,7 +179,7 @@ export default {
                 _this.datails.remark = _this.datails.inv_checkRemark1
             }
             if(_this.datails.type==3){
-                _this.typeList=[{key:'开票区域审批',value:'2'}]
+                //_this.typeList=[{key:'开票区域审批',value:'2'}]
                 _this.type=2
                 _this.type_text='开票区域审批'
                 _this.status=_this.datails.inv_flag2
@@ -175,7 +187,7 @@ export default {
                 _this.datails.remark = _this.datails.inv_checkRemark2
             }
             if(_this.datails.type==4){
-                _this.typeList=[{key:'财务审批',value:'3'}]
+                // _this.typeList=[{key:'财务审批',value:'3'}]
                 _this.type=3
                 _this.type_text='财务审批'
                 _this.status=_this.datails.inv_flag3
@@ -276,6 +288,10 @@ export default {
             border-radius: 4px;
             margin-bottom: .2rem;
         }
+    }
+    .newTitle{
+        font-family: SimHei;
+        font-weight: bolder;
     }
 </style>
 

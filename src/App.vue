@@ -25,6 +25,7 @@ export default {
     })
     //获取用户信息
     this.ddSet.infoCode(this.corpid).then(res => {
+        console.log(res.code)
         this.userid(res.code)
     })
   },

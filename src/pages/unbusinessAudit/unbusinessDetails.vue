@@ -2,6 +2,10 @@
 <template>
     <div class="body_gery" v-if="isDatails">
         <ul class="form_list">
+            <li class="li_auto flex" v-show="datails.uba_oid">
+                <label class="title"><span>订单号</span></label>
+                <router-link tag="h3" class="hint_1" :to="{path:'/modifyOrder', query: { id: datails.uba_oid }}">{{datails.uba_oid}}</router-link>
+            </li>
             <li class="li_auto flex">
                 <label class="title"><span>支付类别</span></label>
                 <h3 class="hint_1">{{datails.uba_typeText}}</h3>
@@ -46,16 +50,16 @@
     			<span>{{f.pp_size}}K</span>
     		</li>
             <li class="flex flex_a_c flex_s_b">
-			    <label class="title"><span>审批类型</span></label>
+			    <label class="title newTitle"><span>审批类型</span></label>
 			    <input type="text" readonly :value="datails.type_text">
 			</li>
             <li class="flex flex_a_c flex_s_b" @click="changeFlag">
-                <label class="title"><span>审批状态</span></label>
+                <label class="title newTitle"><span>审批状态</span></label>
                 <input type="text" readonly :value="status_text">
 			    <div class="icon_right arrows_right"></div>
             </li>
             <li class="li_auto flex">
-                <label class="title"><span>审批备注</span></label>
+                <label class="title newTitle"><span>审批备注</span></label>
                 <textarea v-model="datails.remark"></textarea>
             </li>
         </ul>       
@@ -215,6 +219,10 @@ export default {
             border-radius: 4px;
             margin-bottom: .2rem;
         }
+    }
+    .newTitle{
+        font-family: SimHei;
+        font-weight: bolder;
     }
 </style>
 
