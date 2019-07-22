@@ -2,6 +2,10 @@
 <template>
     <div class="body_gery">
         <ul class="form_list form_list_noborder">
+            <li class="li_auto flex" v-show="editData.uba_oid">
+                <label class="title"><span>订单号</span></label>
+                <router-link tag="h3" class="hint_1" :to="{path:'/modifyOrder', query: { id: editData.uba_oid }}">{{editData.uba_oid}}</router-link>
+            </li>
             <li class="flex flex_a_c">
                 <label class="title"><span>支付类别</span></label>
                 <input type="text" readonly v-model="editData.uba_typeText">

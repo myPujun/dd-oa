@@ -36,9 +36,9 @@
 				    <div class="message flex flex_a_c flex_s_b">
 				        <div class="message_list flex">
 				            <span>{{item.o_id}}</span>
-				            <span>{{item.op_name}}{{item.op_number}}</span>
 				            <span>{{item.o_contractPrice}}</span>
 				            <span>{{getListDate(item.o_sdate)}}/{{getListDate(item.o_edate)}}</span>
+							<span>{{item.finMoney - item.rpdMoney}}</span>
 				        </div>
 				    </div>
 				</router-link>

@@ -30,16 +30,16 @@
     			<span>{{f.pp_size}}K</span>
     		</li>
             <li class="flex flex_a_c flex_s_b">
-			    <label class="title"><span>审批类型</span></label>
+			    <label class="title newTitle"><span>审批类型</span></label>
 			    <input type="text" readonly :value="addData.type_text">
 			</li>
             <li class="flex flex_a_c flex_s_b" @click="changeFlag">
-                <label class="title"><span>审批状态</span></label>
+                <label class="title newTitle"><span>审批状态</span></label>
                 <input type="text" readonly :value="status_text">
 			    <div class="icon_right arrows_right"></div>
             </li>
             <li class="li_auto flex">
-                <label class="title"><span>审批备注</span></label>
+                <label class="title newTitle"><span>审批备注</span></label>
                 <textarea v-model="addData.rpdremark"></textarea>
             </li>
         </ul>
@@ -174,5 +174,9 @@ export default {
 
 <style scoped lang="scss">
         
+    .newTitle{
+        font-family: SimHei;
+        font-weight: bolder;
+    }
 </style>
 
