@@ -31,14 +31,14 @@ export default {
     created(){
         //console.log(this.userInfo.id)
         //this.powers = this.powerList.map(item => item.urp_code)
-        this.getMessage(this.userInfo.id)
     },
     mounted() {
 
     },
     methods: {
         ...mapActions([
-            'getBinding'
+            'getBinding',
+            'getUserName'
         ]),
         submit(){
             if(!this.fromData.username){
@@ -49,24 +49,36 @@ export default {
                 this.ddSet.setToast({text:'请输入员工密码'})
                 return
             }
-            this.ddSet.infoCode(this.corpId).then(res => {
-                let code = res.code
-                let {username,password} = this.fromData
-                let params = {
-                    username,
-                    password,
-                    code
+            console.log(this.corpId)
+            let {username,password} = this.fromData
+            let params = {
+                username
+            }
+            this.getUserName(params).then(res => {
+                if(res.data.status){
+                    this.$router.push({path:"/home"})
+                }else{
+                    this.ddSet.setToast({text:res.data.msg})
                 }
-                this.getBinding(params).then(res => {
-                    if(!res.data.status){
-                        this.ddSet.setToast({text:res.data.msg})
-                    }else{
-                        this.ddSet.setToast({text:'绑定成功'}).then(res => {
-                            this.$router.push({path:"/"})
-                        })
-                    }
-                })
             })
+            // this.ddSet.infoCode(this.corpId).then(res => {
+            //     let code = res.code
+            //     let {username,password} = this.fromData
+            //     let params = {
+            //         username,
+            //         password,
+            //         code
+            //     }
+            //     this.getBinding(params).then(res => {
+            //         if(!res.data.status){
+            //             this.ddSet.setToast({text:res.data.msg})
+            //         }else{
+            //             this.ddSet.setToast({text:'绑定成功'}).then(res => {
+            //                 this.$router.push({path:"/home"})
+            //             })
+            //         }
+            //     })
+            // })
         }
     },
 }

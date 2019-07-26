@@ -55,10 +55,12 @@ export default {
         })
     },
     created(){
-        //console.log(this.userInfo.id)
-        this.powers = this.powerList.map(item => item.urp_code)
-        //this.getMessage(this.userInfo.id)        
-        this.$router.push({path:'/register'})
+        //获取用户信息
+        // this.userid('11')
+        this.ddSet.infoCode(this.corpid).then(res => {
+            console.log(res)
+            this.userid(res.code)
+        })
     },
     mounted() {
         //获取菜单列表
@@ -72,6 +74,12 @@ export default {
         }, 5000);
     },
     methods: {
+        ...mapActions([
+            'getUserId',
+            'getUserName',
+            'getCorpid',
+            'getMessageList'
+        ]),
         showModules(arr){
             if(!arr){
                 return true
@@ -83,9 +91,6 @@ export default {
             }
             return false
         },
-        ...mapActions([
-            'getMessageList',
-        ]),
         getMessage(_id){
             this.getMessageList({pageIndex:1,pageSize:10,managerid:_id,isRead:'False'}).then(res => {
                 if(res.data.msg){
@@ -96,36 +101,33 @@ export default {
                     this.prizeList = res.data.list
 				}
             })
-
+        },
+        userid(code){
+            console.log(code)
+            this.getUserId({code}).then(res => {
+                if(res.data.status == 3){
+                    this.$store.commit('setUser',res.data)
+                    this.getMessage(this.userInfo.id)
+                    this.powers = this.powerList.map(item => item.urp_code)
+                    let {data} = res.data
+                    let params = {
+                        username:data.user_name
+                    }
+                    this.getUserName(params).then(res => {
+                        this.$store.commit('setBinding',res.data.status)
+                        if(res.data.status === 1){
+                            this.ddSet.setToast({text:'已绑定'})
+                        }else{
+                            this.ddSet.setToast({text:res.data.msg})
+                        }
+                    })
+                }else if(res.data.status == 2){
+                    this.$router.push({path:'/register'})
+                }else{
+                    this.ddSet.setToast({text:res.data.msg})
+                }
+            })
         }
-        // ...mapActions([
-        //     'getUserId',
-        //     'getUserName',
-        //     'getCorpid'
-        // ]),
-        // userid(code){
-        //     this.getUserId({code}).then(res => {
-        //         if(res.data.status == 3){
-        //             this.$store.commit('setUser',res.data)
-        //             let {data} = res.data
-        //             let params = {
-        //                 username:data.user_name
-        //             }
-        //             this.getUserName(params).then(res => {
-        //                 this.$store.commit('setBinding',res.data.status)
-        //                 if(res.data.status === 1){
-        //                     this.ddSet.setToast({text:'已绑定'})
-        //                 }else{
-        //                     this.ddSet.setToast({text:res.data.msg})
-        //                 }
-        //             })
-        //         }else if(res.data.status == 2){
-        //             this.$router.push({path:'/register'})
-        //         }else{
-        //             this.ddSet.setToast({text:res.data.msg})
-        //         }
-        //     })
-        // }
     },
 }
 </script>

@@ -47,7 +47,7 @@ import selfMessage from './message'
 
 let routes = [
     {
-      path: '/',
+      path: '/home',
       component: home
     },
     {
@@ -79,7 +79,7 @@ routes = routes.concat(
     selfMessage,
     [{
       path: '*',
-      redirect: '/'
+      redirect: '/register'
     }]
 )
 
