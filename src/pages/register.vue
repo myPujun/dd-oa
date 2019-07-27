@@ -49,36 +49,42 @@ export default {
                 this.ddSet.setToast({text:'请输入员工密码'})
                 return
             }
-            console.log(this.corpId)
-            let {username,password} = this.fromData
-            let params = {
-                username
-            }
-            this.getUserName(params).then(res => {
-                if(res.data.status){
-                    this.$router.push({path:"/home"})
-                }else{
-                    this.ddSet.setToast({text:res.data.msg})
-                }
-            })
-            // this.ddSet.infoCode(this.corpId).then(res => {
-            //     let code = res.code
-            //     let {username,password} = this.fromData
-            //     let params = {
-            //         username,
-            //         password,
-            //         code
+
+            //huaigui.y注释20190727
+            // console.log(this.corpId)
+            // let {username,password} = this.fromData
+            // let params = {
+            //     username
+            // }
+            // this.getUserName(params).then(res => {
+            //     if(res.data.status){
+            //         this.$router.push({path:"/home"})
+            //     }else{
+            //         this.ddSet.setToast({text:res.data.msg})
             //     }
-            //     this.getBinding(params).then(res => {
-            //         if(!res.data.status){
-            //             this.ddSet.setToast({text:res.data.msg})
-            //         }else{
-            //             this.ddSet.setToast({text:'绑定成功'}).then(res => {
-            //                 this.$router.push({path:"/home"})
-            //             })
-            //         }
-            //     })
             // })
+            //huaigui.y注释20190727
+
+            this.ddSet.infoCode(this.corpId).then(res => {
+                let code = res.code
+                let {username,password} = this.fromData
+                let params = {
+                    username,
+                    password,
+                    code
+                }
+                this.getBinding(params).then(res => {
+                    if(!res.data.status){
+                        this.ddSet.setToast({text:res.data.msg})
+                    }else{
+                        this.ddSet.setToast({text:'绑定成功'}).then(res => {
+                            // this.$store.commit('setUser',res.data)
+                            // console.log(res.data)
+                            this.$router.push({path:"/home"})
+                        })
+                    }
+                })
+            })
         }
     },
 }
