@@ -56,11 +56,11 @@ export default {
     },
     created(){
         //获取用户信息
-        // this.userid('11')
-        this.ddSet.infoCode(this.corpid).then(res => {
-            console.log(res)
-            this.userid(res.code)
-        })
+        this.userid('11')
+        // this.ddSet.infoCode(this.corpid).then(res => {
+        //     console.log(res)
+        //     this.userid(res.code)
+        // })
     },
     mounted() {
         //获取菜单列表
