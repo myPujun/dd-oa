@@ -16,6 +16,9 @@ const api = {
     get managerOauthBind(){  //用户绑定钉钉userid并授权免登
         return baseUrl+'/tools/dingtalk_login.ashx?action=manager_oauth_bind'
     },
+    get managerOauthRemove(){  //用户绑定钉钉userid并授权免登
+        return baseUrl+'/tools/dingtalk_login.ashx?action=Manager_oauth_remove'
+    },
     ///钉钉授权绑定 end--------------------------------------------------------
 
     ///数据初始化 start--------------------------------------------------------

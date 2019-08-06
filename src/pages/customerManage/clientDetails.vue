@@ -91,7 +91,7 @@ export default {
             if(item == 'addClient'){        //编辑客户
                 this.$router.push({path:`/${item}`,query:{c_id:this.datails.c_id,type:'EDIT'}})
             }
-            if(item == 'addLinkman'){
+            if(item == 'addLinkman' && !msg){
                 this.$router.push({path:`/${item}`,query:{datails:this.datails,type:'EDIT'}})
             }
             if(item == 'addLinkman' && msg){

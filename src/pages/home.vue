@@ -28,7 +28,7 @@
                 </ul>
             </div>
         </div>
-        <top-nav title="快思图商务会展"></top-nav>
+        <top-nav title="快思图商务会展" text="注销" @rightClick="signOut"></top-nav>
     </div>
 </template>
 
@@ -56,11 +56,10 @@ export default {
     },
     created(){
         //获取用户信息
-        this.userid('11')
-        // this.ddSet.infoCode(this.corpid).then(res => {
-        //     console.log(res)
-        //     this.userid(res.code)
-        // })
+        // this.userid('11')
+        this.ddSet.infoCode(this.corpid).then(res => {
+            this.userid(res.code)
+        })
     },
     mounted() {
         //获取菜单列表
@@ -78,7 +77,8 @@ export default {
             'getUserId',
             'getUserName',
             'getCorpid',
-            'getMessageList'
+            'getMessageList',
+            'removeBinding'
         ]),
         showModules(arr){
             if(!arr){
@@ -102,14 +102,14 @@ export default {
 				}
             })
         },
-        userid(code){
-            console.log(code)
-            this.getUserId({code}).then(res => {
+        userid(_code){
+            //console.log(code)
+            this.getUserId({code:_code}).then(res => {
                 if(res.data.status == 3){
-                    this.$store.commit('setUser',res.data)
+                    this.$store.commit('setUser',res.data.model)
                     this.getMessage(this.userInfo.id)
                     this.powers = this.powerList.map(item => item.urp_code)
-                    let {data} = res.data
+                    let {data} = res.data.model
                     let params = {
                         username:data.user_name
                     }
@@ -126,6 +126,21 @@ export default {
                 }else{
                     this.ddSet.setToast({text:res.data.msg})
                 }
+            })
+        },
+        signOut(){
+            console.log(this.corpid)
+            this.ddSet.infoCode(this.corpid).then(res => {
+                let _code = res.code
+                this.removeBinding({code:_code}).then(res => {
+                    if(res.data.status){
+                        this.ddSet.setToast({text:'您已解除钉钉授权绑定'}).then(res => {
+                                this.$router.push({path:"/register"})
+                        })
+                    }else{
+                        this.ddSet.setToast({text:res.data.msg})
+                    }
+                })
             })
         }
     },
