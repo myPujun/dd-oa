@@ -22,6 +22,7 @@
                     class="c_flex flex_a_c flex_j_c">
                         <div class="icon">
                             <img :src="item.imgUrl" alt="">
+                            <span class="num">131</span>
                         </div>
                         <p class="name">{{item.name}}</p>
                     </router-link>
@@ -159,11 +160,26 @@ export default {
             width: 25%;
             margin-top: .2rem;
             .icon{
+                position: relative;
                 width: 1rem;
                 height: 1rem;
                 img{
                     width: 100%;
                     height: 100%;
+                }
+                .num{
+                    position: absolute;
+                    top: -.2rem;
+                    right: -.2rem;
+                    line-height: 100%;
+                    height: .3rem;
+                    min-width: .2rem;
+                    text-align: center;
+                    background-color: red;
+                    padding: .03rem .08rem;
+                    color: #FFF;
+                    border-radius: 20px;
+                    font-size: 12px;
                 }
             }
             .name{
