@@ -85,6 +85,22 @@ export default {
                     }
                 })
             })
+            // let {username,password} = this.fromData
+            // let params = {
+            //         username,
+            //         password
+            //     }
+            // this.getBinding(params).then(res => {
+            //     if(!res.data.status){
+            //         this.ddSet.setToast({text:res.data.msg})
+            //     }else{
+            //         this.ddSet.setToast({text:'绑定成功'}).then(res => {
+            //             this.$store.commit('setUser',res.data)
+            //             // console.log(res.data)
+            //             this.$router.push({path:"/home"})
+            //         })
+            //     }
+            // })
         }
     },
 }

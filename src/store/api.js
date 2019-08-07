@@ -113,6 +113,15 @@ const api = {
     get contactEdit(){   //编辑主、次要联系人
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=contact_edit'
     },
+    get contactDel(){   //删除次要联系人
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=contact_del'
+    },
+    get bankEdit(){   //添加编辑银行账号
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=bank_Edit'
+    },
+    get bankDel(){   //删除银行账号
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=bank_Del'
+    },
     
     ///客户管理模块 end--------------------------------------------------------
 

@@ -20,13 +20,23 @@
 			</li>
             <li class="li_auto flex">
                 <label class="title"><span>付款内容</span></label>
-                <textarea v-model="addData.rpcontent"></textarea>
+                <textarea v-model="addData.rpcontent" readonly></textarea>
+            </li>            
+            <li class="flex flex_a_c flex_s_b">
+			    <label class="title newTitle"><span>审批类型</span></label>
+			    <input type="text" readonly :value="addData.type_text">
+			</li>
+            <li class="flex flex_a_c flex_s_b" @click="changeFlag">
+                <label class="title newTitle"><span>审批状态</span></label>
+                <input type="text" readonly :value="status_text">
+			    <div class="icon_right arrows_right"></div>
+            </li>
+            <li class="li_auto flex">
+                <label class="title newTitle"><span>审批备注</span></label>
+                <textarea v-model="addData.rpdremark"></textarea>
             </li>
         </ul>
-        <ul class="looK_button_list c_flex">
-            <router-link tag="li" :to="{path:'/checkDetail',query: {rp_id:addData.rp_id,type:'check'}}" style="background-color:#3395fa;">审批</router-link>
-        </ul>
-        <top-nav :title='"审批预付款"'></top-nav>
+        <top-nav :title='"审批预付款"' :text='"保存"' @rightClick="submit" ></top-nav>
     </div>
 </template>
 
@@ -39,7 +49,23 @@ export default {
             addData:{},
             clientName:'',  
             type:'',
-            rpid:0
+            rpid:0,           
+            status:0,
+            status_text:'待审批', 
+            flagList:[  //审批状态
+                {
+                    key:'待审批',
+                    value:'0'
+                },
+                {
+                    key:'审批未通过',
+                    value:'1'
+                },
+                {
+                    key:'审批成功',
+                    value:'2'
+                },
+            ]
         };
     },
     components: {},
@@ -68,6 +94,11 @@ export default {
                 this.addData.rpmethod=this.addData.rp_method
                 this.addData.rp_method_text= this.addData.pm_name
                 this.addData.rpcontent = this.addData.rp_content
+                this.addData.type_text=this.addData.typeText
+                this.addData.ctype=this.addData.type
+                this.addData.rpremark = this.addData.remark
+                this.addData.status_text = this.addData.flagText
+                this.addData.status = this.addData.flag
             })
         }
     },
@@ -76,8 +107,38 @@ export default {
     },
     methods: {
         ...mapActions([
-            'getReceiptDetails'
-        ])
+            'getReceiptDetails',
+            'getPayAudit'
+        ]),
+        submit(item){ //提交
+            if(!this.addData.status){
+                this.ddSet.setToast({text:'请选择审批状态'})
+                return
+            }
+            this.addData.managerid = this.userInfo.id //测试ID
+            this.ddSet.showLoad()
+            console.log(this.addData)
+            this.getPayAudit(this.addData).then(res => {
+                this.ddSet.hideLoad()
+                if(res.data.status){
+                    this.ddSet.setToast({text:'审核成功'}).then(res => {
+                        this.$router.go(-1)
+                    })
+                }else{
+                    this.ddSet.setToast({text:res.data.msg})
+                }
+            }).catch(err => {
+                this.ddSet.hideLoad()
+            })
+        },
+        changeFlag(){
+            let _this = this
+                let source =_this.flagList,selectedKey = _this.status_text          
+                _this.ddSet.setChosen({source,selectedKey}).then(res => {
+                    _this.$set(_this.addData,'status',res.value)
+                    _this.$set(_this.addData,'status_text',res.key)
+                })
+        }
     },
     beforeDestroy(){
         

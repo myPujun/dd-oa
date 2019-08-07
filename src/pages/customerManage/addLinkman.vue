@@ -53,7 +53,7 @@ export default {
     },
     methods: {
         ...mapActions([
-            'getAddLinkman',
+            'getLinkmanAdd',
             'getContactEdit'
         ]),
         submit(){
@@ -75,12 +75,14 @@ export default {
             this.ddSet.showLoad()
             if(this.type == 'add'){
                 params.c_id = c_id
-                this.getAddLinkman(params).then(res => {
+                this.getLinkmanAdd(params).then(res => {
                     this.ddSet.hideLoad()
                     if(!res.data.status){
                         this.ddSet.setToast({text:res.data.msg})
                     }else{
-                        this.ddSet.setToast({text:"提交成功"})
+                        this.ddSet.setToast({text:"提交成功"}).then(res => {
+                            this.$router.go(-1)
+                        })
                     }
                 }).catch(err => {
                     this.ddSet.hideLoad()
@@ -92,7 +94,9 @@ export default {
                         if(!res.data.status){
                             this.ddSet.setToast({text:res.data.msg})
                         }else{
-                            this.ddSet.setToast({text:"编辑成功"})
+                            this.ddSet.setToast({text:"编辑成功"}).then(res => {
+                            this.$router.go(-1)
+                        })
                         }
                 }).catch(err => {
                     this.ddSet.hideLoad()

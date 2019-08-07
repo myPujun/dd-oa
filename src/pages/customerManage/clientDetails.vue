@@ -13,7 +13,7 @@
                     <div class="code flex">
                         <span>{{clientType[datails.c_type-1]}}</span>
                         <span v-show="datails.c_num">{{datails.c_num}}</span>
-                        <span>{{datails.c_isUse ? '禁用' : '启用'}}</span>
+                        <span>{{datails.c_isUse ? '启用' : '禁用'}}</span>
                         <img class="yes" :src="isIocn[datails.c_flag]" alt="">
                     </div>
                     <p class="introduce">{{datails.c_remarks}}</p>
@@ -25,8 +25,9 @@
                 <img class="compile" src="../../assets/img/redact_2.png" alt=""  @click="goPage('addLinkman')">
             </div>
         </div>
-        <div class="client_list" v-if="datails.contacts_list.length-1 !== 0">
-            <h2 class="amount">共{{datails.contacts_list.length-1}}人</h2>
+        <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
+        <div class="client_list" v-if=" this.tabIndex==0">
+            <h2 class="amount">共{{datails.contacts_list.length-1}}人<span class="addbtn" @click.stop="addLinkman">添加联系人</span></h2>
             <ul class="list">
                 <li class="flex flex_a_c" v-if="!item.co_flag" v-for="(item,index) in datails.contacts_list" :key="index">
                     <div class="head">
@@ -38,7 +39,26 @@
                             {{item.co_number}}
                         </p>
                     </div>
-                    <img class="compile" src="../../assets/img/redact_3.png" @click="goPage('addLinkman',item)" alt="">
+                    <img class="compile" src="../../assets/img/redact_1.png" @click="goPage('addLinkman',item)" alt="">
+                    <img class="compile1" src="../../assets/img/delete.png" @click="delLinkman(item.co_id)" alt="">
+                </li>
+            </ul>
+        </div>
+        <div class="bank_list" v-if="this.tabIndex==1">
+            <h2 class="amount">共{{datails.banks_list.length}}条<span class="addbtn" @click.stop="addBank">添加银行账号</span></h2>
+            <ul class="list">
+                <li class="flex flex_a_c" v-for="(item,index) in datails.banks_list" :key="index">
+                    <div class="head">
+                        <img src="../../assets/img/head.png" alt="">
+                    </div>
+                    <div class="message">
+                        <h2 class="name">{{item.cb_bankName}}</h2>
+                        <p class="tel">
+                            {{item.cb_bankNum}}
+                        </p>
+                    </div>
+                    <img class="compile" src="../../assets/img/redact_1.png" @click="goPage('addBank',item,index)" alt="">
+                    <img class="compile1" src="../../assets/img/delete.png" @click="delBank(item.cb_id)" alt="">
                 </li>
             </ul>
         </div>
@@ -47,7 +67,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import tabList from '../../components/tab.vue'
+import { mapActions,mapState } from 'vuex';
 
 import audit from '../../assets/img/audit.png'
 import audit_no from '../../assets/img/audit_no.png'
@@ -56,6 +77,8 @@ export default {
     name:"",
     data() {
        return {
+           tabIndex:0,
+           topTabList:['联系人','银行账号'],
            clientId:null,
            isIocn:[audit,audit_no,audit_yes],
            datails:{},
@@ -63,8 +86,14 @@ export default {
            clientType:['普通客户','管理用客户','内部客户']
        };
     },
-    components: {},
-    computed: {},
+    components: {
+        tabList
+    },
+    computed: {
+        ...mapState({
+            userInfo: state => state.user.userInfo
+        })
+    },
     created(){
         
     },
@@ -85,14 +114,19 @@ export default {
     },
     methods: {
         ...mapActions([
-            'getCustomerDetails'
+            'getCustomerDetails',
+            'getContactDel',
+            'getBankDel'
         ]),
-        goPage(item,msg){
+        goPage(item,msg,index){
             if(item == 'addClient'){        //编辑客户
                 this.$router.push({path:`/${item}`,query:{c_id:this.datails.c_id,type:'EDIT'}})
             }
             if(item == 'addLinkman' && !msg){
                 this.$router.push({path:`/${item}`,query:{datails:this.datails,type:'EDIT'}})
+            }
+            if(item == 'addBank'){
+                this.$router.push({path:`/${item}`,query:{datails:this.datails,type:'EDIT',index:index}})
             }
             if(item == 'addLinkman' && msg){
                 this.$router.push({path:`/${item}`,query:{datails:this.datails,type:'msg',msg}})
@@ -100,6 +134,59 @@ export default {
         },
         addLinkman(){
             this.$router.push({path:'/addLinkman',query:{datails:this.datails,type:'add'}})
+        },
+        delLinkman(_id){
+            let _this = this;
+			_this.ddSet.setConfirm('确定要删除该联系人吗？').then(res=>{
+				if(0 == res.buttonIndex){
+					_this.ddSet.showLoad()
+					_this.getContactDel({
+						co_id:_id,
+						managerid:_this.userInfo.id
+					}).then((res) => {
+						_this.ddSet.hideLoad()
+						if (res.data.status) {
+							_this.ddSet.setToast({text:'成功删除联系人'})
+                            _this.$router.push({path:`/clientDetails`,query:{id:_this.clientId}})
+                            _this.datails.contacts_list = _this.datails.contacts_list.filter(function(item){
+								return item.co_id != _id
+							})
+						}
+						else{
+							_this.ddSet.setToast({text:res.data.msg})
+						}
+					})
+				}
+            })
+        },
+        addBank(){
+            this.$router.push({path:'/addBank',query:{datails:this.datails,type:'add'}})
+        },
+        delBank(_id){
+            let _this = this;
+			_this.ddSet.setConfirm('确定要删除该银行账号吗？').then(res=>{
+				if(0 == res.buttonIndex){
+					_this.ddSet.showLoad()
+					_this.getBankDel({
+						cb_id:_id,
+						managerid:_this.userInfo.id
+					}).then((res) => {
+						_this.ddSet.hideLoad()
+						if (res.data.status) {
+							_this.ddSet.setToast({text:'成功删除银行账号'})
+                            _this.datails.banks_list = _this.datails.banks_list.filter(function(item){
+								return item.cb_id != _id
+							})
+						}
+						else{
+							_this.ddSet.setToast({text:res.data.msg})
+						}
+					})
+				}
+            })
+        },
+        changeTab(index){
+            this.tabIndex = index
         }
     },
     
@@ -207,6 +294,9 @@ export default {
             font-weight: normal;
             background-color: $gery_3;
         }
+        .addbtn{
+            float: right;
+        }
         li{
             position: relative;
             padding: .3rem;
@@ -233,10 +323,73 @@ export default {
             }
             .compile{
                 position: absolute;
-                right: .4rem;
+                right: .8rem;
                 top: 50%;
-                width: .6rem;
-                height: .6rem;
+                width: .4rem;
+                height: .4rem;
+                margin-top: -.3rem;
+            }
+            .compile1{
+                position: absolute;
+                right: .2rem;
+                top: 50%;
+                width: .4rem;
+                height: .4rem;
+                margin-top: -.3rem;
+            }
+        }
+    }
+    .bank_list {
+        .amount{
+            height: .65rem;
+            line-height: .65rem;
+            padding: 0 .3rem;
+            font-size: $size_28;
+            color: $gery_1;
+            font-weight: normal;
+            background-color: $gery_3;
+        }
+        .addbtn{
+            float: right;
+        }
+        li{
+            position: relative;
+            padding: .3rem;
+            background-color: #FFF;
+            .head{
+                width: .75rem;
+                height: .75rem;
+                border-radius: 50%;
+                margin-right: .3rem;
+                img{
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+            .message{
+                .name,.tel{
+                    color: $fontSizeColor;
+                    font-size: $size_28;
+                    font-weight: normal;
+                }
+                .tel{
+                    margin-top: .2rem;
+                }
+            }
+            .compile{
+                position: absolute;
+                right: .8rem;
+                top: 50%;
+                width: .4rem;
+                height: .4rem;
+                margin-top: -.3rem;
+            }
+            .compile1{
+                position: absolute;
+                right: .2rem;
+                top: 50%;
+                width: .4rem;
+                height: .4rem;
                 margin-top: -.3rem;
             }
         }
