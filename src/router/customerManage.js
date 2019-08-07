@@ -8,7 +8,8 @@ import addClient from '../pages/customerManage/addClient'
 import clientDetails from '../pages/customerManage/clientDetails'
 //添加联系人
 import addLinkman from '@/pages/customerManage/addLinkman' 
-
+//添加银行账号
+import addBank from '@/pages/customerManage/addBank'
 const routes = [
     {
         path:'/customerManage',
@@ -25,6 +26,10 @@ const routes = [
     {
         path:'/addLinkman',
         component:addLinkman,
+    },
+    {
+        path:'/addBank',
+        component:addBank,
     },
 ]
 

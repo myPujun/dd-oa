@@ -22,6 +22,15 @@ const actions = {
     },
     getContactEdit({commit},params){ //编辑主、次要联系人
         return ajax.post(api.contactEdit,params)
+    },
+    getContactDel({commit},params){ //删除次要联系人
+        return ajax.post(api.contactDel,params)
+    },
+    getbankEdit({commit},params){ //添加编辑银行账号
+        return ajax.post(api.bankEdit,params)
+    },
+    getBankDel({commit},params){ //删除银行账号
+        return ajax.post(api.bankDel,params)
     }
 }
 

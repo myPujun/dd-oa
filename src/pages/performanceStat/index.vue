@@ -4,8 +4,8 @@
         <tab-list tabClass="fixed" :tabList="topTablist" @on-tab="changeTab"></tab-list>
         <label-search :list="labelData" :show="showLabel" @on-label="changeActive"></label-search>
 		<div class="search_box flex flex_s_b flex_a_c" v-show="showSearchBox">
-		   开始月份<span @click="changeTime">{{startTime}}</span>
-		   结束月份<span @click="changeTime">{{endTime}}</span>
+		   订单结束日期<span @click="changeTime">{{startTime}}</span>-
+		   <span @click="changeTime">{{endTime}}</span>
 		</div>
         <div class="menu_list flex flex_s_a">
             <div class="menu_top" @click="showSearchBoxChange">搜索</div>
@@ -27,7 +27,8 @@
                     </div>
                 </li>
             </ul>
-        </div>
+        </div>        
+        <top-nav title="员工业绩统计"></top-nav>
     </div>
 </template>
 
@@ -205,11 +206,11 @@ export default {
                 this.endTime = this.getNowFormatDate()
                 this.startTime = this.getNowFormatDate(0)
             }
-            let managerid = this.userId
+            let managerid =this.userId
             let params = {
                 type:this.tabIndex,
-                sMonth:this.startTime.slice(0,7),
-                eMonth:this.endTime.slice(0,7),
+                sMonth:this.startTime,
+                eMonth:this.endTime,
                 status:this.status,
                 isRemove:this.isRemove,
                 isCust:this.isCust,

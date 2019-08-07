@@ -57,7 +57,9 @@ export default {
     created(){
         //获取用户信息
         // this.userid('11')
+        console.log(this.corpid);
         this.ddSet.infoCode(this.corpid).then(res => {
+            console.log(res.code);
             this.userid(res.code)
         })
     },
@@ -103,8 +105,8 @@ export default {
             })
         },
         userid(_code){
-            //console.log(code)
             this.getUserId({code:_code}).then(res => {
+                console.log(res.data.status)
                 if(res.data.status == 3){
                     this.$store.commit('setUser',res.data.model)
                     this.getMessage(this.userInfo.id)
