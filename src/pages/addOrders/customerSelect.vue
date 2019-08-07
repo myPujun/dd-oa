@@ -32,6 +32,7 @@
 			    <button class="affirm" @click="selectClient">确认</button>
 			</div>
 		</div>
+		<top-nav title="客户选择"></top-nav>
     </div>
 </template>
 

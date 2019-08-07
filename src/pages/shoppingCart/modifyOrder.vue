@@ -115,7 +115,7 @@
             <router-link tag="li" :to="{path:'/UnBusinessPayAdd',query:{oID:formData.orderID,paytype:0,payfunction:0,type:'add'}}" style="background-color:#3395fa;">非业务申请</router-link>
             <router-link tag="li" :to="{path:'/adviceOfReceipt',query:{oID:formData.orderID,type:'add'}}" style="background-color:#47a21f;">收款通知</router-link>
             <router-link tag="li" :to="{path:'/adviceOfPayment',query:{oID:formData.orderID,type:'add'}}" style="background-color:#008265;">付款通知</router-link>
-            <router-link tag="li" :to="{path:'/addInvoice',query:{oID:formData.orderID,type:'add'}}" style="background-color:#d32c00;">发票申请</router-link>
+            <router-link tag="li" :to="{path:'/addInvoice',query:{oID:formData.orderID,type:'add',cName:clientName,cID:clientId}}" style="background-color:#d32c00;">发票申请</router-link>
         </ul>
 		<top-nav title="编辑订单" text="保存" @rightClick="submit"></top-nav>
     </div>

@@ -111,8 +111,10 @@ export default {
         })
     },
     created(){
-        let {oID} = this.$route.query
+        let {oID,cName,cID} = this.$route.query
         this.addData.inv_oid = oID
+        this.clientId = cID
+        this.clientName = cName
     },
     mounted() {
         //console.log(this.selectClientArray)
@@ -202,7 +204,6 @@ export default {
     		_this.$router.push({ path: '/addOrders/customerSelect', query: { selected_id: _this.clientId }})
         },
     	clientCallBack(_selectData){
-            console.log(_selectData)
     		if(_selectData.length){
     			this.clientName = _selectData[0].name;
     			this.clientId = _selectData[0].id;
@@ -211,8 +212,8 @@ export default {
     			this.$set(this.addData,'inv_cid',_selectData[0].id)
     		}
     		else{
-    			this.clientName = '请选择客户';
-    			this.clientId = 0;
+    			// this.clientName = '请选择客户';
+    			// this.clientId = 0;
     			// this.$set(this.addData,'co_name','')
     			// this.$set(this.addData,'co_number','')
     			this.$set(this.addData,'inv_cid',0)
