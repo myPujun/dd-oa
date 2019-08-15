@@ -3,12 +3,12 @@
     <div>
         <tab-list :tabList="topTabList" @on-tab="changeTab"></tab-list>
         <div class="search_box flex flex_a_c flex_j_c">
-           <input type="text" v-model="searchText" @input="changeSearch" placeholder="搜索联系人姓名或公司名称">
+           <input type="text" v-model="searchData.keywords" @input="changeSearch" placeholder="搜索联系人姓名或公司名称">
         </div>
         <div class="customer_list">
-            <h2 class="amount">共{{list.length}}人</h2>
+            <h2 class="amount">共{{recordTotal}}人</h2>
             <ul class="list">
-                <li v-for="(item,index) in list" :key="index" @click="goPage('clientDetails',item.c_id)">
+                <li v-for="(item,index) in showCustomerList" :key="index" @click="goPage('clientDetails',item.c_id)">
                     <div class="company flex flex_a_c flex_s_b">
                         <section class="flex flex_a_c">
                             <img class="icon" :src="isIocn[item.c_flag]" alt="">
@@ -17,7 +17,7 @@
                         </section>
                         <section class="operation_icon flex" v-if="item.c_flag !== 2">
                             <span @click.stop="goPage('addClient',item.c_id)"></span>
-                            <span></span>
+                            <span @click.prevent.stop="delClient(item.c_id)"></span>
                         </section>
                     </div>
                     <div class="message flex flex_a_c flex_s_b">
@@ -29,6 +29,9 @@
                     </div>
                 </li>
             </ul>
+			<div class="loadmore" @click="loadNextPage" v-show="pageTotal > searchData.pageIndex">
+				点击加载更多
+			</div>
         </div>
         <top-nav title="客户管理" text='添加客户' @rightClick="addClient"></top-nav>
     </div>
@@ -46,11 +49,20 @@ export default {
     name:"",
     data() {
        return {
+           showCustomerList:[],
+		   pageTotal:9,
+		   recordTotal:9,
            topTabList:['普通客户','管理用客户','内部客户'],
            tabIndex:0,
            list:[],
            isIocn:[audit,audit_no,audit_yes],
-           searchText:''
+           searchText:'',
+           searchData:{
+			   pageIndex:0,
+			   pageSize:10,
+			   keywords:'',
+			   managerid:0     // TODO: 测试用，后面注意修改
+		   }
        };
     },
     components: {
@@ -65,11 +77,12 @@ export default {
         
     },
     mounted() {
-        this.customerList()
+        this.newCustomerList()
     },
     methods: {
         ...mapActions([
-            'getCustomerList'
+            'getCustomerList',
+            'getCustomerDel'
         ]),
         addClient(){
             this.$router.push({path:'/addClient',query:{type:'add'}})
@@ -82,28 +95,66 @@ export default {
                 this.$router.push({path:`/${item}`,query:{c_id:params,type:'EDIT'}})
             }
         },
-        customerList({type = 1} = {}){
-            this.ddSet.showLoad()
-            let params = {
-                pageIndex:1,
-                pageSize:999,
-                keywords:this.searchText,
-                type,
-                managerid:this.userInfo.id    ////测试ID
-            }
-            this.getCustomerList(params).then(res => {
-                this.ddSet.hideLoad()
-                this.list = res.data.list
-            }).catch(err => {
-                this.ddSet.hideLoad()
-            })
+        delClient(_id){
+            let _this = this;
+			_this.ddSet.setConfirm('确定要删除吗？').then(res=>{
+				if(0 == res.buttonIndex){
+					_this.ddSet.showLoad()
+					_this.getCustomerDel({
+						c_id:_id,
+						managerid:_this.userInfo.id
+					}).then((res) => {
+						_this.ddSet.hideLoad()
+						if (res.data.status) {
+							_this.ddSet.setToast({text:'删除成功'})
+							_this.showCustomerList = _this.showCustomerList.filter(function(item){
+								return item.c_id != _id
+							})
+						}
+						else{
+							_this.ddSet.setToast({text:res.data.msg})
+						}
+					})
+				}
+			})
         },
+        loadNextPage(){
+			this.customerList({type:this.tabIndex+1})
+		},
+        customerList({type = 1} = {}){
+            let _this = this
+			_this.searchData.pageIndex++
+            _this.searchData.managerid = 14//_this.userInfo.id
+            _this.searchData.type = type
+			_this.ddSet.showLoad()
+			_this.getCustomerList(_this.searchData).then(function(res){
+				_this.ddSet.hideLoad()
+				console.log(res.data)
+				if(res.data.msg){
+					_this.ddSet.setToast({text:res.data.msg})
+					return
+				}
+				if(_this.searchData.pageIndex < 2){
+					_this.showCustomerList = res.data.list;
+					_this.recordTotal = res.data.pageTotal
+					_this.pageTotal = Math.ceil(_this.recordTotal / _this.searchData.pageSize)
+				}
+				else{
+					_this.showCustomerList = _this.showCustomerList.concat(res.data.list);
+				}
+			})
+        },
+        newCustomerList(){
+			let _this = this
+			_this.searchData.pageIndex = 0;
+			_this.customerList({type:this.tabIndex+1})
+		},	
         changeSearch(){
-            this.customerList({type:this.tabIndex+1})
+            this.newCustomerList()
         },
         changeTab(index){
             this.tabIndex = index
-            this.customerList({type:index+1})
+            this.newCustomerList()
         }
     },
 }
@@ -111,20 +162,6 @@ export default {
 
 <style scoped lang="scss">
 @import '../../assets/css/var.scss';
-    .tab_list{
-        border-bottom: 1px solid $border_bottom_color;
-        li{
-            height: .75rem;
-            line-height: .75rem;
-            color:$fontSizeColor;
-            font-size: $size_30;
-        }
-        .active{
-            color:$blue_1;
-            font-weight: bold;
-            border-bottom: 2px solid $blue_1;
-        }
-    }
     .search_box{
         height: .88rem;
         input{
@@ -140,105 +177,33 @@ export default {
             background-position:.1rem;
         }
     }
-    .customer_list{
-        .amount{
-            height: .65rem;
-            line-height: .65rem;
-            padding: 0 .3rem;
-            font-size: $size_28;
-            color: $gery_1;
-            font-weight: normal;
-            background-color: $gery_3;
-        }
-        .list{
-            position: absolute;
-            top: 2.3rem;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            overflow-y: auto;
-            .company{
-                padding: 0 .3rem;
-                height: .65rem;
-                .icon{
-                    width:$size_30;
-                    height: $size_30;
-                    background-color: $gery_3;
-                    margin-right: $size_20;
-                }
-                .name{
-                    color: $blue_1;
-                    font-size: $size_24;
-                }
-                input{
-                    width: .86rem;
-                    height: .36rem;
-                    line-height: .36rem;
-                    margin-left: .1rem;
-                    font-size: $size_20;
-                    color: #FFF;
-                    border-radius: .04rem;
-                    background-color: $gery_2;
-                }
-                .blue{
-                    background-color: $blue_1;
-                }
-                .operation_icon{
-                    span{
-                        width: $size_30;
-                        height: $size_30;
-                        margin-left: .3rem;
-                        background-repeat: no-repeat;
-                        background-position: center;
-                        background-size: cover;
-                    }
-                    span:nth-child(1){
-                        background-image: url('../../assets/img/redact_1.png');
-                    }
-                    span:nth-child(2){
-                        background-image: url('../../assets/img/delete.png');
-                        background-size: .25rem .3rem;
-                    }
-                }
-            }
-            .message{
-                padding: 0 .3rem;
-                height: .65rem;
-                background-color: $gery_3;
-                .icon{
-                    width: $size_30;
-                    height: $size_30;
-                    background-color: $blue_1;
-                }
-                .message_list{
-                    display: flex;
-                    span{
-                        height: .36rem;
-                        font-size: $size_20;
-                        min-width: 1.22rem;
-                        border-radius: 2px;
-                        text-align: center;
-                        line-height: .36rem;
-                        margin-right: .2rem;
-                    }
-                    span:nth-child(1){
-                        background-color: $blue_1;
-                        color: #FFF;
-                        padding: 0 .2rem;
-                    }
-                    span:nth-child(2){
-                        background-color: #fff4e9;
-                        color: #e1bc94;
-                    }
-                    span:nth-child(3){
-                        background-color: #e3f6f0;
-                        color: #72a795;
-                        width: 1.8rem;
-                    }
-                }
+    .menu_list{
+        padding: .22rem 0;
+        .menu_top{
+            flex: 1;
+            font-size: .28rem;
+            text-align: center;
+            line-height: .35rem;
+            color: $fontSizeColor;
+            &:first-child{
+                border-right: 1px solid #efefef;
             }
         }
+        
     }
+	.loadmore{text-align:center;padding:25px;font-size:.3rem;color:#888;background-color: #ededed}
+	.lock-status{
+		width: .86rem;
+		height: .36rem;
+		line-height: .36rem;
+		margin-left: .1rem;
+		font-size: 0.2rem;
+		color: #FFF;
+		border-radius: .04rem;
+		background-color: #a6a6a6;
+		text-align: center;
+	}
+	.lock-status.green{background-color:#55be17;}
 </style>
 
 

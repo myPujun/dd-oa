@@ -17,6 +17,9 @@ const actions = {
     getCustomerEdit({commit},params){     //编辑客户
         return ajax.post(api.customerEdit,params)
     },
+    getCustomerDel({commit},params){     //删除客户
+        return ajax.post(api.customerDel,params)
+    },
     getLinkmanAdd({commit},params){ //添加次要联系人
         return ajax.post(api.contactAdd,params)
     },

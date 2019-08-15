@@ -2,7 +2,7 @@
 <template>
     <div>
 		<div class="search_box flex flex_a_c flex_j_c">
-		   <input type="text" v-model="searchData.orderid" @input="changeSearch" placeholder="搜索订单号">
+		   <input type="text" v-model="searchData.keywords" @blur="changeSearch" placeholder="搜索订单号">
 		</div>
         <div class="customer_list">
             <h2 class="amount">共{{recordTotal}}条</h2>
@@ -50,7 +50,6 @@ import {
 	mapActions,
 	mapState
 } from 'vuex'
-import * as dd from 'dingtalk-jsapi'
 
 export default {
     name:"",
@@ -122,7 +121,7 @@ export default {
 		UnBusinessPayList(){
 			let _this = this
 			_this.searchData.pageIndex++
-			_this.searchData.managerid = _this.userInfo.id
+			_this.searchData.managerid =_this.userInfo.id
 			_this.ddSet.showLoad()
 			_this.getUnBusinessPayList(_this.searchData).then(function(res){
 				_this.ddSet.hideLoad()

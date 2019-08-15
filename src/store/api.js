@@ -107,6 +107,9 @@ const api = {
     get customerEdit(){ //编辑客户详情
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_edit'
     },
+    get customerDel(){ //删除客户
+        return baseUrl+'/tools/dingtalk_ajax.ashx?action=customer_del'
+    },
     get contactAdd(){   //新增次要联系人
         return baseUrl+'/tools/dingtalk_ajax.ashx?action=contact_add'
     },
@@ -269,6 +272,9 @@ const api = {
     },
 	get selfmessageRead(){//读取消息
 	    return baseUrl+'/tools/dingtalk_ajax.ashx?action=self_messageRead'
+    },
+	get AduitCount(){//读取消息
+	    return baseUrl+'/tools/dingtalk_ajax.ashx?action=init_AduitCount'
     }
     
     ///公共方法管理模块 end-------------------------------------------------------- 

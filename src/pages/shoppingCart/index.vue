@@ -4,7 +4,7 @@
         <tab-list :tabList="topTablist" @on-tab="changeTab"></tab-list>
         <label-search :list="labelData" :show="showLabel" @on-label="changeActive"></label-search>
 		<div class="search_box flex flex_a_c flex_j_c" v-show="showSearchBox">
-		   <input type="text" v-model="searchData.orderid" @input="changeSearch" placeholder="搜索订单号">
+		   <input type="text" v-model="searchData.orderid" @blur="changeSearch" placeholder="搜索订单号">
 		</div>
         <div class="menu_list flex flex_s_a">
             <div class="menu_top" @click="showSearchBoxChange">搜索</div>
@@ -178,7 +178,7 @@ export default {
 		orderList(){
 			let _this = this
 			_this.searchData.pageIndex++
-			_this.searchData.managerid=14//_this.userInfo.id
+			_this.searchData.managerid=_this.userInfo.id
             _this.ddSet.showLoad()
 			this.getOrderList(this.searchData).then(function(res){                         
                 _this.ddSet.hideLoad()

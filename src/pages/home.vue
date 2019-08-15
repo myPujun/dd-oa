@@ -22,7 +22,21 @@
                     class="c_flex flex_a_c flex_j_c">
                         <div class="icon">
                             <img :src="item.imgUrl" alt="">
-                            <span class="num">131</span>
+                            <div v-if="item.name==='业务审批'">
+                                <span v-show="aduitCount1>0" class="num">{{aduitCount1}}</span>
+                            </div>
+                            <div v-else-if="item.name==='业务支付审核'">
+                                <span v-show="aduitCount2>0" class="num">{{aduitCount2}}</span>
+                            </div>
+                            <div v-else-if="item.name==='非业务支付审核'">
+                                <span v-show="aduitCount3>0" class="num">{{aduitCount3}}</span>
+                            </div>
+                            <div v-else-if="item.name==='发票审核'">
+                                <span v-show="aduitCount4>0" class="num">{{aduitCount4}}</span>
+                            </div>
+                            <div v-else-if="item.name==='预付款审批'">
+                                <span v-show="aduitCount5>0" class="num">{{aduitCount5}}</span>
+                            </div>
                         </div>
                         <p class="name">{{item.name}}</p>
                     </router-link>
@@ -44,7 +58,12 @@ export default {
             ],
             activeIndex:0,
             navList:[],
-            powers:[]
+            powers:[],
+            aduitCount1:0,
+            aduitCount2:0,
+            aduitCount3:0,
+            aduitCount4:0,
+            aduitCount5:0
         };
     },
     components: {},
@@ -58,14 +77,24 @@ export default {
     created(){
         //获取用户信息
         // this.userid('11')
+        let _this=this
         console.log(this.corpid);
-        this.ddSet.infoCode(this.corpid).then(res => {
+        _this.ddSet.infoCode(_this.corpid).then(res => {
             console.log(res.code);
-            this.userid(res.code)
+            _this.userid(res.code)
+        })
+        _this.getAduitCount({managerid:_this.userInfo.id}).then(res => {
+            if(res.data.status==1){
+                _this.aduitCount1 = res.data.count1
+                _this.aduitCount2 = res.data.count2
+                _this.aduitCount3 = res.data.count3
+                _this.aduitCount4 = res.data.count4
+                _this.aduitCount5 = res.data.count5
+            }
         })
     },
     mounted() {
-        //获取菜单列表
+        //获取菜单列表        
         this.navList = menu
         setInterval(() => {
             if(this.activeIndex < this.prizeList.length-1) {
@@ -81,7 +110,8 @@ export default {
             'getUserName',
             'getCorpid',
             'getMessageList',
-            'removeBinding'
+            'removeBinding',
+            'getAduitCount'
         ]),
         showModules(arr){
             if(!arr){

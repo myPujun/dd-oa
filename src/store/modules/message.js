@@ -13,6 +13,9 @@ const actions = {
     },
     readMessage({commit},params){   //阅读消息
         return ajax.post(api.selfmessageRead ,params)
+    },
+    getAduitCount({commit},params){   //获取审批数量
+        return ajax.post(api.AduitCount ,params)
     }
 }
 

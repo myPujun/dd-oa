@@ -23,11 +23,6 @@
                 <label class="title"><span class="must">联系号码</span></label>
                 <input type="text" v-model="addData.co_number" placeholder="请输入客户的电话号码">
             </li>
-            <li class="flex flex_a_c" @click="chosen('flag')">
-                <label class="title"><span>审核</span></label>
-                <input type="text" :value="flagName" readonly placeholder="请选择">
-                <div class="icon_right arrows_right"></div>
-            </li>
             <li class="flex flex_a_c flex_s_b" @click="chosen('enabled')">
                 <label class="title"><span>启用</span></label>
                 <input type="text" :value="enabledName" placeholder="请选择" readonly>
@@ -48,7 +43,10 @@ export default {
     name:"",
     data() {
         return {
-            addData:{},
+            addData:{
+                c_type:1,
+                c_isUse:true,
+            },
             typeList:[  //类型
                 {
                     key:'普通客户',
@@ -63,7 +61,7 @@ export default {
                     value:'3'
                 },
             ],
-            typeName:'',
+            typeName:'普通客户',
             enabled:[   //启用
                 {
                     key:'否',
@@ -73,23 +71,8 @@ export default {
                     key:'是',
                     value:true
                 }
-            ],
-            enabledName:'',
-            flag:[  //审核
-                {
-                    key:'待审',
-                    value:'0'
-                },
-                {
-                    key:'未通过',
-                    value:'1'
-                },
-                {
-                    key:'通过',
-                    value:'2'
-                },
-            ],
-            flagName:"",
+            ],            
+            enabledName:'是',            
             then:0,
             type:'',
         };
@@ -110,7 +93,6 @@ export default {
             this.getCustomerObtain(params).then(res => {
                 this.addData = res.data
                 this.typeName = this.typeList[this.addData.c_type-1].key
-                this.flagName = this.flag[this.addData.c_flag].key
                 this.enabledName = this.addData.c_isUse?'是':'否'
             })
         }
@@ -120,52 +102,54 @@ export default {
     },
     methods: {
         ...mapActions([
-            'getAddClient',
-            'getEditClient',
+            'getCustomerAdd',
+            'getCustomerEdit',
             'getCustomerObtain'
         ]),
         submit(item){ //提交
-            if(!this.typeName){
-                this.ddSet.setToast({text:'请选择客户类别'})
+            let _this = this
+            if(!_this.typeName){
+                _this.ddSet.setToast({text:'请选择客户类别'})
                 return
             }
-            if(!this.addData.c_name){
-                this.ddSet.setToast({text:'请填写客户名称'})
+            if(!_this.addData.c_name){
+                _this.ddSet.setToast({text:'请填写客户名称'})
                 return
             }
-            if(!this.addData.co_name && this.type == 'add'){
-                this.ddSet.setToast({text:'主要联系人不能为空'})
+            if(!_this.addData.co_name && _this.type == 'add'){
+                _this.ddSet.setToast({text:'主要联系人不能为空'})
                 return
             }
-            if(!this.addData.co_number && this.type == 'add'){
-                this.ddSet.setToast({text:'主要联系号码不能为空'})
+            if(!_this.addData.co_number && _this.type == 'add'){
+                _this.ddSet.setToast({text:'主要联系号码不能为空'})
                 return
             }
-            this.addData.managerid = this.userInfo.id //测试ID
-            this.ddSet.showLoad()
-            if(this.type == 'add'){
-                this.getAddClient(this.addData).then(res => {
-                    this.ddSet.hideLoad()
+            _this.addData.managerid =_this.userInfo.id //测试ID
+            _this.ddSet.showLoad()
+            //console.log(_this.addData)
+            if(_this.type == 'add'){
+                _this.getCustomerAdd(_this.addData).then(res => {
+                    _this.ddSet.hideLoad()
                     if(res.data.status){
-                        this.ddSet.setToast({text:'新增客户成功'}).then(res => {
-                            this.$router.go(-1)
+                        _this.ddSet.setToast({text:'新增客户成功'}).then(res => {
+                            _this.$router.go(-1)
                         })
                     }else{
-                        this.ddSet.setToast({text:res.data.msg})
+                        _this.ddSet.setToast({text:res.data.msg})
                     }
                 }).catch(err => {
-                    this.ddSet.hideLoad()
+                    _this.ddSet.hideLoad()
                 })
             }else{
-                this.getEditClient(this.addData).then(res => {
-                    this.ddSet.hideLoad()
+                _this.getCustomerEdit(_this.addData).then(res => {
+                    _this.ddSet.hideLoad()
                     if(res.data.status){
-                        this.ddSet.setToast({text:'编辑客户成功'})
+                        _this.ddSet.setToast({text:'编辑客户成功'})
                     }else{
-                        this.ddSet.setToast({text:res.data.msg})
+                        _this.ddSet.setToast({text:res.data.msg})
                     }
                 }).catch(err => {
-                    this.ddSet.hideLoad()
+                    _this.ddSet.hideLoad()
                 })
             }
         },
@@ -188,9 +172,6 @@ export default {
                 }else if(item == 'enabled'){
                     this.$set(this,'enabledName',res.key)
                     this.$set(this.addData,'c_isUse',res.value)
-                }else{
-                    this.$set(this,'flagName',res.key)
-                    this.$set(this.addData,'c_flag',res.value)
                 }
             })
         },
